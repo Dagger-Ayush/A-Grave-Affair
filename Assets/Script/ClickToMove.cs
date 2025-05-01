@@ -22,12 +22,12 @@ public class ClickToMove : MonoBehaviour
     private Coroutine coroutine;
     private Vector3 targetPosition;
 
-    
+
 
     private void Awake()
     {
         mainCamara = Camera.main;
-       
+
         rb = GetComponent<Rigidbody>();
     }
 
@@ -72,8 +72,8 @@ public class ClickToMove : MonoBehaviour
             Vector3 direction = target - transform.position;
             Vector3 movement = direction.normalized * playerSpeed * Time.deltaTime;
 
-            rb.linearVelocity = direction.normalized * playerSpeed; 
-           
+            rb.linearVelocity = direction.normalized * playerSpeed;
+
 
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction.normalized), rotationSpeed * Time.deltaTime);
             yield return null;
@@ -101,14 +101,3 @@ public class ClickToMove : MonoBehaviour
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
