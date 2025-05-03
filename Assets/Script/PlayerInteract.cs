@@ -16,7 +16,7 @@ public class PlayerInteract : MonoBehaviour
     public ObjectInteract GetObjectInteract()
     {
         //checking if the object is in range
-        float interactRange = 4f;
+        float interactRange = 3f;
         Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRange);
 
         foreach (Collider collider in colliderArray)

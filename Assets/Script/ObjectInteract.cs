@@ -1,5 +1,8 @@
-﻿using TMPro;
+﻿
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class ObjectInteract : MonoBehaviour
 {
@@ -12,16 +15,21 @@ public class ObjectInteract : MonoBehaviour
 
     private bool interacting;
 
+    
     private void Update()
     {
         if (playerInteract.GetObjectInteract() == this)
         {
+           
+
             objectCanvasGroup.alpha = 1;
 
-            if (Input.GetKeyDown(KeyCode.E)) 
+            if (Input.GetKeyDown(KeyCode.E))
             {
+               
                 if (!interacting)
                 {
+                   
                     StartInteraction();
                 }
                 else
@@ -34,10 +42,13 @@ public class ObjectInteract : MonoBehaviour
         {
             Avoid();
         }
+        
     }
 
     private void StartInteraction()
     {
+       
+
         interacting = true;
         currentImageIndex = 0;
 
@@ -51,7 +62,7 @@ public class ObjectInteract : MonoBehaviour
     {
         if (dialogueImages.Length == 0)
             return;
-
+    
         dialogueImages[currentImageIndex].SetActive(false);
         currentImageIndex++;
 
@@ -67,6 +78,13 @@ public class ObjectInteract : MonoBehaviour
 
     private void Avoid()
     {
+        if (currentImageIndex < dialogueImages.Length)
+        {
+            dialogueImages[currentImageIndex].SetActive(false);
+            currentImageIndex = 0;
+
+        }
+       
         interacting = false;
         objectCanvasGroup.alpha = 0;
     }
