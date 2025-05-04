@@ -1,13 +1,12 @@
 ﻿
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
-
 public class ObjectInteract : MonoBehaviour
-{
+{  
+  
+    [Header("Dialogues Interaction reference's")]
     [SerializeField] private CanvasGroup objectCanvasGroup;
     [SerializeField] private PlayerInteract playerInteract;
+
 
     [Header("dialogue references")]
     [SerializeField] private GameObject[] dialogueImages;
@@ -15,40 +14,42 @@ public class ObjectInteract : MonoBehaviour
 
     private bool interacting;
 
-    
+
+    private Vector2 turn;
     private void Update()
     {
         if (playerInteract.GetObjectInteract() == this)
-        {
-           
-
-            objectCanvasGroup.alpha = 1;
-
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-               
-                if (!interacting)
-                {
-                   
-                    StartInteraction();
-                }
-                else
-                {
-                    NextDialogueImage();
-                }
-            }
+        {  
+                objectCanvasGroup.alpha = 1;
+                ObjectHandler();
         }
-        else
+
+        else if (playerInteract.GetObjectInteract() == null  )
         {
             Avoid();
         }
-        
+       
+       
     }
-
+    private void ObjectHandler()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+                    if (!interacting)
+                    {
+                        StartInteraction();
+                    }
+                    else
+                    {
+                        NextDialogueImage();
+                    }
+                  
+            
+        }
+       
+    }
     private void StartInteraction()
     {
-       
-
         interacting = true;
         currentImageIndex = 0;
 
@@ -60,7 +61,7 @@ public class ObjectInteract : MonoBehaviour
 
     private void NextDialogueImage()
     {
-        if (dialogueImages.Length == 0)
+        if (dialogueImages.Length == 0 )
             return;
     
         dialogueImages[currentImageIndex].SetActive(false);
@@ -77,7 +78,8 @@ public class ObjectInteract : MonoBehaviour
     }
 
     private void Avoid()
-    {
+    {   
+
         if (currentImageIndex < dialogueImages.Length)
         {
             dialogueImages[currentImageIndex].SetActive(false);
@@ -88,4 +90,7 @@ public class ObjectInteract : MonoBehaviour
         interacting = false;
         objectCanvasGroup.alpha = 0;
     }
+
+    
+    
 }

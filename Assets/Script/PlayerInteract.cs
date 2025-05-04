@@ -2,13 +2,7 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    
     void Update()
     {
         GetObjectInteract();
@@ -24,6 +18,22 @@ public class PlayerInteract : MonoBehaviour
             if (collider.TryGetComponent(out ObjectInteract objectInteract))
             {
                 return objectInteract;
+            }
+
+        }
+        return null;
+    }
+    public ObjectPickHandler GetObjectPickHandler()
+    {
+        //checking if the object is in range
+        float interactRange = 3f;
+        Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRange);
+
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
+            {
+                return objectPickHandler;
             }
 
         }
