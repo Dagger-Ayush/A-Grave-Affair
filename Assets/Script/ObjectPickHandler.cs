@@ -51,7 +51,10 @@ public class ObjectPickHandler : MonoBehaviour
            
             if (isPicked)
             {
-                ObjectRotation();
+                if (Input.GetMouseButton(0))
+                {
+                    ObjectRotation();
+                }
             }
         }
         else if (playerInteract.GetObjectPickHandler() == null)
@@ -96,11 +99,28 @@ public class ObjectPickHandler : MonoBehaviour
         yield return new WaitForSeconds(2);
         isbusy = false;
     }
+    /*
     private void ObjectRotation()
     {
-        turn.x += Input.GetAxis("Mouse X") * rotationSensitivity;
-        turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity;
-        transform.rotation = Quaternion.Euler(-turn.y, -turn.x, 0);
+            turn.x += Input.GetAxis("Mouse X") * rotationSensitivity;
+            turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity;
+            transform.localRotation = Quaternion.Euler(turn.y, -turn.x, 0);
+
+
+    }*/
+    private void ObjectRotation()
+    {
+        Vector3 mousePos = Input.mousePosition;
+
+        // Check if mouse is within screen boundss
+        if (mousePos.x >= 0 && mousePos.x <= Screen.width &&
+            mousePos.y >= 0 && mousePos.y <= Screen.height)
+        {
+            turn.x += Input.GetAxis("Mouse X") * rotationSensitivity;
+            turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity;
+        }
+
+        transform.localRotation = Quaternion.Euler(turn.y, -turn.x, 0);
     }
     private void Avoid()
     {
