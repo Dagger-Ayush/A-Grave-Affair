@@ -823,7 +823,12 @@ PlayerSettings:
   webGLWebAssemblyBigInt: 0
   webGLCloseOnQuit: 0
   webWasm2023: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: PROBUILDER_EXPERIMENTAL_FEATURES
+    Server: PROBUILDER_EXPERIMENTAL_FEATURES
+    Standalone: PROBUILDER_EXPERIMENTAL_FEATURES
+    WebGL: PROBUILDER_EXPERIMENTAL_FEATURES
+    Windows Store Apps: PROBUILDER_EXPERIMENTAL_FEATURES
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
