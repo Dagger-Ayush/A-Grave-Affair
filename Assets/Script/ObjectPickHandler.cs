@@ -49,7 +49,13 @@ public class ObjectPickHandler : MonoBehaviour
                 }
             }
            
-            
+            if (isPicked)
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    ObjectRotation();
+                }
+            }
         }
         else if (playerInteract.GetObjectPickHandler() == null)
         {
@@ -102,32 +108,19 @@ public class ObjectPickHandler : MonoBehaviour
 
 
     }*/
-   
-    private void OnMouseDrag()
+    private void ObjectRotation()
     {
-        if (!isPicked) return;
-
-        /*
         Vector3 mousePos = Input.mousePosition;
 
         // Check if mouse is within screen boundss
         if (mousePos.x >= 0 && mousePos.x <= Screen.width &&
             mousePos.y >= 0 && mousePos.y <= Screen.height)
         {
-            turn.x += Input.GetAxis("Mouse X") * rotationSensitivity *Time.deltaTime;
-            turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity * Time.deltaTime;
-
+            turn.x += Input.GetAxis("Mouse X") * rotationSensitivity;
+            turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity;
         }
-   */
-        turn.x = Input.GetAxis("Mouse X") * rotationSensitivity ;
-        turn.y = Input.GetAxis("Mouse Y") * rotationSensitivity ;
 
-        //transform.localRotation = Quaternion.Euler(0, -turn.x, turn.y);
-        Vector3 right = Vector3.Cross(inspectionCamara.transform.up, transform.position - inspectionCamara.transform.position);
-        Vector3 up = Vector3.Cross(transform.position - inspectionCamara.transform.position,right);
-
-        transform.rotation = Quaternion.AngleAxis(-turn.x,up)*transform.rotation;
-        transform.rotation = Quaternion.AngleAxis(turn.y, right) * transform.rotation;
+        transform.localRotation = Quaternion.Euler(turn.y, -turn.x, 0);
     }
     private void Avoid()
     {
@@ -138,7 +131,7 @@ public class ObjectPickHandler : MonoBehaviour
     {
         if (isFade)
         {
-           
+            // Fade out
             while (fadeImage.alpha < 1f)
             {
                 fadeImage.alpha += Time.deltaTime;
@@ -147,7 +140,7 @@ public class ObjectPickHandler : MonoBehaviour
 
 
 
-            
+            // Fade in
             while (fadeImage.alpha > 0f)
             {
                 fadeImage.alpha -= Time.deltaTime;
