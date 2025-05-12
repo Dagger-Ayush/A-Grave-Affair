@@ -49,13 +49,7 @@ public class ObjectPickHandler : MonoBehaviour
                 }
             }
            
-            if (isPicked)
-            {
-                if (Input.GetMouseButton(0))
-                {
-                    ObjectRotation();
-                }
-            }
+            
         }
         else if (playerInteract.GetObjectPickHandler() == null)
         {
@@ -108,19 +102,31 @@ public class ObjectPickHandler : MonoBehaviour
 
 
     }*/
-    private void ObjectRotation()
+    private void OnMouseDrag()
     {
+        if (!isPicked) return;
+
+        /*
         Vector3 mousePos = Input.mousePosition;
 
         // Check if mouse is within screen boundss
         if (mousePos.x >= 0 && mousePos.x <= Screen.width &&
             mousePos.y >= 0 && mousePos.y <= Screen.height)
         {
-            turn.x += Input.GetAxis("Mouse X") * rotationSensitivity;
-            turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity;
-        }
+            turn.x += Input.GetAxis("Mouse X") * rotationSensitivity *Time.deltaTime;
+            turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity * Time.deltaTime;
 
-        transform.localRotation = Quaternion.Euler(turn.y, -turn.x, 0);
+        }
+   */
+        turn.x = Input.GetAxis("Mouse X") * rotationSensitivity;
+        turn.y = Input.GetAxis("Mouse Y") * rotationSensitivity;
+
+        //transform.localRotation = Quaternion.Euler(0, -turn.x, turn.y);
+        Vector3 right = Vector3.Cross(inspectionCamara.transform.up, transform.position - inspectionCamara.transform.position);
+        Vector3 up = Vector3.Cross(transform.position - inspectionCamara.transform.position, right);
+
+        transform.rotation = Quaternion.AngleAxis(-turn.x, up) * transform.rotation;
+        transform.rotation = Quaternion.AngleAxis(turn.y, right) * transform.rotation;
     }
     private void Avoid()
     {
