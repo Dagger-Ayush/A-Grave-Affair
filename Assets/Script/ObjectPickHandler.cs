@@ -58,7 +58,10 @@ public class ObjectPickHandler : MonoBehaviour
 
     }
     public IEnumerator ObjectPickUp()
-    {   isbusy = true;
+    {
+        CameraController.Instance.ToggleView(); // Added 
+        yield return new WaitForSeconds(1); // Added
+        isbusy = true;
         StartCoroutine(FadeScreen());
         isPicked = true;
         yield return new WaitForSeconds(1);
@@ -78,6 +81,7 @@ public class ObjectPickHandler : MonoBehaviour
     }
     public IEnumerator ObjectDrop()
     {
+        
         isbusy = true;
         StartCoroutine(FadeScreen());
        
@@ -90,8 +94,10 @@ public class ObjectPickHandler : MonoBehaviour
         inspectionCamara.gameObject.SetActive(false);
         transform.rotation = Quaternion.Euler(0, 0, 0);
         clickToMove.enabled = true;
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1); // changed to 1 second
         isbusy = false;
+
+        CameraController.Instance.ToggleView(); // Added
     }
     /*
     private void ObjectRotation()
