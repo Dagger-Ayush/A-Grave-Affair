@@ -2,15 +2,17 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
-    
+   [SerializeField]private float interactRange = 3f;
+
     void Update()
     {
         GetObjectInteract();
+        GetObjectPickHandler();
     }
     public ObjectInteract GetObjectInteract()
     {
         //checking if the object is in range
-        float interactRange = 3f;
+       
         Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRange);
 
         foreach (Collider collider in colliderArray)
@@ -26,7 +28,7 @@ public class PlayerInteract : MonoBehaviour
     public ObjectPickHandler GetObjectPickHandler()
     {
         //checking if the object is in range
-        float interactRange = 3f;
+       
         Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRange);
 
         foreach (Collider collider in colliderArray)

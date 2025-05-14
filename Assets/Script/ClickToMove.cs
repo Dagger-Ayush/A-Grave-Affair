@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -21,9 +22,9 @@ public class ClickToMove : MonoBehaviour
     private Camera mainCamara;
     private Coroutine coroutine;
     private Vector3 targetPosition;
+    [SerializeField] private NavMeshAgent agent;
 
-
-
+    private bool isClicked;
     private void Awake()
     {
         mainCamara = Camera.main;
@@ -52,19 +53,29 @@ public class ClickToMove : MonoBehaviour
 
     private void Move(InputAction.CallbackContext context)
     {
+
         Ray ray = mainCamara.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit) && hit.collider)
         {
+            
             if (coroutine != null) StopCoroutine(coroutine);
-            coroutine = StartCoroutine(PlayerMoveTowards(hit.point));
-            targetPosition = hit.point;
+
+            
+                agent.SetDestination(hit.point);
+            transform.LookAt(hit.point);
+
+            //coroutine = StartCoroutine(PlayerMoveTowards(hit.point));
+            // targetPosition = hit.point;
         }
+        
     }
+    /*
     private IEnumerator PlayerMoveTowards(Vector3 target)
     {
+       isTriggered = false;
         float playerDistanceToFloor = transform.position.y - target.y;
         target.y += playerDistanceToFloor;
-        while (Vector3.Distance(transform.position, target) > 0.1f)
+        while (Vector3.Distance(transform.position, target) > 0.1f  && !isTriggered)
         {
             Vector3 destination = Vector3.MoveTowards(transform.position, target, playerSpeed * Time.deltaTime);
             transform.position = destination;
@@ -80,7 +91,7 @@ public class ClickToMove : MonoBehaviour
         }
 
     }
-
+    */
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -92,12 +103,17 @@ public class ClickToMove : MonoBehaviour
     {
         float x = Input.GetAxis("Horizontal") * playerSpeed;
         float z = Input.GetAxis("Vertical") * playerSpeed;
-
+        if (x > 0 || z > 0)
+        {  
+            agent.ResetPath(); // Stop following NavMesh path
+        }
+        
         Vector3 dir = transform.right * x + transform.forward * z;
         dir.y = rb.linearVelocity.y;
         rb.linearVelocity = dir;
+        
     }
-
-
+  
+   
 
 }

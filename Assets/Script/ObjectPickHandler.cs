@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class ObjectPickHandler : MonoBehaviour
@@ -12,7 +13,8 @@ public class ObjectPickHandler : MonoBehaviour
 
   
     public GameObject objectContainer;
-    public Camera mainCamara, inspectionCamara;
+    public GameObject inspectionCamara;
+    public CinemachineCamera MainCam, FocusCam;
     public ClickToMove clickToMove;
     public float rotationSensitivity;
 
@@ -25,7 +27,9 @@ public class ObjectPickHandler : MonoBehaviour
 
     private bool isbusy = false;
 
-  
+    private float time;
+
+
     private void Update()
     {
         if (playerInteract.GetObjectPickHandler() == this)
@@ -48,8 +52,8 @@ public class ObjectPickHandler : MonoBehaviour
                     StartCoroutine(ObjectDrop());
                 }
             }
-           
-            
+
+ 
         }
         else if (playerInteract.GetObjectPickHandler() == null)
         {
@@ -59,71 +63,76 @@ public class ObjectPickHandler : MonoBehaviour
     }
     public IEnumerator ObjectPickUp()
     {
-        CameraController.Instance.ToggleView(); // Added 
-        yield return new WaitForSeconds(1); // Added
-        isbusy = true;
-        StartCoroutine(FadeScreen());
-        isPicked = true;
-        yield return new WaitForSeconds(1);
-       
-       
+        SwitchCam();
+        isbusy = true; 
+        time = 0;
         objectTransform = transform.position;
-
         transform.parent = objectContainer.transform;
+
+        while (time < 1f)
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, time);
+            time += Time.deltaTime ;
+            yield return null;
+        }
+
         transform.localPosition = Vector3.zero;
 
-       mainCamara.gameObject.SetActive(false);
-       inspectionCamara.gameObject.SetActive(true);
-
+       
+        isPicked = true;
+     
        clickToMove.enabled = false;
         yield return new WaitForSeconds(1);
         isbusy = false;
     }
     public IEnumerator ObjectDrop()
     {
-        
+
+        SwitchCam();
         isbusy = true;
-        StartCoroutine(FadeScreen());
-       
-        yield return new WaitForSeconds(1);
+        time = 1;
+  
+        transform.parent =null;
+
+        while (time > 0f)
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, objectTransform, time);
+            time -= Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localPosition = objectTransform; // Snap to exact zero just in case
+
         isPicked = false;
 
-        transform.parent = null;
-        transform.position = objectTransform;
-        mainCamara.gameObject.SetActive(true);
-        inspectionCamara.gameObject.SetActive(false);
+        //transform.parent = null;
+        //transform.position = objectTransform;
+     
         transform.rotation = Quaternion.Euler(0, 0, 0);
         clickToMove.enabled = true;
         yield return new WaitForSeconds(1); // changed to 1 second
         isbusy = false;
 
-        CameraController.Instance.ToggleView(); // Added
     }
-    /*
-    private void ObjectRotation()
+    void SwitchCam()
     {
-            turn.x += Input.GetAxis("Mouse X") * rotationSensitivity;
-            turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity;
-            transform.localRotation = Quaternion.Euler(turn.y, -turn.x, 0);
-
-
-    }*/
+        if (FocusCam.Priority == 0)
+        {
+            MainCam.Priority = 0;
+            FocusCam.Priority = 1;
+           
+        }
+        else if (FocusCam.Priority == 1)
+        {
+            MainCam.Priority = 1;
+            FocusCam.Priority = 0;
+         
+        }
+    }
     private void OnMouseDrag()
     {
         if (!isPicked) return;
 
-        /*
-        Vector3 mousePos = Input.mousePosition;
-
-        // Check if mouse is within screen boundss
-        if (mousePos.x >= 0 && mousePos.x <= Screen.width &&
-            mousePos.y >= 0 && mousePos.y <= Screen.height)
-        {
-            turn.x += Input.GetAxis("Mouse X") * rotationSensitivity *Time.deltaTime;
-            turn.y += Input.GetAxis("Mouse Y") * rotationSensitivity * Time.deltaTime;
-
-        }
-   */
         turn.x = Input.GetAxis("Mouse X") * rotationSensitivity;
         turn.y = Input.GetAxis("Mouse Y") * rotationSensitivity;
 
@@ -139,31 +148,6 @@ public class ObjectPickHandler : MonoBehaviour
         isPicked = false;
         objectCanvasGroup.alpha = 0;
     }
-    private IEnumerator FadeScreen()
-    {
-        if (isFade)
-        {
-            // Fade out
-            while (fadeImage.alpha < 1f)
-            {
-                fadeImage.alpha += Time.deltaTime;
-                yield return null;
-            }
-
-
-
-            // Fade in
-            while (fadeImage.alpha > 0f)
-            {
-                fadeImage.alpha -= Time.deltaTime;
-                yield return null;
-            }
-            isFade = false;
-        }
-        if (!isFade)
-        {   isFade = true;
-            fadeImage.alpha = 0;
-        }
-    }
+    
 
 }
