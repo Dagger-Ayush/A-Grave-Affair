@@ -11,11 +11,11 @@ public class ObjectPickHandler : MonoBehaviour
     //Mouse 
     private Vector2 turn;
 
-  
     public GameObject objectContainer;
+    public GameObject inspectionBackroundimage;
     public GameObject inspectionCamara;
     public CinemachineCamera MainCam, FocusCam;
-    public ClickToMove clickToMove;
+    public PointAndMovement pointAndMovement;
     public float rotationSensitivity;
 
     [SerializeField]private PlayerInteract playerInteract;
@@ -29,6 +29,13 @@ public class ObjectPickHandler : MonoBehaviour
 
     private float time;
 
+    [Header("X ray refreence's")]
+    private bool isVision = false;
+
+    [SerializeField] private Material DefaultMaterial;
+    [SerializeField]private Material visionMaterial;
+    [SerializeField]private GameObject XrayCamara;
+    [SerializeField] private KeyCode XrayToggle;
 
     private void Update()
     {
@@ -45,19 +52,30 @@ public class ObjectPickHandler : MonoBehaviour
             {
                 if (!isPicked)
                 {
-                  StartCoroutine(ObjectPickUp());
+                    StartCoroutine(ObjectPickUp());
+  
                 }
                 else
                 {
+                   
                     StartCoroutine(ObjectDrop());
                 }
             }
-
- 
         }
         else if (playerInteract.GetObjectPickHandler() == null)
         {
             Avoid();
+        }
+        if(isPicked && Input.GetKeyDown(XrayToggle)) { 
+             if (!isVision)
+                {
+                     XrayVisionEnable();
+                }
+              else if (isVision)
+                {
+
+                     XrayVisionDisable();
+                }
         }
 
     }
@@ -71,8 +89,9 @@ public class ObjectPickHandler : MonoBehaviour
 
         while (time < 1f)
         {
+            time += Time.deltaTime;
             transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, time);
-            time += Time.deltaTime ;
+            
             yield return null;
         }
 
@@ -81,13 +100,20 @@ public class ObjectPickHandler : MonoBehaviour
        
         isPicked = true;
      
-       clickToMove.enabled = false;
-        yield return new WaitForSeconds(1);
+
+       pointAndMovement.enabled = false;
+        yield return new WaitForSeconds(0.45f);
+        inspectionBackroundimage.SetActive(true);
+        yield return new WaitForSeconds(0.6f);
         isbusy = false;
+
+        
     }
     public IEnumerator ObjectDrop()
     {
-
+        XrayVisionDisable();
+        inspectionBackroundimage.SetActive(false);
+        transform.rotation = Quaternion.Euler(0, 0, 0);
         SwitchCam();
         isbusy = true;
         time = 1;
@@ -96,8 +122,9 @@ public class ObjectPickHandler : MonoBehaviour
 
         while (time > 0f)
         {
+            time -= Time.deltaTime/2;
             transform.localPosition = Vector3.Lerp(transform.localPosition, objectTransform, time);
-            time -= Time.deltaTime;
+           
             yield return null;
         }
 
@@ -107,9 +134,7 @@ public class ObjectPickHandler : MonoBehaviour
 
         //transform.parent = null;
         //transform.position = objectTransform;
-     
-        transform.rotation = Quaternion.Euler(0, 0, 0);
-        clickToMove.enabled = true;
+        pointAndMovement.enabled = true;
         yield return new WaitForSeconds(1); // changed to 1 second
         isbusy = false;
 
@@ -120,13 +145,34 @@ public class ObjectPickHandler : MonoBehaviour
         {
             MainCam.Priority = 0;
             FocusCam.Priority = 1;
-           
+            MainCam.Lens.ModeOverride = LensSettings.OverrideModes.Perspective;
+            FocusCam.Lens.ModeOverride = LensSettings.OverrideModes.Perspective;
         }
         else if (FocusCam.Priority == 1)
         {
             MainCam.Priority = 1;
             FocusCam.Priority = 0;
-         
+            MainCam.Lens.ModeOverride = LensSettings.OverrideModes.Orthographic;
+            FocusCam.Lens.ModeOverride = LensSettings.OverrideModes.Orthographic;
+        }
+    }
+    void XrayVisionEnable()
+    {
+        isVision = true;
+        XrayCamara.SetActive (true);
+        if (visionMaterial != null)
+        {
+            //this.gameObject.GetComponent<MeshRenderer>().material = visionMaterial;
+        }
+      
+    }
+    void XrayVisionDisable()
+    {
+        isVision = false;
+        XrayCamara.SetActive(false);
+        if (DefaultMaterial != null)
+        {
+            //this.gameObject.GetComponent<MeshRenderer>().material = DefaultMaterial;
         }
     }
     private void OnMouseDrag()

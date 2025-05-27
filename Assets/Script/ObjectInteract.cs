@@ -6,7 +6,8 @@ public class ObjectInteract : MonoBehaviour
     [Header("Dialogues Interaction reference's")]
     [SerializeField] private CanvasGroup objectCanvasGroup;
     [SerializeField] private PlayerInteract playerInteract;
-
+    [SerializeField] private PointAndMovement pointAndMovement;
+    [SerializeField] private Transform player;
 
     [Header("dialogue references")]
     [SerializeField] private GameObject[] dialogueImages;
@@ -14,8 +15,8 @@ public class ObjectInteract : MonoBehaviour
 
     private bool interacting;
 
-
     private Vector2 turn;
+
     private void Update()
     {
         if (playerInteract.GetObjectInteract() == this)
@@ -46,7 +47,16 @@ public class ObjectInteract : MonoBehaviour
                   
             
         }
-       
+        if (interacting)
+        {
+            pointAndMovement.enabled = false;
+            dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
+            dialogueImages[currentImageIndex].transform.position = new Vector3(player.position.x,player.position.y + 3,player.position.z);
+        }
+        else
+        {
+            pointAndMovement.enabled = true;
+        }
     }
     private void StartInteraction()
     {
@@ -56,6 +66,8 @@ public class ObjectInteract : MonoBehaviour
         if (dialogueImages.Length > 0)
         {
             dialogueImages[currentImageIndex].SetActive(true);
+            
+           
         }
     }
 
