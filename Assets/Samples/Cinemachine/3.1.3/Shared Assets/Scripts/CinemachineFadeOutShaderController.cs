@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Unity.Cinemachine.Samples
 {
     /// <summary>
-    /// An example add-on module for Cinemachine Virtual Camera for controlling
+    /// An example add-on module for Cinemachine Virtual XrayCamara for controlling
     /// the FadeOut shader included in our example package.
     /// </summary>
     [ExecuteAlways]

@@ -10,13 +10,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Vision
   - Water
   - UI
   - Ground
   - PickUpObject
-  - 
-  - 
+  - InspectionBackGround
+  - NotVision
   - 
   - 
   - 

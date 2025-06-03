@@ -10,7 +10,7 @@ namespace Unity.Cinemachine.Samples
     /// behaviour.  It works intimately with that component.
     //
     /// The purpose of the aiming core is to decouple the camera rotation from the player rotation.  
-    /// Camera rotation is determined by the rotation of the player core GameObject, and this behaviour 
+    /// XrayCamara rotation is determined by the rotation of the player core GameObject, and this behaviour 
     /// provides input axes for controlling it.  When the player core is used as the target for 
     /// a CinemachineCamera with a ThirdPersonFollow component, the camera will look along the core's 
     /// forward axis, and pivot around the core's origin.
@@ -26,7 +26,7 @@ namespace Unity.Cinemachine.Samples
 
         [Tooltip("How the player's rotation is coupled to the camera's rotation.  Three modes are available:\n"
             + "<b>Coupled</b>: The player rotates with the camera.  Sideways movement will result in strafing.\n"
-            + "<b>Coupled When Moving</b>: Camera can rotate freely around the player when the player is stationary, "
+            + "<b>Coupled When Moving</b>: XrayCamara can rotate freely around the player when the player is stationary, "
                 + "but the player will rotate to face camera forward when it starts moving.\n"
             + "<b>Decoupled</b>: The player's rotation is independent of the camera's rotation.")]
         public CouplingMode PlayerRotation;

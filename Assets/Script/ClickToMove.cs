@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -22,9 +20,7 @@ public class ClickToMove : MonoBehaviour
     private Camera mainCamara;
     private Coroutine coroutine;
     private Vector3 targetPosition;
-    [SerializeField] private NavMeshAgent agent;
-
-    private bool isClicked;
+   
     private void Awake()
     {
         mainCamara = Camera.main;
@@ -60,22 +56,18 @@ public class ClickToMove : MonoBehaviour
             
             if (coroutine != null) StopCoroutine(coroutine);
 
-            
-                agent.SetDestination(hit.point);
-            transform.LookAt(hit.point);
-
-            //coroutine = StartCoroutine(PlayerMoveTowards(hit.point));
-            // targetPosition = hit.point;
+            coroutine = StartCoroutine(PlayerMoveTowards(hit.point));
+             targetPosition = hit.point;
         }
         
     }
-    /*
+    
     private IEnumerator PlayerMoveTowards(Vector3 target)
     {
-       isTriggered = false;
+     
         float playerDistanceToFloor = transform.position.y - target.y;
         target.y += playerDistanceToFloor;
-        while (Vector3.Distance(transform.position, target) > 0.1f  && !isTriggered)
+        while (Vector3.Distance(transform.position, target) > 0.1f)
         {
             Vector3 destination = Vector3.MoveTowards(transform.position, target, playerSpeed * Time.deltaTime);
             transform.position = destination;
@@ -91,7 +83,7 @@ public class ClickToMove : MonoBehaviour
         }
 
     }
-    */
+    
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -103,15 +95,11 @@ public class ClickToMove : MonoBehaviour
     {
         float x = Input.GetAxis("Horizontal") * playerSpeed;
         float z = Input.GetAxis("Vertical") * playerSpeed;
-        if (x > 0 || z > 0)
-        {  
-            agent.ResetPath(); // Stop following NavMesh path
-        }
         
-        Vector3 dir = transform.right * x + transform.forward * z;
-        dir.y = rb.linearVelocity.y;
-        rb.linearVelocity = dir;
         
+       transform.position = new Vector3 (x,0,z);
+        
+
     }
   
    

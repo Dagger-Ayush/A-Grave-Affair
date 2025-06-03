@@ -84,9 +84,9 @@ namespace Unity.Cinemachine.Samples
     /// - Damping (applied to the player's velocity, and to the player's rotation)
     /// - Strafe Mode
     /// - Gravity
-    /// - Input Frames (which reference frame is used fo interpreting input: Camera, World, or Player)
+    /// - Input Frames (which reference frame is used fo interpreting input: XrayCamara, World, or Player)
     /// - Ground Detection (using raycasts, or delegating to Character Controller)
-    /// - Camera Override (camera is used only for determining the input frame)
+    /// - XrayCamara Override (camera is used only for determining the input frame)
     /// 
     /// This behaviour should be attached to the player GameObject's root.  It moves the GameObject's 
     /// transform.  If the GameObject also has a Unity Character Controller component, the Simple Player 
@@ -95,7 +95,7 @@ namespace Unity.Cinemachine.Samples
     /// to test for grounded state.
     /// 
     /// Simple Player Controller does its best to interpret User input in the context of the 
-    /// selected reference frame.  Generally, this works well, but in Camera mode, the user
+    /// selected reference frame.  Generally, this works well, but in XrayCamara mode, the user
     /// may potentially transition from being upright relative to the camera to being inverted.  
     /// When this happens, there can be a discontinuity in the interpretation of the input.  
     /// The Simple Player Controller has an ad-hoc technique of resolving this discontinuity, 
@@ -113,7 +113,7 @@ namespace Unity.Cinemachine.Samples
         public enum UpModes { Player, World };
 
         [Tooltip("Reference frame for the input controls:\n"
-            + "<b>Camera</b>: Input forward is camera forward direction.\n"
+            + "<b>XrayCamara</b>: Input forward is camera forward direction.\n"
             + "<b>Player</b>: Input forward is Player's forward direction.\n"
             + "<b>World</b>: Input forward is World forward direction.")]
         public ForwardModes InputForward = ForwardModes.Camera;
@@ -123,7 +123,7 @@ namespace Unity.Cinemachine.Samples
             + "<b>World</b>: Move in global XZ plane.")]
         public UpModes UpMode = UpModes.World;
 
-        [Tooltip("If non-null, take the input frame from this camera instead of Camera.main. Useful for split-screen games.")]
+        [Tooltip("If non-null, take the input frame from this camera instead of XrayCamara.main. Useful for split-screen games.")]
         public Camera CameraOverride;
 
         [Tooltip("Layers to include in ground detection via Raycasts.")]
