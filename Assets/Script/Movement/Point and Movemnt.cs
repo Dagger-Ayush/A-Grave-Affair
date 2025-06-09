@@ -20,10 +20,10 @@ public class PointAndMovement : MonoBehaviour
     private Camera mainCamara;
     private Coroutine coroutine;
 
-    [SerializeField] private NavMeshAgent agent;
+    public NavMeshAgent agent;
+    public Transform player;
 
-    private bool isClicked;
-
+    [HideInInspector] public bool isMoving;
     private void Awake()
     {
         mainCamara = Camera.main;
@@ -34,8 +34,6 @@ public class PointAndMovement : MonoBehaviour
     void Update()
     {
         KeyMove();
-
-
     }
 
     private void OnEnable()
@@ -58,28 +56,34 @@ public class PointAndMovement : MonoBehaviour
         {
 
             if (coroutine != null) StopCoroutine(coroutine);
-
-
+            if (!isMoving)
+            {
+                isMoving = true;
+            }
             agent.SetDestination(hit.point);
             transform.LookAt(hit.point);
-
-            
         }
 
     }
  
     void KeyMove()
     {
+        
         float x = Input.GetAxis("Horizontal") * playerSpeed;
         float z = Input.GetAxis("Vertical") * playerSpeed;
         if (x != 0 || z != 0)
         {
+            if (!isMoving)
+            {
+                isMoving = true;
+            }
             if (agent.hasPath)
             {
                 agent.ResetPath(); // Stop following NavMesh path
             }
-            isClicked = false;
+           
         }
+        //transform.position = new Vector3(x, 0, z);
 
         Vector3 dir = transform.right * x + transform.forward * z;
         dir.y = rb.linearVelocity.y;

@@ -1,4 +1,5 @@
 ﻿
+using System.Runtime.CompilerServices;
 using UnityEngine;
 public class ObjectInteract : MonoBehaviour
 {  
@@ -6,31 +7,35 @@ public class ObjectInteract : MonoBehaviour
     [Header("Dialogues Interaction reference's")]
     [SerializeField] private CanvasGroup objectCanvasGroup;
     [SerializeField] private PlayerInteract playerInteract;
-    [SerializeField] private PointAndMovement pointAndMovement;
+  
     [SerializeField] private Transform player;
 
     [Header("dialogue references")]
     [SerializeField] private GameObject[] dialogueImages;
     private int currentImageIndex = 0;
 
-    private bool interacting;
+    [HideInInspector]public bool interacting;
 
     private Vector2 turn;
 
+   [SerializeField] private bool isTablet;// the player need not need to press E to enable Dialog
     private void Update()
     {
+       
         if (playerInteract.GetObjectInteract() == this)
         {  
-                objectCanvasGroup.alpha = 1;
-                ObjectHandler();
+            if (objectCanvasGroup != null)
+            {
+                objectCanvasGroup.alpha = interacting ? 0 : 1;
+            }
+            ObjectHandler();
         }
 
-        else if (playerInteract.GetObjectInteract() == null  )
+        else if (playerInteract.GetObjectInteract() == null)
         {
             Avoid();
         }
-       
-       
+        
     }
     private void ObjectHandler()
     {
@@ -47,15 +52,15 @@ public class ObjectInteract : MonoBehaviour
                   
             
         }
-        if (interacting)
+        if (isTablet)
         {
-            pointAndMovement.enabled = false;
-            dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
-            dialogueImages[currentImageIndex].transform.position = new Vector3(player.position.x,player.position.y + 3,player.position.z);
-        }
-        else
-        {
-            pointAndMovement.enabled = true;
+            if (!interacting && currentImageIndex < dialogueImages.Length)
+            {
+              
+                StartInteraction();
+                gameObject.GetComponent<Renderer>().enabled = false;
+            }
+           
         }
     }
     private void StartInteraction()
@@ -81,11 +86,17 @@ public class ObjectInteract : MonoBehaviour
 
         if (currentImageIndex < dialogueImages.Length)
         {
+           
             dialogueImages[currentImageIndex].SetActive(true);
         }
         else
         {
+            
             interacting = false;
+            if (isTablet)
+            {
+                Destroy(gameObject, 0.1f);// using delay for Movment and point and click to enable
+            }
         }
     }
 
@@ -100,7 +111,11 @@ public class ObjectInteract : MonoBehaviour
         }
        
         interacting = false;
-        objectCanvasGroup.alpha = 0;
+        if (objectCanvasGroup != null)
+        {
+            objectCanvasGroup.alpha = 0;
+        }
+       
     }
 
     
