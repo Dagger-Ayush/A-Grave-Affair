@@ -52,7 +52,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
   - From: '**ANY CAMERA**'
-    To: InspectionCamara
+    To: 'InspectionCamera '
     Blend:
       Style: 3
       Time: 1.5
