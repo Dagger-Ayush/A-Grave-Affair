@@ -26,7 +26,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         while (true)
         {
-            int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, null);
+            int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, Camera.main);
             if (linkIndex != -1)
                 CursorManager.Instance.SetClueCursor();
             else
