@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
-   [SerializeField]private float interactRange = 3f;
-   [HideInInspector] public bool isPointAndMovementEnabled;
+    [SerializeField] private float interactRange = 3f;
+    [HideInInspector] public bool isPointAndMovementEnabled;
     private PointAndMovement pointAndMovement;
-     private PlayerDialog playerDialog;
-    
+    private PlayerDialog playerDialog;
+
 
     private void Start()
     {
@@ -23,18 +23,18 @@ public class PlayerInteract : MonoBehaviour
         {
             pointAndMovement.enabled = false;
         }
-        else if (!isPointAndMovementEnabled && !playerDialog.isInteraction) 
+        else if (!isPointAndMovementEnabled && !playerDialog.isInteraction)
         {
             pointAndMovement.enabled = true;
         }
-       
-       
-     }
-    
+
+
+    }
+
     public ObjectInteract GetObjectInteract()
     {
         //checking if the object is in range
-       
+
         Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRange);
 
         foreach (Collider collider in colliderArray)
@@ -44,7 +44,7 @@ public class PlayerInteract : MonoBehaviour
                 if (objectInteract.interacting)
                 {
                     isPointAndMovementEnabled = true;
-                   
+
                 }
                 else
                 {
@@ -59,7 +59,7 @@ public class PlayerInteract : MonoBehaviour
     public ObjectPickHandler GetObjectPickHandler()
     {
         //checking if the object is in range
-       
+
         Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRange);
 
         foreach (Collider collider in colliderArray)
@@ -68,8 +68,8 @@ public class PlayerInteract : MonoBehaviour
             {
                 if (objectPickHandler.isPicked)
                 {
-                    isPointAndMovementEnabled = true; 
-                   
+                    isPointAndMovementEnabled = true;
+
                 }
                 else
                 {

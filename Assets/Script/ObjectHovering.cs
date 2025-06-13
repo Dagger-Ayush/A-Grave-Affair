@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,15 +13,14 @@ public class ObjectHovering : MonoBehaviour
 
     [SerializeField] private AudioSource cursorAudioClip;
     private bool isSoundPlayed = false;
-
+    private InteractClueManager interactClueManager;
     private Vector2 cursorHotspot;
-  
+
     void Update()
     {
-        if (playerInteract != null && playerInteract.isPointAndMovementEnabled)
-        {
-            ObjectDectecting();
-        }
+
+        ObjectDectecting();
+
     }
     void ObjectDectecting()
     {
@@ -29,24 +29,33 @@ public class ObjectHovering : MonoBehaviour
         if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit))
         {
             float minRange = 0.09f;
-            float maxRange = 0.1f; 
+            float maxRange = 0.1f;
 
             Collider[] colliderArray = Physics.OverlapSphere(hit.point, radius);
 
             bool objectInRange = false;
-
+            bool mouseHovering = false;
             foreach (Collider collider in colliderArray)
             {
-                if (collider.gameObject.CompareTag("TriggerObject"))
+                if (collider.gameObject.CompareTag("TriggerObject") && !collider.GetComponent<InteractClueManager>().isFinished)
                 {
                     float distance = Vector3.Distance(hit.point, collider.transform.position);
-
-                    if (distance >= minRange && distance <= maxRange )
+                    if (playerInteract.GetObjectPickHandler() == null) return;
+                    if (distance >= minRange && distance <= maxRange && playerInteract.GetObjectPickHandler().isPicked)
                     {
                         objectInRange = true;
-                        break; 
+                        break;
                     }
+                    if (distance <= 0.07f && playerInteract.GetObjectPickHandler().isPicked)
+                    {
+                        mouseHovering = true;
+                        break;
+                    }
+
+                    interactClueManager = collider.GetComponent<InteractClueManager>();
                 }
+
+
             }
 
             cursorHotspot = new Vector2(cursorTextureInRange.width / 2, cursorTextureInRange.height / 2);
@@ -54,18 +63,47 @@ public class ObjectHovering : MonoBehaviour
             if (objectInRange)
             {
                 if (!isSoundPlayed)
-                { 
-                cursorAudioClip.Play();
-                isSoundPlayed = true;
+                {
+                    cursorAudioClip.Play();
+                    isSoundPlayed = true;
                 }
-                //Cursor.SetCursor(cursorTextureInRange, cursorHotspot, CursorMode.Auto);
+
             }
             else
             {
                 isSoundPlayed = false;
-                //Cursor.SetCursor(cursorTextureOutRange, cursorHotspot, CursorMode.Auto);
+
             }
+            if (mouseHovering)
+            {
+
+                Cursor.SetCursor(cursorTextureInRange, cursorHotspot, CursorMode.Auto);
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    StartCoroutine(WordPicking(interactClueManager));
+                }
+            }
+            else
+            {
+                Cursor.SetCursor(cursorTextureOutRange, cursorHotspot, CursorMode.Auto);
+                Cursor.lockState = CursorLockMode.None;
+                mouseHovering = false;
+            }
+
         }
+
     }
-   
+    IEnumerator WordPicking(InteractClueManager interactClueManager)
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        playerInteract.GetObjectPickHandler().isMouseLocked = true;
+        interactClueManager.ClueIndication();
+        yield return new WaitForSeconds(1.8f);
+        Cursor.SetCursor(cursorTextureOutRange, cursorHotspot, CursorMode.Auto);
+        Cursor.lockState = CursorLockMode.None;
+        playerInteract.GetObjectPickHandler().isMouseLocked = false;
+        interactClueManager.isFinished = true;
+    }
+
 }

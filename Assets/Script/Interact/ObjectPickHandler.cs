@@ -37,16 +37,17 @@ public class ObjectPickHandler : MonoBehaviour
     [SerializeField] private GameObject XrayObject;
     [SerializeField] private KeyCode XrayToggle;
 
+    [HideInInspector] public bool isMouseLocked;
     private void Update()
     {
         ObjectHandler();
     }
 
     private void ObjectHandler()
-    { 
+    {
         if (playerInteract.GetObjectPickHandler() == this)
-        {  
-          
+        {
+
             objectCanvasGroup.alpha = isPicked ? 0 : 1;
             if (isbusy) return;
 
@@ -79,7 +80,7 @@ public class ObjectPickHandler : MonoBehaviour
         SwitchCam();
         isbusy = true;
         time = 0;
-       
+
         objectTransform = transform.position;
         objectRotation = transform.rotation;
         transform.parent = objectContainer.transform;
@@ -177,6 +178,7 @@ public class ObjectPickHandler : MonoBehaviour
     private void OnMouseDrag()
     {
         if (!isPicked) return;
+        if (isMouseLocked) return;
 
         if (isMovable)
         {
