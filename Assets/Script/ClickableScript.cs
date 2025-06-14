@@ -10,7 +10,7 @@ public class ClickableScript : MonoBehaviour, IPointerClickHandler
         if (eventData.button == PointerEventData.InputButton.Left)
         {
            
-            int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, Camera.main);
+            int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, null);
 
             if (linkIndex != -1)
             {
