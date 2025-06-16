@@ -3,7 +3,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObjectMoving : MonoBehaviour
-{   public enum ObjectType{ DogBed, DogBowl};
+{  
+    public enum ObjectType{ DogBed, DogBowl};
    [SerializeField] private ObjectType objectType;
 
     [SerializeField] private CanvasGroup objectCanvasGroup;
@@ -11,9 +12,11 @@ public class ObjectMoving : MonoBehaviour
 
     
     [SerializeField] private GameObject foodBowlEmpty, foodBowlFilled;
+    [SerializeField] private GameObject dialogueImages;
 
     private bool isCompleted = false;
-  
+    [HideInInspector]public bool canInteract = false;
+    private static bool canInteractWithBed = false;
     void Update()
     {
         if (playerInteract.ObjectMoving() == this)
@@ -22,20 +25,39 @@ public class ObjectMoving : MonoBehaviour
             {
                objectCanvasGroup.alpha = 1; 
             }
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.E) )
             {
                 if (isCompleted) return;
                 switch (objectType)
                 {
                     case ObjectType.DogBed:
-                        DogBedMoving();
+                        if (canInteractWithBed)
+                        {
+                            DogBedMoving();
+                        }
                         break;
+
                      case ObjectType.DogBowl:
-                        DogBowlFilling();
+                        if (!canInteract)
+                        {
+                            dialogueImages.SetActive(true);
+                            dialogueImages.transform.rotation = Quaternion.Euler(0, 44, 0);
+                            dialogueImages.transform.position = new Vector3(playerInteract.player.transform.position.x - 1.75f,
+                                                                            playerInteract.player.transform.position.y + 4.4f,
+                                                                            playerInteract.player.transform.position.z - 2);
+                            canInteract = true;
+                        }
+                        else
+                        {
+                            dialogueImages.SetActive(false);
+                            DogBowlFilling();
+                        }
+                       
                         break;
                 }
                 
             }
+            
         }
         else
         {
@@ -52,7 +74,9 @@ public class ObjectMoving : MonoBehaviour
     }
     void DogBedMoving()
     {
+       
         isCompleted = true;
+
         float objectMove = 1;
 
         float z = transform.position.z ;
@@ -66,5 +90,8 @@ public class ObjectMoving : MonoBehaviour
 
         foodBowlEmpty.SetActive(false);
         foodBowlFilled.SetActive(true);
+        canInteractWithBed = true;
+        canInteract = false;
+
     }
 }

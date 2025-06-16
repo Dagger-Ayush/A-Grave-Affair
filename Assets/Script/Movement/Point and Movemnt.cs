@@ -21,7 +21,7 @@ public class PointAndMovement : MonoBehaviour
     private Coroutine coroutine;
 
     public NavMeshAgent agent;
-    public Transform player;
+    
 
     [HideInInspector] public bool isMoving;
     private void Awake()

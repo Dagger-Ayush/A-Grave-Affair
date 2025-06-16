@@ -25,7 +25,17 @@ public class ClueManager : MonoBehaviour
 
         collectedClues.Add(clueText);
     }
-
+    public bool ClueCheck(string clueText)
+    {
+        if (collectedClues.Contains(clueText))
+        {
+        return true ;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public void ShowRelevantClue(PuzzleData currentPuzzle)
     {
         if (clueBox == null || clueTextPrefab == null || clueBoxContainer == null)

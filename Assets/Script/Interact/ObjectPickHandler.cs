@@ -1,15 +1,16 @@
 using System.Collections;
 using UnityEngine;
 using Unity.Cinemachine;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 public class ObjectPickHandler : MonoBehaviour
 {
-    public bool isMovable;
+  
+    private float time;
+
     private Vector3 offset;
     private Plane dragPlane;
-
-    [Header("Object Handling references")]
-    [HideInInspector] public bool isPicked;
 
     private Vector3 objectTransform;
     private Quaternion objectRotation;
@@ -17,27 +18,40 @@ public class ObjectPickHandler : MonoBehaviour
 
     [SerializeField] private Quaternion PickUpRotation;
 
-    public GameObject objectContainer;
-    public GameObject inspectionBackroundimage;
-    public Camera inspectionCamara;
-    public CinemachineCamera MainCam, FocusCam;
-    public PointAndMovement pointAndMovement;
-    public float rotationSensitivity;
-
+    [SerializeField] private ObjectPickReferences pickReferences;
+    private Camera inspectionCamara;
+    private KeyCode XrayToggle;
+   
     [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private CanvasGroup objectCanvasGroup;
-    [SerializeField] private CanvasGroup fadeImage;
 
-    private bool isbusy = false;
-    private float time;
+    public float rotationSensitivity = 4f;
 
-    [Header("X-ray references")]
     private bool isVision = false;
-    [SerializeField] private GameObject XrayCamara;
     [SerializeField] private GameObject XrayObject;
-    [SerializeField] private KeyCode XrayToggle;
 
     [HideInInspector] public bool isMouseLocked;
+    public bool isMovable;
+    [HideInInspector] public bool isPicked;
+
+    private bool isbusy = false;
+
+    [SerializeField]private float inspectionCamFov = 40;
+
+    [SerializeField]private bool isLighter = false;
+    private ObjectInteract objectInteract;
+    [SerializeField] private string clue;
+    private bool isClue;
+    private void Start()
+    {
+        if (isLighter)
+        {
+            objectInteract = GetComponent<ObjectInteract>();
+            objectInteract.enabled = false;
+        }
+        inspectionCamara = pickReferences.inspectionCamara;
+        XrayToggle = pickReferences.XrayToggle;
+    }
     private void Update()
     {
         ObjectHandler();
@@ -47,8 +61,8 @@ public class ObjectPickHandler : MonoBehaviour
     {
         if (playerInteract.GetObjectPickHandler() == this)
         {
-
             objectCanvasGroup.alpha = isPicked ? 0 : 1;
+
             if (isbusy) return;
 
             if (Input.GetKeyDown(KeyCode.E))
@@ -64,26 +78,29 @@ public class ObjectPickHandler : MonoBehaviour
             Avoid();
         }
 
-        if (isPicked && Input.GetKeyDown(XrayToggle))
+        if (isPicked && Input.GetKeyDown(pickReferences.XrayToggle))
         {
             if (!isVision)
                 XrayVisionEnable();
             else
                 XrayVisionDisable();
         }
+       
     }
 
     public IEnumerator ObjectPickUp()
     {
-        pointAndMovement.agent.SetDestination(pointAndMovement.player.transform.position);
-        pointAndMovement.player.transform.LookAt(transform.position);
-        SwitchCam();
+        
+        playerInteract.player.transform.LookAt(transform.position);
+
         isbusy = true;
         time = 0;
+        isPicked = true;
+        pickReferences.SwitchCam();
 
         objectTransform = transform.position;
         objectRotation = transform.rotation;
-        transform.parent = objectContainer.transform;
+        transform.parent = pickReferences.objectContainer.transform;
 
         while (time < 1f)
         {
@@ -94,11 +111,11 @@ public class ObjectPickHandler : MonoBehaviour
 
         transform.localPosition = Vector3.zero;
         transform.rotation = PickUpRotation;
-
-        isPicked = true;
+        pickReferences.FocusCam.Lens.FieldOfView = inspectionCamFov;
+  
 
         yield return new WaitForSeconds(0.45f);
-        inspectionBackroundimage.SetActive(true);
+        pickReferences. inspectionBackroundimage.SetActive(true);
         yield return new WaitForSeconds(0.3f);
         isbusy = false;
     }
@@ -106,10 +123,10 @@ public class ObjectPickHandler : MonoBehaviour
     public IEnumerator ObjectDrop()
     {
         XrayVisionDisable();
-        inspectionBackroundimage.SetActive(false);
+        pickReferences.inspectionBackroundimage.SetActive(false);
 
         transform.rotation = objectRotation;
-        SwitchCam();
+        pickReferences.SwitchCam();
         isbusy = true;
         time = 1;
 
@@ -125,40 +142,30 @@ public class ObjectPickHandler : MonoBehaviour
         transform.localPosition = objectTransform;
 
         isPicked = false;
+
+        if (ClueManager.Instance.ClueCheck(clue))
+        {
+            enabled = false;
+            objectInteract.enabled = true;
+        }
         yield return new WaitForSeconds(1);
         isbusy = false;
     }
 
-    private void SwitchCam()
-    {
-        if (FocusCam.Priority == 0)
-        {
-            MainCam.Priority = 0;
-            FocusCam.Priority = 1;
-            MainCam.Lens.ModeOverride = LensSettings.OverrideModes.Perspective;
-            FocusCam.Lens.ModeOverride = LensSettings.OverrideModes.Perspective;
-        }
-        else
-        {
-            MainCam.Priority = 1;
-            FocusCam.Priority = 0;
-            MainCam.Lens.ModeOverride = LensSettings.OverrideModes.Orthographic;
-            FocusCam.Lens.ModeOverride = LensSettings.OverrideModes.Orthographic;
-        }
-    }
+   
 
     private void XrayVisionEnable()
     {
         isVision = true;
         if (XrayObject != null) XrayObject.SetActive(true);
-        XrayCamara.SetActive(true);
+        pickReferences.XrayCamara.SetActive(true);
     }
 
     private void XrayVisionDisable()
     {
         isVision = false;
         if (XrayObject != null) XrayObject.SetActive(false);
-        XrayCamara.SetActive(false);
+        pickReferences. XrayCamara.SetActive(false);
     }
 
     private void OnMouseDown()

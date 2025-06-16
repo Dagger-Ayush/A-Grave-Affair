@@ -7,8 +7,7 @@ public class ObjectInteract : MonoBehaviour
     [Header("Dialogues Interaction reference's")]
     [SerializeField] private CanvasGroup objectCanvasGroup;
     [SerializeField] private PlayerInteract playerInteract;
-  
-    [SerializeField] private Transform player;
+
 
     [Header("dialogue references")]
     [SerializeField] private GameObject[] dialogueImages;
@@ -19,6 +18,17 @@ public class ObjectInteract : MonoBehaviour
     private Vector2 turn;
 
    [SerializeField] private bool isTablet;// the player need not need to press E to enable Dialog
+
+    private ObjectPickHandler pickHandler;
+    public bool isCigarette;
+    private void Awake()
+    {
+        if (isCigarette)
+        {
+            pickHandler = GetComponent<ObjectPickHandler>();
+            pickHandler.enabled = false;
+        }
+    }
     private void Update()
     {
        
@@ -35,7 +45,17 @@ public class ObjectInteract : MonoBehaviour
         {
             Avoid();
         }
-        
+        if (interacting == true)
+        {
+            if (dialogueImages[currentImageIndex].tag == "Screen")
+            {
+                dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
+                dialogueImages[currentImageIndex].transform.position = new Vector3(playerInteract.player.transform.position.x - 1.75f,
+                                                                                   playerInteract.player.transform.position.y + 4.4f,
+                                                                                   playerInteract.player.transform.position.z - 2);
+            }
+         
+        }
     }
     private void ObjectHandler()
     {
@@ -56,7 +76,6 @@ public class ObjectInteract : MonoBehaviour
         {
             if (!interacting && currentImageIndex < dialogueImages.Length)
             {
-              
                 StartInteraction();
                 gameObject.GetComponent<Renderer>().enabled = false;
             }
@@ -67,12 +86,11 @@ public class ObjectInteract : MonoBehaviour
     {
         interacting = true;
         currentImageIndex = 0;
-
+        playerInteract.player.transform.LookAt(transform.position);
         if (dialogueImages.Length > 0)
         {
-            dialogueImages[currentImageIndex].SetActive(true);
-            
            
+            dialogueImages[currentImageIndex].SetActive(true);
         }
     }
 
@@ -84,13 +102,18 @@ public class ObjectInteract : MonoBehaviour
         dialogueImages[currentImageIndex].SetActive(false);
         currentImageIndex++;
 
-        if (currentImageIndex < dialogueImages.Length)
+        if (currentImageIndex < dialogueImages.Length )
         {
-           
             dialogueImages[currentImageIndex].SetActive(true);
         }
         else
         {
+            
+                if (isCigarette )
+                {
+                    pickHandler.enabled = true;
+                    enabled = false;
+                }
             
             interacting = false;
             if (isTablet)

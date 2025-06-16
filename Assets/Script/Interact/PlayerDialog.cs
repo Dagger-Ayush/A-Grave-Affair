@@ -75,14 +75,5 @@ public class PlayerDialog : MonoBehaviour
       
 
     }
-    private void DialogAndMovementHandler()
-    {
-
-
-        if (currentImageIndex == 2)
-        {
-
-        }
-    }
-
+  
 }

@@ -7,7 +7,7 @@ public class PlayerInteract : MonoBehaviour
     [HideInInspector] public bool isPointAndMovementEnabled;
     private PointAndMovement pointAndMovement;
     private PlayerDialog playerDialog;
-
+    public Transform player;
 
     private void Start()
     {
@@ -21,11 +21,14 @@ public class PlayerInteract : MonoBehaviour
 
         if (isPointAndMovementEnabled)
         {
+            pointAndMovement.agent.SetDestination(player.transform.position);
+           
             pointAndMovement.enabled = false;
         }
         else if (!isPointAndMovementEnabled && !playerDialog.isInteraction)
         {
             pointAndMovement.enabled = true;
+            
         }
 
 
@@ -41,12 +44,12 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectInteract objectInteract))
             {
-                if (objectInteract.interacting)
+                if (objectInteract.interacting && objectInteract.enabled == true)
                 {
                     isPointAndMovementEnabled = true;
-
+                  
                 }
-                else
+                else if (!objectInteract.interacting && objectInteract.enabled == true)
                 {
                     isPointAndMovementEnabled = false;
                 }
@@ -66,12 +69,12 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
             {
-                if (objectPickHandler.isPicked)
+                if (objectPickHandler.isPicked && objectPickHandler.enabled == true)
                 {
                     isPointAndMovementEnabled = true;
-
+                   
                 }
-                else
+                else if (!objectPickHandler.isPicked && objectPickHandler.enabled ==true)
                 {
                     isPointAndMovementEnabled = false;
                 }
@@ -91,6 +94,15 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectMoving objectMoving))
             {
+                if (objectMoving.canInteract)
+                {
+                    isPointAndMovementEnabled = true;
+
+                }
+                else
+                {
+                    isPointAndMovementEnabled = false;
+                }
                 return objectMoving;
             }
 
