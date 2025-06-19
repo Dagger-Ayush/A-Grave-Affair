@@ -16,7 +16,7 @@ public class ObjectPickHandler : MonoBehaviour
     private Quaternion objectRotation;
     private Vector2 turn;
 
-    [SerializeField] private Quaternion PickUpRotation;
+    [SerializeField] private Quaternion PickUpRotation ;
 
     [SerializeField] private ObjectPickReferences pickReferences;
     private Camera inspectionCamara;
@@ -143,10 +143,13 @@ public class ObjectPickHandler : MonoBehaviour
 
         isPicked = false;
 
-        if (ClueManager.Instance.ClueCheck(clue))
+        if (isLighter)
         {
-            enabled = false;
-            objectInteract.enabled = true;
+            if (ClueManager.Instance.ClueCheck(clue))
+            {
+                enabled = false;
+                objectInteract.enabled = true;
+            }
         }
         yield return new WaitForSeconds(1);
         isbusy = false;

@@ -16,13 +16,17 @@ public class CursorManager : MonoBehaviour
         SetNormalCursor();
     }
 
+  
     public void SetNormalCursor()
     {
-        Cursor.SetCursor(normalCursor, hotSpot, CursorMode.Auto);
+            Cursor.SetCursor(normalCursor, hotSpot, CursorMode.Auto);
+       
     }
 
     public void SetClueCursor()
     {
-        Cursor.SetCursor(clueCursor, hotSpot, CursorMode.Auto);
+       
+            Cursor.SetCursor(clueCursor, hotSpot, CursorMode.Auto);
+        
     }
 }
