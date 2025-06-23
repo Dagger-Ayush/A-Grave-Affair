@@ -6,7 +6,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 {
     private TextMeshProUGUI text;
     private Camera uiCamera;
-
+    
     private void Awake()
     {
         text = GetComponent<TextMeshProUGUI>();
@@ -15,30 +15,40 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        
         StartCoroutine(CheckHover());
     }
-
+ 
     public void OnPointerExit(PointerEventData eventData)
     {
+       
         CursorManager.Instance.SetNormalCursor();
+
         StopAllCoroutines();
+            
     }
 
     private System.Collections.IEnumerator CheckHover()
     {
         while (true)
         {
+           
             int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, uiCamera);
+           
             if (linkIndex != -1)
             {
+                ObjectHovering.instance.isRunning = true;
                 CursorManager.Instance.SetClueCursor();
+              
             }
             else
             {
+                ObjectHovering.instance.isRunning = false;
                 CursorManager.Instance.SetNormalCursor();
             }
             yield return null;
         }
+        
     }
 
     private Camera GetCanvasCamera()
@@ -48,4 +58,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             return null;
         return canvas != null && canvas.worldCamera != null ? canvas.worldCamera : Camera.main;
     }
+
+   
 }

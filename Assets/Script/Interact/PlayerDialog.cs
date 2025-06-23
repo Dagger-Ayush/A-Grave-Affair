@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Cinemachine.Samples;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class PlayerDialog : MonoBehaviour
     void Start()
     {
         pointAndMovement = GetComponent<PointAndMovement>();
-        StartInteraction();
+        StartCoroutine(StartInteraction());
     }
 
     // Update is called once per frame
@@ -29,7 +30,7 @@ public class PlayerDialog : MonoBehaviour
 
         if (currentImageIndex <= 1)
         {
-            //dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
+            dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
             dialogueImages[currentImageIndex].transform.position = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
             pointAndMovement.enabled = false;
         }
@@ -40,8 +41,9 @@ public class PlayerDialog : MonoBehaviour
         }
 
     }
-    private void StartInteraction()
+    private IEnumerator StartInteraction()
     {   
+        yield return new WaitForSeconds(1.5f);
         isInteraction = true;
         currentImageIndex = 0;
 

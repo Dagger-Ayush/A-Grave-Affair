@@ -60,7 +60,12 @@ public class PointAndMovement : MonoBehaviour
             {
                 isMoving = true;
             }
-            agent.SetDestination(hit.point);
+
+            agent.ResetPath();
+            if (Vector3.Distance(agent.destination,hit.point) > 0.1f)
+            {
+                agent.SetDestination(hit.point);
+            }
             transform.LookAt(hit.point);
         }
 

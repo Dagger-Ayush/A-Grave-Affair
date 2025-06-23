@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - TriggerObject
   - Screen
+  - Ground
   layers:
   - Default
   - TransparentFX

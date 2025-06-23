@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class ObjectHovering : MonoBehaviour
 {
+    public static ObjectHovering instance;
     float radius = 0.2f;
     [SerializeField] private PlayerInteract playerInteract;
     //[SerializeField] private Texture2D cursorTextureInRange;
@@ -16,10 +17,15 @@ public class ObjectHovering : MonoBehaviour
     private InteractClueManager interactClueManager; // for internal Use
     private Vector2 cursorHotspot;
 
-    private bool clueGiven;
-    void Update()
+
+    [HideInInspector] public bool isRunning = false; //maintaining the balance between ObjectHowering and CursorHoverOverClue cursor changing
+    private void Awake()
     {
 
+        instance = this;
+    }
+    void Update()
+    {
         ObjectDectecting();
 
     }
@@ -27,7 +33,7 @@ public class ObjectHovering : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-        if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit))
+        if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit)  )
         {
 
             Collider[] colliderArray = Physics.OverlapSphere(hit.point, radius);
@@ -50,19 +56,20 @@ public class ObjectHovering : MonoBehaviour
                     if (playerInteract.GetObjectPickHandler() == null) return;
 
 
-                    if ( distance <= maxRange && playerInteract.GetObjectPickHandler().isPicked)
+                    if ( distance <= maxRange && playerInteract.GetObjectPickHandler().isPicked )
                     {
-                        
-                        if (distance <= collider.GetComponent<InteractClueManager>().HoveringRange && playerInteract.GetObjectPickHandler().isPicked)
+                        if (distance <= collider.GetComponent<InteractClueManager>().HoveringRange )
                         {
+
                             mouseHovering = true;
-                            break;
+                           
                         }
+
                         objectInRange = true;
                         break;
                     }
 
-                   
+                    
 
 
                 }
@@ -71,42 +78,42 @@ public class ObjectHovering : MonoBehaviour
             }
 
             //cursorHotspot = new Vector2(cursorTextureInRange.width / 2, cursorTextureInRange.height / 2);
-
-            if (objectInRange && !clueGiven)
+            if ( !isRunning) 
             {
-                
-                if (!isSoundPlayed)
+                if (objectInRange)
                 {
-                    cursorAudioClip.Play();
 
-                    StartCoroutine(Delay());
+                    if (!isSoundPlayed)
+                    {
+                        cursorAudioClip.Play();
+
+                        StartCoroutine(Delay());
+                    }
+                }
+
+                if (mouseHovering)
+                {
+                    CursorManager.Instance.SetClueCursor();
+                    // Cursor.SetCursor(cursorTextureInRange, cursorHotspot, CursorMode.Auto);
+
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        StartCoroutine(WordPicking(interactClueManager));
+                    }
+                }
+                else
+                {
+
+                    CursorManager.Instance.SetNormalCursor();
+                    //Cursor.SetCursor(cursorTextureOutRange, cursorHotspot, CursorMode.Auto);
+                    mouseHovering = false;
+
                 }
             }
-           
-            if (mouseHovering)
-            {
-               // CursorManager.Instance.SetClueCursor();
-                // Cursor.SetCursor(cursorTextureInRange, cursorHotspot, CursorMode.Auto);
-
-                if (Input.GetMouseButtonDown(0))
-                {
-                    StartCoroutine(WordPicking(interactClueManager));
-                }
-            }
-            else
-            {
-
-               // CursorManager.Instance.SetNormalCursor();
-                //Cursor.SetCursor(cursorTextureOutRange, cursorHotspot, CursorMode.Auto);
-                mouseHovering = false;
-            }
-
-
         }
     }
     IEnumerator WordPicking(InteractClueManager interactClueManager)
     {
-        clueGiven = true;
         Cursor.lockState = CursorLockMode.Locked;
         playerInteract.GetObjectPickHandler().isMouseLocked = true;
         interactClueManager.ClueIndication();

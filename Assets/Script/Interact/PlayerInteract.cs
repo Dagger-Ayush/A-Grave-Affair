@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
-    [SerializeField] private float interactRange = 3f;
+    [SerializeField] private float interactRange = 1f;
     [HideInInspector] public bool isPointAndMovementEnabled;
     private PointAndMovement pointAndMovement;
     private PlayerDialog playerDialog;

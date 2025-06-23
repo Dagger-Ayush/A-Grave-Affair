@@ -39,15 +39,23 @@ public class ObjectPickHandler : MonoBehaviour
     [SerializeField]private float inspectionCamFov = 40;
 
     [SerializeField]private bool isLighter = false;
+    [SerializeField]private bool checkClue = false;
+
+
     private ObjectInteract objectInteract;
-    [SerializeField] private string clue;
-    private bool isClue;
+    [SerializeField] private string[] clue;
+ 
+
     private void Start()
-    {
-        if (isLighter)
+    { 
+        if (checkClue)
         {
             objectInteract = GetComponent<ObjectInteract>();
             objectInteract.enabled = false;
+            if (isLighter)
+            {
+                enabled = false;
+            }
         }
         inspectionCamara = pickReferences.inspectionCamara;
         XrayToggle = pickReferences.XrayToggle;
@@ -143,13 +151,25 @@ public class ObjectPickHandler : MonoBehaviour
 
         isPicked = false;
 
-        if (isLighter)
+        if (checkClue)
         {
-            if (ClueManager.Instance.ClueCheck(clue))
+            int count = 0;
+
+            foreach (string clues in clue)
+            {
+                if (ClueManager.Instance.ClueCheck(clues))
+                {
+                    count++;
+                   
+                }
+            }
+            if(count == clue.Length)
             {
                 enabled = false;
                 objectInteract.enabled = true;
+                objectInteract.StartInteraction();
             }
+
         }
         yield return new WaitForSeconds(1);
         isbusy = false;

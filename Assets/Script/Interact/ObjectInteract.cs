@@ -21,7 +21,9 @@ public class ObjectInteract : MonoBehaviour
 
     private ObjectPickHandler pickHandler;
     public bool isCigarette;
-    private void Awake()
+   
+
+    private void Start()
     {
         if (isCigarette)
         {
@@ -33,8 +35,9 @@ public class ObjectInteract : MonoBehaviour
     {
        
         if (playerInteract.GetObjectInteract() == this)
-        {  
-            if (objectCanvasGroup != null)
+        {
+           
+            if (objectCanvasGroup != null )
             {
                 objectCanvasGroup.alpha = interacting ? 0 : 1;
             }
@@ -45,14 +48,15 @@ public class ObjectInteract : MonoBehaviour
         {
             Avoid();
         }
+       
         if (interacting == true)
         {
             if (dialogueImages[currentImageIndex].tag == "Screen")
             {
                 dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
                 dialogueImages[currentImageIndex].transform.position = new Vector3(playerInteract.player.transform.position.x - 1.75f,
-                                                                                   playerInteract.player.transform.position.y + 4.4f,
-                                                                                   playerInteract.player.transform.position.z - 2);
+                                                                                  playerInteract.player.transform.position.y + 4.4f,
+                                                                                  playerInteract.player.transform.position.z - 2);
             }
          
         }
@@ -80,13 +84,17 @@ public class ObjectInteract : MonoBehaviour
                 gameObject.GetComponent<Renderer>().enabled = false;
             }
            
-        }
+        } 
+        
     }
-    private void StartInteraction()
+    public void StartInteraction()
     {
         interacting = true;
         currentImageIndex = 0;
-        playerInteract.player.transform.LookAt(transform.position);
+       
+            playerInteract.player.transform.LookAt(transform.position);
+        
+       
         if (dialogueImages.Length > 0)
         {
            
@@ -94,7 +102,7 @@ public class ObjectInteract : MonoBehaviour
         }
     }
 
-    private void NextDialogueImage()
+    public void NextDialogueImage()
     {
         if (dialogueImages.Length == 0 )
             return;
@@ -108,18 +116,20 @@ public class ObjectInteract : MonoBehaviour
         }
         else
         {
-            
-                if (isCigarette )
+            interacting = false;
+
+           
+            if (isCigarette)
                 {
                     pickHandler.enabled = true;
                     enabled = false;
                 }
-            
-            interacting = false;
+
             if (isTablet)
             {
                 Destroy(gameObject, 0.1f);// using delay for Movment and point and click to enable
             }
+           
         }
     }
 
@@ -140,7 +150,7 @@ public class ObjectInteract : MonoBehaviour
         }
        
     }
-
+    
     
     
 }

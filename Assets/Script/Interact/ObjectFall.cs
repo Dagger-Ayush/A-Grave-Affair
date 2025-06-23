@@ -1,28 +1,27 @@
-using System.Collections;
 using UnityEngine;
 
-public class ObjectFall : MonoBehaviour
+public class GroundCheck : MonoBehaviour
 {
+    public Transform groundCheck;       // Empty GameObject at the base of the dustbin
+    public float checkDistance = 0.2f;  // How far to check
+    public LayerMask groundMask;        // Assign "Ground" layer in inspector
+
+    private bool isGrounded;
     private Rigidbody rb;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
-
-    private void OnCollisionEnter(Collision collision)
+    void Update()
     {
-        if (collision.gameObject.CompareTag("Player"))
+        isGrounded = Physics.Raycast(groundCheck.position, Vector3.down, checkDistance, groundMask);
+
+        Debug.DrawRay(groundCheck.position, Vector3.down * checkDistance, isGrounded ? Color.green : Color.red);
+
+        if (isGrounded)
         {
-
-            StartCoroutine(Delay());
-            
+            rb.isKinematic = true;
         }
-    }
-    private IEnumerator Delay()
-    {
-        yield return new WaitForSeconds(1);
-        rb.isKinematic = true;
     }
 }

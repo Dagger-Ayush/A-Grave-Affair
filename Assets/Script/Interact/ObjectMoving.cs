@@ -17,11 +17,13 @@ public class ObjectMoving : MonoBehaviour
     private bool isCompleted = false;
     [HideInInspector]public bool canInteract = false;
     private static bool canInteractWithBed = false;
+
+    [SerializeField]private ObjectPickHandler objectPickHandler;
     void Update()
     {
-        if (playerInteract.ObjectMoving() == this)
+        if (playerInteract.ObjectMoving() == this && !isCompleted)
         {
-            if (objectCanvasGroup != null && !isCompleted)
+            if (objectCanvasGroup != null )
             {
                objectCanvasGroup.alpha = 1; 
             }
@@ -74,7 +76,11 @@ public class ObjectMoving : MonoBehaviour
     }
     void DogBedMoving()
     {
-       
+
+        DialogSystem dialogSystem = GetComponent<DialogSystem>();
+
+        dialogSystem.enabled = true;
+
         isCompleted = true;
 
         float objectMove = 1;
@@ -82,7 +88,8 @@ public class ObjectMoving : MonoBehaviour
         float z = transform.position.z ;
         
         transform.position = new Vector3(transform.position.x, transform.position.y, z -= objectMove);
-        
+
+      
     }
     void DogBowlFilling()
     {
