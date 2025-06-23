@@ -28,10 +28,13 @@ public class TabletManager : MonoBehaviour
 
     public PointAndMovement pointAndMovement;
     private PuzzleData currentDisplayedPuzzle = null;
+    [SerializeField] private Button currentPuzzleButton;
 
+    
     private void Start()
     {
         SetY(hiddenY);
+
     }
     private void Update()
     {
@@ -54,9 +57,11 @@ public class TabletManager : MonoBehaviour
         float endY = show ? visibleY : hiddenY;
         float elapsed = 0f;
 
-        if(show && pointAndMovement != null )
+        if (show && pointAndMovement != null)
+        {
             pointAndMovement.enabled = false;
-
+            Debug.Log("Disabled player movement");
+        }
         while (elapsed < slideDuration)
         {
             elapsed += Time.unscaledDeltaTime;
@@ -80,10 +85,10 @@ public class TabletManager : MonoBehaviour
         tabletPanel.anchoredPosition = pos;
     }
 
-    public void OpenPuzzle(PuzzleData puzzle)
+    public void OpenPuzzle(PuzzleData puzzle, Button clickedButton)
     {   
         validator.currentPuzzle = puzzle;
-
+        validator.currentPuzzleButton = clickedButton;
         sentenceText.text = puzzle.sentenceTemplate;
 
         Debug.Log("Opening puzzle: " + puzzle.name);
@@ -102,7 +107,7 @@ public class TabletManager : MonoBehaviour
        if(!puzzlePanel.activeSelf)
         {
             currentDisplayedPuzzle = puzzle;
-            OpenPuzzle(puzzle);
+            OpenPuzzle(puzzle, currentPuzzleButton);
             ShowClues(puzzle);
             puzzlePanel.SetActive(true);
 
@@ -124,7 +129,7 @@ public class TabletManager : MonoBehaviour
         else
         {
             currentDisplayedPuzzle = puzzle;
-            OpenPuzzle(puzzle);
+            OpenPuzzle(puzzle, currentPuzzleButton);
             ShowClues(puzzle);
 
             if (validator.feedbackText != null)

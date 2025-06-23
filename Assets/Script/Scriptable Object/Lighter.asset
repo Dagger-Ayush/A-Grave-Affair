@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f38292b03a8bae48b6dddaa349b61bf, type: 3}
   m_Name: Lighter
   m_EditorClassIdentifier: 
-  sentenceTemplate: The _ was taken away by _ because he has an _ with _ .
+  sentenceTemplate: 'The _ is missing. It was _ by big _ as he is _ with _ things
+    . '
   correctAnswers:
   - Lighter
+  - Stolen
   - Fred
-  - Obsession
-  - Shiny Things
+  - Obsessed
+  - Shiny
   requiredClues:
-  - Shiny Things
+  - Shiny
   - Lighter
   - Fred
-  - Obsession
-  - Photo
-  - Frame
-  - Food
+  - Obsessed
+  - Toy
+  - Case
+  - Stolen

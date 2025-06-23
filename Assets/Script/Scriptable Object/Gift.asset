@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f38292b03a8bae48b6dddaa349b61bf, type: 3}
-  m_Name: Photo Frame
+  m_Name: Gift
   m_EditorClassIdentifier: 
-  sentenceTemplate: The _ was gifted by _ as a gift for the _ and we had it _ .
+  sentenceTemplate: The Lighter was a _ from _ on their _ .
   correctAnswers:
-  - Photo
+  - Gift
   - Mrs. Marrow
-  - anniversary
-  - framed
-  clues: []
+  - Anniversary
+  requiredClues:
+  - Gift
+  - Mrs. Marrow
+  - Anniversary

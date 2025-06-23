@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class PuzzleValidator : MonoBehaviour
     public TabletManager tabletManager;
     public TMP_Text feedbackText;
 
+    public Button currentPuzzleButton;
 
     //void Update()
     //{
@@ -67,6 +69,23 @@ public class PuzzleValidator : MonoBehaviour
         {
             feedbackText.text = "Sentence is filled correctly.";
             Debug.Log("Puzzle is Correct");
+
+            foreach (var zone in dropZones)
+            {
+                if (zone != null)
+                    zone.enabled = false;
+            }
+
+            if (currentPuzzleButton != null)
+            {
+                //Animator animator = currentPuzzleButton.GetComponent<Animator>();
+                //if (animator != null)
+                //{
+                //    animator.SetTrigger("FadeOut"); // Or any trigger you define
+                //}
+                Debug.Log("Destroying puzzle button in 3 seconds: " + currentPuzzleButton.name);
+                StartCoroutine(DestroyButtonAfterDelay(currentPuzzleButton.gameObject, 3f));
+            }
         }
         else if (incorrectCount <= 2)
         {
@@ -79,5 +98,12 @@ public class PuzzleValidator : MonoBehaviour
             Debug.Log("The sentence is filled incorrectly.");
         }
     }
+
+    private IEnumerator DestroyButtonAfterDelay(GameObject buttonObject, float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay); // Use unscaled time if UI shown in pause
+        Destroy(buttonObject);
+    }
+
 }
 
