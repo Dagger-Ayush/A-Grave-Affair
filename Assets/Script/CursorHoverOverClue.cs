@@ -34,7 +34,17 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         {
            
             int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, uiCamera);
-           
+            if (Input.GetMouseButtonDown(0))
+            {
+
+            if (linkIndex != -1)
+            {
+                var linkInfo = text.textInfo.linkInfo[linkIndex];
+                var clueId = linkInfo.GetLinkID();
+                ClueManager.Instance.AddClue(clueId);
+               
+            }
+            }
             if (linkIndex != -1)
             {
                 ObjectHovering.instance.isRunning = true;
