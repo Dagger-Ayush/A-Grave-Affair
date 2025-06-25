@@ -6,7 +6,9 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 {
     private TextMeshProUGUI text;
     private Camera uiCamera;
-    
+    private Coroutine hoverRoutine;
+    private bool isClueCursorActive = false;
+
     private void Awake()
     {
         text = GetComponent<TextMeshProUGUI>();
@@ -15,50 +17,64 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        
-        StartCoroutine(CheckHover());
+        if (hoverRoutine == null)
+            hoverRoutine = StartCoroutine(CheckHover());
     }
- 
+
     public void OnPointerExit(PointerEventData eventData)
     {
-       
-        CursorManager.Instance.SetNormalCursor();
+        StopHover();
+    }
 
-        StopAllCoroutines();
-            
+    private void StopHover()
+    {
+        if (hoverRoutine != null)
+        {
+            StopCoroutine(hoverRoutine);
+            hoverRoutine = null;
+        }
+
+        if (isClueCursorActive)
+        {
+            CursorManager.Instance.SetNormalCursor();
+            isClueCursorActive = false;
+        }
+
+        ObjectHovering.instance.isRunning = false;
+    }
+
+    public void ResetClueCursor()
+    {
+        StopHover();
     }
 
     private System.Collections.IEnumerator CheckHover()
     {
         while (true)
         {
-           
             int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, uiCamera);
-            if (Input.GetMouseButtonDown(0))
-            {
 
             if (linkIndex != -1)
             {
-                var linkInfo = text.textInfo.linkInfo[linkIndex];
-                var clueId = linkInfo.GetLinkID();
-                ClueManager.Instance.AddClue(clueId);
-               
-            }
-            }
-            if (linkIndex != -1)
-            {
-                ObjectHovering.instance.isRunning = true;
-                CursorManager.Instance.SetClueCursor();
-              
+                if (!isClueCursorActive)
+                {
+                    isClueCursorActive = true;
+                    ObjectHovering.instance.isRunning = true;
+                    CursorManager.Instance.SetClueCursor();
+                }
             }
             else
             {
-                ObjectHovering.instance.isRunning = false;
-                CursorManager.Instance.SetNormalCursor();
+                if (isClueCursorActive)
+                {
+                    isClueCursorActive = false;
+                    ObjectHovering.instance.isRunning = false;
+                    CursorManager.Instance.SetNormalCursor();
+                }
             }
+
             yield return null;
         }
-        
     }
 
     private Camera GetCanvasCamera()
@@ -68,6 +84,4 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             return null;
         return canvas != null && canvas.worldCamera != null ? canvas.worldCamera : Camera.main;
     }
-
-   
 }
