@@ -7,4 +7,6 @@ public class PuzzleData : ScriptableObject
     [TextArea] public string sentenceTemplate;
     public List<string> correctAnswers;
     public List<string> requiredClues;
+
+    public bool isCompleted = false;
 }

@@ -15,30 +15,27 @@ public class TabletManager : MonoBehaviour
 
     public GameObject puzzlePanel;
     public Transform sentenceContainer;
-    //public GameObject cluePrefab;
     public Transform clueContainer;
     public GameObject clueBox;
     public GameObject dropZonePrefab;
     public GameObject wordPrefab;
     public PuzzleValidator validator;
-    public List<PuzzleData> puzzles;
+    //public List<PuzzleData> puzzles;
     public TMP_Text sentenceText;
     public RectTransform sentencePanel;
     public float maxRowWidth = 250f;
 
     public PointAndMovement pointAndMovement;
+    public PlayerInteract playerInteract;
     private PuzzleData currentDisplayedPuzzle = null;
-    [SerializeField] private Button currentPuzzleButton;
-
     
     private void Start()
     {
         SetY(hiddenY);
-
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) && playerInteract.isPointAndMovementEnabled == false)
         {
             isOpen = !isOpen;
             StopAllCoroutines();
@@ -60,6 +57,7 @@ public class TabletManager : MonoBehaviour
         if (show && pointAndMovement != null)
         {
             pointAndMovement.enabled = false;
+            playerInteract.enabled = false;
             Debug.Log("Disabled player movement");
         }
         while (elapsed < slideDuration)
@@ -74,8 +72,11 @@ public class TabletManager : MonoBehaviour
 
         Time.timeScale = show ? 0f : 1f;
 
-        if(!show && pointAndMovement != null )
+        if (!show && pointAndMovement != null)
+        {
             pointAndMovement.enabled = true;
+            playerInteract.enabled = true;
+        }
     }
 
     void SetY(float y)
@@ -85,10 +86,17 @@ public class TabletManager : MonoBehaviour
         tabletPanel.anchoredPosition = pos;
     }
 
-    public void OpenPuzzle(PuzzleData puzzle, Button clickedButton)
+    public void OpenPuzzle(PuzzleData puzzle)
     {   
         validator.currentPuzzle = puzzle;
-        validator.currentPuzzleButton = clickedButton;
+
+        if(puzzle.isCompleted)
+        {
+            DisplayCompletedSentence(puzzle);
+            clueBox.SetActive(false);
+            return;
+        }
+        
         sentenceText.text = puzzle.sentenceTemplate;
 
         Debug.Log("Opening puzzle: " + puzzle.name);
@@ -107,7 +115,7 @@ public class TabletManager : MonoBehaviour
        if(!puzzlePanel.activeSelf)
         {
             currentDisplayedPuzzle = puzzle;
-            OpenPuzzle(puzzle, currentPuzzleButton);
+            OpenPuzzle(puzzle);
             ShowClues(puzzle);
             puzzlePanel.SetActive(true);
 
@@ -129,7 +137,7 @@ public class TabletManager : MonoBehaviour
         else
         {
             currentDisplayedPuzzle = puzzle;
-            OpenPuzzle(puzzle, currentPuzzleButton);
+            OpenPuzzle(puzzle);
             ShowClues(puzzle);
 
             if (validator.feedbackText != null)
@@ -203,5 +211,57 @@ public class TabletManager : MonoBehaviour
         fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
         return row;
+    }
+
+    public void DisplayCompletedSentence(PuzzleData puzzle)
+    {
+        // Clear previous sentence
+        foreach (Transform child in sentencePanel)
+            Destroy(child.gameObject);
+
+        GameObject currentRow = CreateNewRow();
+        float rowWidth = 0f;
+
+        string[] tokens = puzzle.sentenceTemplate.Split(' ');
+        int clueIndex = 0;
+
+        foreach (string token in tokens)
+        {
+            GameObject element;
+
+            if (token == "_" && clueIndex < puzzle.correctAnswers.Count)
+            {
+                // Create clue word prefab for the correct answer
+                element = Instantiate(wordPrefab);
+                var text = element.GetComponentInChildren<TMP_Text>();
+                if (text != null)
+                    text.text = puzzle.correctAnswers[clueIndex];
+                clueIndex++;
+            }
+            else
+            {
+                // Regular word
+                element = Instantiate(wordPrefab);
+                var text = element.GetComponentInChildren<TMP_Text>();
+                if (text != null)
+                    text.text = token;
+            }
+
+            // Fit into current row
+            RectTransform rect = element.GetComponent<RectTransform>();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+            float elementWidth = rect.rect.width;
+
+            if (rowWidth + elementWidth > maxRowWidth)
+            {
+                currentRow = CreateNewRow();
+                rowWidth = 0f;
+            }
+
+            element.transform.SetParent(currentRow.transform, false);
+            rowWidth += elementWidth;
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(sentencePanel);
     }
 }

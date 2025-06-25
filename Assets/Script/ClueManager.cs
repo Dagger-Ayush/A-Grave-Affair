@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 using TMPro;
+using UnityEngine;
 
 public class ClueManager : MonoBehaviour
 {
@@ -63,5 +64,13 @@ public class ClueManager : MonoBehaviour
 
         if (clueBox != null && !clueBox.activeSelf)
             clueBox.SetActive(true);
+    }
+    public void RemoveUsedClues(List<string> clues)
+    {
+        foreach (string clue in clues)
+        {
+            string normalized = clue.Trim().ToLower();
+            collectedClues.RemoveAll(c => c.Trim().ToLower() == normalized);
+        }
     }
 }

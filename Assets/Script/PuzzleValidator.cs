@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,8 +11,12 @@ public class PuzzleValidator : MonoBehaviour
     public List<DropZone> dropZones;
     public TabletManager tabletManager;
     public TMP_Text feedbackText;
+    public List<PuzzleData> allPuzzles;
 
-    public Button currentPuzzleButton;
+    private void Start()
+    {
+        ResetPuzzleCompletion();
+    }
 
     //void Update()
     //{
@@ -70,22 +75,31 @@ public class PuzzleValidator : MonoBehaviour
             feedbackText.text = "Sentence is filled correctly.";
             Debug.Log("Puzzle is Correct");
 
-            foreach (var zone in dropZones)
+            currentPuzzle.isCompleted = true;
+
+            string fullSentence = currentPuzzle.sentenceTemplate;
+
+            foreach (var dz in dropZones)
             {
-                if (zone != null)
-                    zone.enabled = false;
+                string clueText = dz.currentClue != null ? dz.currentClue.clueText : "_";
+                int index = fullSentence.IndexOf("_");
+                if (index >= 0)
+                {
+                    fullSentence = fullSentence.Substring(0, index) + clueText + fullSentence.Substring(index + 1);
+                }
             }
 
-            if (currentPuzzleButton != null)
-            {
-                //Animator animator = currentPuzzleButton.GetComponent<Animator>();
-                //if (animator != null)
-                //{
-                //    animator.SetTrigger("FadeOut"); // Or any trigger you define
-                //}
-                Debug.Log("Destroying puzzle button in 3 seconds: " + currentPuzzleButton.name);
-                StartCoroutine(DestroyButtonAfterDelay(currentPuzzleButton.gameObject, 3f));
-            }
+            List<string> usedClues = dropZones.Select(dz => dz.currentClue.clueText).ToList();
+
+            // Remove from clue box
+            ClueManager.Instance.RemoveUsedClues(usedClues);
+           
+
+            //foreach (var zone in dropZones)
+            //{
+            //    if (zone != null)
+            //        zone.enabled = false;
+            //}
         }
         else if (incorrectCount <= 2)
         {
@@ -98,12 +112,22 @@ public class PuzzleValidator : MonoBehaviour
             Debug.Log("The sentence is filled incorrectly.");
         }
     }
-
-    private IEnumerator DestroyButtonAfterDelay(GameObject buttonObject, float delay)
+   
+    public void ClearDropZones()
     {
-        yield return new WaitForSecondsRealtime(delay); // Use unscaled time if UI shown in pause
-        Destroy(buttonObject);
-    }
+        DropZone[] dropZones = Object.FindObjectsByType<DropZone>(FindObjectsSortMode.None);
+        foreach(DropZone dz in dropZones)
+        {
+            Destroy(dz.gameObject);
+        }
 
+    }
+    public void ResetPuzzleCompletion()
+    {
+        foreach (PuzzleData puzzle in allPuzzles)
+        {
+            puzzle.isCompleted = false;
+        }
+    }
 }
 

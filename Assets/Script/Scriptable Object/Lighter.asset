@@ -28,3 +28,4 @@ MonoBehaviour:
   - Toy
   - Case
   - Stolen
+  isCompleted: 0
