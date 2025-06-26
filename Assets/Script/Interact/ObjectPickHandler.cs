@@ -33,7 +33,7 @@ public class ObjectPickHandler : MonoBehaviour
     [HideInInspector] public bool isMouseLocked;
     public bool isMovable;
     [HideInInspector] public bool isPicked;
-
+    [HideInInspector] public static bool isCollected;
     private bool isbusy = false;
 
     [SerializeField]private float inspectionCamFov = 40;
@@ -67,18 +67,41 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void ObjectHandler()
     {
+        if (objectCanvasGroup != null)
+        {
+            if (isCollected || ObjectInteract.isInteracted)
+            {
+                objectCanvasGroup.alpha = 0;
+            }
+        }
         if (playerInteract.GetObjectPickHandler() == this)
         {
-            objectCanvasGroup.alpha = isPicked ? 0 : 1;
-
+            if (objectCanvasGroup != null)
+            {
+                if (!isCollected && !ObjectInteract.isInteracted)
+                {
+                    objectCanvasGroup.alpha = 1;
+                }
+                else
+                {
+                    objectCanvasGroup.alpha = 0;
+                }
+            }
             if (isbusy) return;
 
             if (Input.GetKeyDown(KeyCode.E))
             {
+
+
                 if (!isPicked)
+                {
+                    if (isCollected || ObjectInteract.isInteracted) return;
                     StartCoroutine(ObjectPickUp());
+                }
                 else
+                {
                     StartCoroutine(ObjectDrop());
+                }
             }
         }
         else if (playerInteract.GetObjectPickHandler() == null)
@@ -98,12 +121,15 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectPickUp()
     {
-        
+       
+
+        isCollected = true;
         playerInteract.player.transform.LookAt(transform.position);
 
         isbusy = true;
         time = 0;
         isPicked = true;
+       
         pickReferences.SwitchCam();
 
         objectTransform = transform.position;
@@ -150,6 +176,7 @@ public class ObjectPickHandler : MonoBehaviour
         transform.localPosition = objectTransform;
 
         isPicked = false;
+        isCollected = false;
 
         if (checkClue)
         {

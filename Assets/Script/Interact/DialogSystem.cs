@@ -9,7 +9,9 @@ public class DialogSystem : MonoBehaviour
     [HideInInspector] public bool interacting;
     public bool isDogBed;
     [SerializeField] private ObjectPickHandler objectPickHandler;
+    [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private Transform player;
+
     private void Start()
     {
         if (isDogBed)
@@ -51,7 +53,7 @@ public class DialogSystem : MonoBehaviour
 
         if (dialogueImages.Length > 0)
         {
-
+            playerInteract.isPointAndMovementEnabled = true;
             dialogueImages[currentImageIndex].SetActive(true);
         }
     }
@@ -71,9 +73,9 @@ public class DialogSystem : MonoBehaviour
         else
         {
             interacting = false;
+            playerInteract.isPointAndMovementEnabled = false;
 
 
-           
             if (isDogBed)
             {
                 objectPickHandler.enabled = true;

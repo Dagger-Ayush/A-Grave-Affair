@@ -40,7 +40,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             isClueCursorActive = false;
         }
 
-        ObjectHovering.instance.isRunning = false;
+        ObjectHovering.isRunning = false;
     }
 
     public void ResetClueCursor()
@@ -67,24 +67,24 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             }
             if (linkIndex != -1)
             {
-                ObjectHovering.instance.isRunning = true;
+                ObjectHovering.isRunning = true;
                 CursorManager.Instance.SetClueCursor();
 
                 if (!isClueCursorActive)
                 {
                     isClueCursorActive = true;
-                    ObjectHovering.instance.isRunning = true;
+                    ObjectHovering.isRunning = true;
                     CursorManager.Instance.SetClueCursor();
                 }
             }
             else
             {
-                ObjectHovering.instance.isRunning = false;
+                ObjectHovering.isRunning = false;
                 CursorManager.Instance.SetNormalCursor();
                 if (isClueCursorActive)
                 {
                     isClueCursorActive = false;
-                    ObjectHovering.instance.isRunning = false;
+                    ObjectHovering.isRunning = false;
                     CursorManager.Instance.SetNormalCursor();
                 }
             }

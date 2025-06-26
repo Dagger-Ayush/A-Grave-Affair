@@ -13,8 +13,8 @@ public class ObjectInteract : MonoBehaviour
     [SerializeField] private GameObject[] dialogueImages;
     private int currentImageIndex = 0;
 
-    [HideInInspector]public bool interacting;
-
+    [HideInInspector]public  bool interacting;
+     public static bool isInteracted;
     private Vector2 turn;
 
    [SerializeField] private bool isTablet;// the player need not need to press E to enable Dialog
@@ -33,13 +33,26 @@ public class ObjectInteract : MonoBehaviour
     }
     private void Update()
     {
-       
+        if (objectCanvasGroup != null)
+        {
+            if (isInteracted || ObjectPickHandler.isCollected)
+            {
+                objectCanvasGroup.alpha = 0;
+            }
+        }
         if (playerInteract.GetObjectInteract() == this)
         {
            
             if (objectCanvasGroup != null )
             {
-                objectCanvasGroup.alpha = interacting ? 0 : 1;
+               if(!isInteracted && !ObjectPickHandler.isCollected)
+                {
+                    objectCanvasGroup.alpha = 1;
+                }
+            else
+                {
+                    objectCanvasGroup.alpha = 0;
+                }
             }
             ObjectHandler();
         }
@@ -67,7 +80,8 @@ public class ObjectInteract : MonoBehaviour
         {
                     if (!interacting)
                     {
-                        StartInteraction();
+                     if (isInteracted || ObjectPickHandler.isCollected) return;
+                      StartInteraction();
                     }
                     else
                     {
@@ -89,7 +103,9 @@ public class ObjectInteract : MonoBehaviour
     }
     public void StartInteraction()
     {
+        
         interacting = true;
+        isInteracted = true;
         currentImageIndex = 0;
        
             playerInteract.player.transform.LookAt(transform.position);
@@ -117,7 +133,7 @@ public class ObjectInteract : MonoBehaviour
         else
         {
             interacting = false;
-
+            isInteracted = false;
            
             if (isCigarette)
                 {

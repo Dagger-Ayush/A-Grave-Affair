@@ -9,6 +9,7 @@ public class PlayerInteract : MonoBehaviour
     private PlayerDialog playerDialog;
     public Transform player;
 
+    
     private void Start()
     {
         pointAndMovement = GetComponent<PointAndMovement>();
@@ -19,13 +20,13 @@ public class PlayerInteract : MonoBehaviour
         GetObjectInteract();
         GetObjectPickHandler();
 
-        if (isPointAndMovementEnabled)
+        if (ObjectInteract.isInteracted || ObjectPickHandler.isCollected || isPointAndMovementEnabled)
         {
             pointAndMovement.agent.SetDestination(player.transform.position);
            
             pointAndMovement.enabled = false;
         }
-        else if (!isPointAndMovementEnabled && !playerDialog.isInteraction)
+        else if (!ObjectInteract.isInteracted || !ObjectPickHandler.isCollected || !isPointAndMovementEnabled && !playerDialog.isInteraction)
         {
             pointAndMovement.enabled = true;
             
@@ -36,6 +37,7 @@ public class PlayerInteract : MonoBehaviour
 
     public ObjectInteract GetObjectInteract()
     {
+        
         //checking if the object is in range
 
         Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRange);
@@ -44,13 +46,15 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectInteract objectInteract))
             {
-                if (objectInteract.interacting && objectInteract.enabled == true)
+                if (ObjectInteract.isInteracted && objectInteract.enabled == true)
                 {
                     isPointAndMovementEnabled = true;
+                   
                   
                 }
-                else if (!objectInteract.interacting && objectInteract.enabled == true)
+                else if (!ObjectInteract.isInteracted && objectInteract.enabled == true)
                 {
+                   
                     isPointAndMovementEnabled = false;
                 }
                 return objectInteract;
@@ -69,13 +73,14 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
             {
-                if (objectPickHandler.isPicked && objectPickHandler.enabled == true)
+                if (ObjectPickHandler.isCollected && objectPickHandler.enabled == true)
                 {
                     isPointAndMovementEnabled = true;
                    
                 }
-                else if (!objectPickHandler.isPicked && objectPickHandler.enabled ==true)
+                else if (!ObjectPickHandler.isCollected && objectPickHandler.enabled ==true)
                 {
+                    
                     isPointAndMovementEnabled = false;
                 }
                 return objectPickHandler;

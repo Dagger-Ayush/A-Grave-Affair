@@ -18,7 +18,7 @@ public class ObjectHovering : MonoBehaviour
     private Vector2 cursorHotspot;
 
 
-    [HideInInspector] public bool isRunning = false; //maintaining the balance between ObjectHowering and CursorHoverOverClue cursor changing
+     public static bool isRunning = false; //maintaining the balance between ObjectHowering and CursorHoverOverClue cursor changing
     private void Awake()
     {
 
