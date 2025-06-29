@@ -25,6 +25,8 @@ public class TabletManager : MonoBehaviour
     public RectTransform sentencePanel;
     public float maxRowWidth = 250f;
 
+    public GameObject blurPanel;
+    public static bool isTabletOpen;
     public PointAndMovement pointAndMovement;
     public PlayerInteract playerInteract;
     private PuzzleData currentDisplayedPuzzle = null;
@@ -54,6 +56,9 @@ public class TabletManager : MonoBehaviour
         float endY = show ? visibleY : hiddenY;
         float elapsed = 0f;
 
+        if(blurPanel != null)
+            blurPanel.SetActive(show);
+
         if (show && pointAndMovement != null)
         {
             pointAndMovement.enabled = false;
@@ -77,6 +82,8 @@ public class TabletManager : MonoBehaviour
             pointAndMovement.enabled = true;
             playerInteract.enabled = true;
         }
+
+        isTabletOpen = show;
     }
 
     void SetY(float y)

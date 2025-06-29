@@ -76,6 +76,8 @@ public class ObjectInteract : MonoBehaviour
     }
     private void ObjectHandler()
     {
+        if (TabletManager.isTabletOpen) return;
+
         if (Input.GetKeyDown(KeyCode.E))
         {
                     if (!interacting)
