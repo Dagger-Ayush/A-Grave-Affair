@@ -8,10 +8,7 @@ public class ObjectHovering : MonoBehaviour
 {
     public static ObjectHovering instance;
     float radius = 0.2f;
-    [SerializeField] private PlayerInteract playerInteract;
-    //[SerializeField] private Texture2D cursorTextureInRange;
-    // [SerializeField] private Texture2D cursorTextureOutRange;
-
+   
     [SerializeField] private AudioSource cursorAudioClip;
     private bool isSoundPlayed = false;
     private InteractClueManager interactClueManager; // for internal Use
@@ -53,10 +50,9 @@ public class ObjectHovering : MonoBehaviour
 
 
                     float distance = Vector3.Distance(hit.point, collider.transform.position);
-                    if (playerInteract.GetObjectPickHandler() == null) return;
 
-
-                    if ( distance <= maxRange && playerInteract.GetObjectPickHandler().isPicked )
+                  
+                    if ( distance <= maxRange && ObjectPickHandler.isCollected)
                     {
                         if (distance <= collider.GetComponent<InteractClueManager>().HoveringRange )
                         {
@@ -115,11 +111,11 @@ public class ObjectHovering : MonoBehaviour
     IEnumerator WordPicking(InteractClueManager interactClueManager)
     {
         Cursor.lockState = CursorLockMode.Locked;
-        playerInteract.GetObjectPickHandler().isMouseLocked = true;
+        ObjectPickHandler.isMouseLocked = true;
         interactClueManager.ClueIndication();
         yield return new WaitForSeconds(1.8f);
         CursorManager.Instance.SetNormalCursor();
-        playerInteract.GetObjectPickHandler().isMouseLocked = false;
+        ObjectPickHandler.isMouseLocked = false;
         Cursor.lockState = CursorLockMode.None;
         interactClueManager.isFinished = true;
 

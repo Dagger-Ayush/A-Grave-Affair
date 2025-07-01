@@ -30,7 +30,7 @@ public class ObjectPickHandler : MonoBehaviour
     private bool isVision = false;
     [SerializeField] private GameObject XrayObject;
 
-    [HideInInspector] public bool isMouseLocked;
+     public static bool isMouseLocked;
     public bool isMovable;
     [HideInInspector] public bool isPicked;
     [HideInInspector] public static bool isCollected;
@@ -74,6 +74,11 @@ public class ObjectPickHandler : MonoBehaviour
                 objectCanvasGroup.alpha = 0;
             }
         }
+        if (isPicked && Input.GetKeyDown(KeyCode.E))
+        {
+            if (isbusy) return;
+            StartCoroutine(ObjectDrop());
+        }
         if (playerInteract.GetObjectPickHandler() == this)
         {
             if (objectCanvasGroup != null)
@@ -98,17 +103,16 @@ public class ObjectPickHandler : MonoBehaviour
                     if (isCollected || ObjectInteract.isInteracted) return;
                     StartCoroutine(ObjectPickUp());
                 }
-                else
-                {
-                    StartCoroutine(ObjectDrop());
-                }
+                
             }
         }
+        
         else if (playerInteract.GetObjectPickHandler() == null)
         {
             Avoid();
+           
         }
-
+       
         if (isPicked && Input.GetKeyDown(pickReferences.XrayToggle))
         {
             if (!isVision)
@@ -132,24 +136,26 @@ public class ObjectPickHandler : MonoBehaviour
        
         pickReferences.SwitchCam();
 
+        pickReferences.inspectionBackroundimage.SetActive(true);
+
         objectTransform = transform.position;
         objectRotation = transform.rotation;
         transform.parent = pickReferences.objectContainer.transform;
+        transform.rotation = PickUpRotation;
 
         while (time < 1f)
         {
             time += Time.deltaTime;
-            transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, time);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, time*2);
             yield return null;
         }
 
         transform.localPosition = Vector3.zero;
-        transform.rotation = PickUpRotation;
+       
         pickReferences.FocusCam.Lens.FieldOfView = inspectionCamFov;
   
 
-        yield return new WaitForSeconds(0.45f);
-        pickReferences. inspectionBackroundimage.SetActive(true);
+        
         yield return new WaitForSeconds(0.3f);
         isbusy = false;
     }
@@ -157,22 +163,23 @@ public class ObjectPickHandler : MonoBehaviour
     public IEnumerator ObjectDrop()
     {
         XrayVisionDisable();
-        pickReferences.inspectionBackroundimage.SetActive(false);
-
+       
         transform.rotation = objectRotation;
+        transform.parent = null;
         pickReferences.SwitchCam();
         isbusy = true;
-        time = 1;
+        time = 0;
 
-        transform.parent = null;
+        pickReferences.inspectionBackroundimage.SetActive(false);
 
-        while (time > 0f)
+
+        while (time < 1f)
         {
-            time -= Time.deltaTime;
-            transform.localPosition = Vector3.Lerp(transform.localPosition, objectTransform, time);
+            time += Time.deltaTime;
+            transform.localPosition = Vector3.Lerp(transform.localPosition, objectTransform, time );
             yield return null;
         }
-
+       
         transform.localPosition = objectTransform;
 
         isPicked = false;
@@ -273,7 +280,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void Avoid()
     {
-        isPicked = false;
+        
         objectCanvasGroup.alpha = 0;
     }
 }

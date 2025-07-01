@@ -11,8 +11,10 @@ public class ObjectPickReferences : MonoBehaviour
 
     public KeyCode XrayToggle;
     public GameObject XrayCamara;
+
+    private bool isSwitch;
     public void SwitchCam()
-    {
+    {/*
         if (FocusCam.Priority == 0)
         {
             MainCam.Priority = 0;
@@ -27,5 +29,18 @@ public class ObjectPickReferences : MonoBehaviour
             MainCam.Lens.ModeOverride = LensSettings.OverrideModes.Orthographic;
             FocusCam.Lens.ModeOverride = LensSettings.OverrideModes.Orthographic;
         }
+        */
+        if (!isSwitch)
+        {
+            MainCam.Lens.OrthographicSize = 0.25f;
+
+            isSwitch = true;
+        }
+        else
+        {
+            MainCam.Lens.OrthographicSize = 2.5f;
+            isSwitch = false;
+        }
     }
+        
 }

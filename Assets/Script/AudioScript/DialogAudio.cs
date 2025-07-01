@@ -2,9 +2,10 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class AudioSorce : MonoBehaviour
+public class DialogAudio : MonoBehaviour
 {
-     private AudioSource sorce;
+    
+    [HideInInspector] public AudioSource sorce;
     [SerializeField] private AudioClip clip;
     [Range(0, 3)]
     public float volume = 1;
@@ -16,7 +17,10 @@ public class AudioSorce : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        sorce = gameObject.AddComponent<AudioSource>();
+        if (sorce == null)
+        {
+            sorce = gameObject.AddComponent<AudioSource>();
+        }
 
         sorce.clip = clip;
         sorce.volume = volume;
@@ -26,9 +30,5 @@ public class AudioSorce : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  
 }

@@ -21,10 +21,14 @@ public class ObjectInteract : MonoBehaviour
 
     private ObjectPickHandler pickHandler;
     public bool isCigarette;
-   
+
+
+    [SerializeField] private DialogAudio[] dialogAudio;
 
     private void Start()
     {
+        
+        
         if (isCigarette)
         {
             pickHandler = GetComponent<ObjectPickHandler>();
@@ -110,11 +114,15 @@ public class ObjectInteract : MonoBehaviour
         isInteracted = true;
         currentImageIndex = 0;
        
-            playerInteract.player.transform.LookAt(transform.position);
+        playerInteract.player.transform.LookAt(transform.position);
         
        
         if (dialogueImages.Length > 0)
         {
+            if(dialogAudio != null)
+            {
+                //dialogAudio[currentImageIndex].sorce.Play();
+            }
            
             dialogueImages[currentImageIndex].SetActive(true);
         }
@@ -126,10 +134,18 @@ public class ObjectInteract : MonoBehaviour
             return;
     
         dialogueImages[currentImageIndex].SetActive(false);
+        if (dialogAudio != null)
+        {
+            //dialogAudio[currentImageIndex].sorce.Stop();
+        }
         currentImageIndex++;
 
         if (currentImageIndex < dialogueImages.Length )
         {
+            if (dialogAudio != null)
+            {
+               // dialogAudio[currentImageIndex].sorce.Play();
+            }
             dialogueImages[currentImageIndex].SetActive(true);
         }
         else

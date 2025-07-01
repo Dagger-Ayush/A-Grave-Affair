@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -13,7 +16,8 @@ public class PointAndMovement : MonoBehaviour
 
     [SerializeField]
     private float playerSpeed = 10f;
-
+    
+    //private float rotationSpeed = 1f;
 
     Rigidbody rb;
 
@@ -73,6 +77,14 @@ public class PointAndMovement : MonoBehaviour
  
     void KeyMove()
     {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up,Vector3.zero);
+        float rayDistance;
+        if (groundPlane.Raycast(ray,out rayDistance))
+        {
+            Vector3 point = ray.GetPoint(rayDistance);
+            LookAt(point);
+        }
         
         float x = Input.GetAxis("Horizontal") * playerSpeed;
         float z = Input.GetAxis("Vertical") * playerSpeed;
@@ -94,8 +106,28 @@ public class PointAndMovement : MonoBehaviour
         dir.y = rb.linearVelocity.y;
         rb.linearVelocity = dir;
 
+        
+
+        /*
+         if (Input.GetKey(KeyCode.W) )
+         {
+             if (!isMoving)
+             {
+                 isMoving = true;
+             }
+             if (agent.hasPath)
+             {
+                 agent.ResetPath(); // Stop following NavMesh path
+             }
+             rb.AddForce(transform.forward*playerSpeed);
+
+         }
+         */
     }
 
-
-
+    private void LookAt(Vector3 point)
+    {
+        Vector3 hightCorrectedPoint = new Vector3(point.x,transform.position.y, point.z);
+        transform.LookAt(hightCorrectedPoint);
+    }
 }
