@@ -14,8 +14,10 @@ public class ObjectHovering : MonoBehaviour
     private InteractClueManager interactClueManager; // for internal Use
     private Vector2 cursorHotspot;
 
+    [SerializeField] private float soundDelay = 3f;
+    public static bool isRunning = false; //maintaining the balance between ObjectHowering and CursorHoverOverClue cursor changing
 
-     public static bool isRunning = false; //maintaining the balance between ObjectHowering and CursorHoverOverClue cursor changing
+   private static bool isBusy = false;
     private void Awake()
     {
 
@@ -81,6 +83,7 @@ public class ObjectHovering : MonoBehaviour
 
                     if (!isSoundPlayed)
                     {
+                        if(isBusy)return;
                         cursorAudioClip.Play();
 
                         StartCoroutine(Delay());
@@ -94,6 +97,7 @@ public class ObjectHovering : MonoBehaviour
 
                     if (Input.GetMouseButtonDown(0))
                     {
+                       
                         StartCoroutine(WordPicking(interactClueManager));
                     }
                 }
@@ -110,6 +114,7 @@ public class ObjectHovering : MonoBehaviour
     }
     IEnumerator WordPicking(InteractClueManager interactClueManager)
     {
+        isBusy = true;
         Cursor.lockState = CursorLockMode.Locked;
         ObjectPickHandler.isMouseLocked = true;
         interactClueManager.ClueIndication();
@@ -118,14 +123,14 @@ public class ObjectHovering : MonoBehaviour
         ObjectPickHandler.isMouseLocked = false;
         Cursor.lockState = CursorLockMode.None;
         interactClueManager.isFinished = true;
-
+        isBusy = false;
     }
     IEnumerator Delay()
     {
        
         isSoundPlayed = true;
        
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(soundDelay);
         isSoundPlayed = false;
     }
 }
