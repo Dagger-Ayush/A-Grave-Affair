@@ -119,9 +119,9 @@ public class ObjectInteract : MonoBehaviour
        
         if (dialogueImages.Length > 0)
         {
-            if(dialogAudio != null)
+            if(dialogueImages[currentImageIndex].tag == "Screen")
             {
-                //dialogAudio[currentImageIndex].sorce.Play();
+                dialogAudio[currentImageIndex].sorce.Play();
             }
            
             dialogueImages[currentImageIndex].SetActive(true);
@@ -134,17 +134,17 @@ public class ObjectInteract : MonoBehaviour
             return;
     
         dialogueImages[currentImageIndex].SetActive(false);
-        if (dialogAudio != null)
+        if (dialogueImages[currentImageIndex].tag == "Screen" || dialogueImages[currentImageIndex].tag == "Sound")
         {
-            //dialogAudio[currentImageIndex].sorce.Stop();
+            dialogAudio[currentImageIndex].sorce.Stop();
         }
         currentImageIndex++;
 
         if (currentImageIndex < dialogueImages.Length )
         {
-            if (dialogAudio != null)
+            if (dialogueImages[currentImageIndex].tag == "Screen" || dialogueImages[currentImageIndex].tag == "Sound")
             {
-               // dialogAudio[currentImageIndex].sorce.Play();
+                dialogAudio[currentImageIndex].sorce.Play();
             }
             dialogueImages[currentImageIndex].SetActive(true);
         }

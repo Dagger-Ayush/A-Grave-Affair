@@ -108,26 +108,19 @@ public class PointAndMovement : MonoBehaviour
 
 
 
-        /*
-         if (Input.GetKey(KeyCode.W) )
-         {
-             if (!isMoving)
-             {
-                 isMoving = true;
-             }
-             if (agent.hasPath)
-             {
-                 agent.ResetPath(); // Stop following NavMesh path
-             }
-             rb.AddForce(transform.forward*playerSpeed);
-
-         }
-         */
     }
 
     private void LookAt(Vector3 point)
     {
-        Vector3 hightCorrectedPoint = new Vector3(point.x, transform.position.y, point.z);
-        transform.LookAt(hightCorrectedPoint);
+        Vector3 direction = point - transform.position;
+        direction.y = 0;
+
+        // Prevent flipping when mouse is behind
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
     }
+
 }

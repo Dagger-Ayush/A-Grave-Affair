@@ -18,7 +18,8 @@ public class ObjectMoving : MonoBehaviour
     [HideInInspector]public bool canInteract = false;
     private static bool canInteractWithBed = false;
 
-    [SerializeField]private ObjectPickHandler objectPickHandler;
+ 
+    [SerializeField] private DialogAudio dialogAudio;
     void Update()
     {
         if (playerInteract.ObjectMoving() == this && !isCompleted)
@@ -42,6 +43,7 @@ public class ObjectMoving : MonoBehaviour
                      case ObjectType.DogBowl:
                         if (!canInteract)
                         {
+                            dialogAudio.sorce.Play();
                             dialogueImages.SetActive(true);
                             dialogueImages.transform.rotation = Quaternion.Euler(0, 44, 0);
                             dialogueImages.transform.position = new Vector3(playerInteract.player.transform.position.x - 1.75f,

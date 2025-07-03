@@ -6,6 +6,7 @@ public class PlayerDialog : MonoBehaviour
 {
      private PointAndMovement pointAndMovement;
     [SerializeField] private GameObject[] dialogueImages;
+    [SerializeField] private DialogAudio[] dialogAudio;
     private int currentImageIndex = 0;
     [HideInInspector]public bool isInteraction;
 
@@ -49,6 +50,7 @@ public class PlayerDialog : MonoBehaviour
 
         if (dialogueImages.Length > 0)
         {
+            dialogAudio[currentImageIndex].sorce.Play();
             dialogueImages[currentImageIndex].SetActive(true);
         }
     }
@@ -57,12 +59,20 @@ public class PlayerDialog : MonoBehaviour
     {
         if (dialogueImages.Length == 0)
             return;
-
+        if(currentImageIndex < 2)
+        {
+            dialogAudio[currentImageIndex].sorce.Stop();
+        }
+       
         dialogueImages[currentImageIndex].SetActive(false);
         currentImageIndex++;
 
         if (currentImageIndex < dialogueImages.Length)
         {
+            if (currentImageIndex < 2)
+            {
+                dialogAudio[currentImageIndex].sorce.Play();
+            }
             dialogueImages[currentImageIndex].SetActive(true);
         }
         else

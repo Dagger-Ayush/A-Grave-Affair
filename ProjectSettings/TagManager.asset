@@ -9,6 +9,7 @@ TagManager:
   - TriggerObject
   - Screen
   - Ground
+  - Sound
   layers:
   - Default
   - TransparentFX

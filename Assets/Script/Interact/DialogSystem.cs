@@ -11,7 +11,7 @@ public class DialogSystem : MonoBehaviour
     [SerializeField] private ObjectPickHandler objectPickHandler;
     [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private Transform player;
-
+    [SerializeField] private DialogAudio[] dialogAudio;
     private void Start()
     {
         if (isDogBed)
@@ -55,6 +55,7 @@ public class DialogSystem : MonoBehaviour
         {
             playerInteract.isPointAndMovementEnabled = true;
             dialogueImages[currentImageIndex].SetActive(true);
+            dialogAudio[currentImageIndex].sorce.Play();
         }
     }
 
@@ -64,10 +65,12 @@ public class DialogSystem : MonoBehaviour
             return;
 
         dialogueImages[currentImageIndex].SetActive(false);
+        dialogAudio[currentImageIndex].sorce.Stop();
         currentImageIndex++;
 
         if (currentImageIndex < dialogueImages.Length)
         {
+            dialogAudio[currentImageIndex].sorce.Play();
             dialogueImages[currentImageIndex].SetActive(true);
         }
         else
