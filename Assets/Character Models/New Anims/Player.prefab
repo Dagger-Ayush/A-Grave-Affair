@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8045432747540769407
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0000019073486
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -5.96
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.03612018
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.99934745
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -175.86
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223639932434330405, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: m_Animations.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223639932434330405, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      propertyPath: 'm_Animations.Array.data[1]'
+      value: 
+      objectReference: {fileID: -203655887218126122, guid: 01b680dd75084d94a8420ac5ed94e85f, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4787468808030175181}
+  m_SourcePrefab: {fileID: 100100000, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+--- !u!1 &7162543807689086766 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 97f2aecf0e3ba8a49a972932d5340984, type: 3}
+  m_PrefabInstance: {fileID: 8045432747540769407}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4787468808030175181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7162543807689086766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 934c36f8473d6c745a99d67f13710865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  rotationSpeed: 100
+  stoppingDistance: 0.5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  idleAnimation: Idle
+  walkAnimation: Walking
+  mouseClickAction:
+    m_Name: Mouse Click
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 6d202322-4a33-45de-a9c2-b43bd871d459
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  isometricForward: {x: 1, y: 1}
