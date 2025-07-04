@@ -25,6 +25,7 @@ public class ObjectInteract : MonoBehaviour
 
     [SerializeField] private DialogAudio[] dialogAudio;
 
+    public bool shouldWork = false;
     private void Start()
     {
         
@@ -33,10 +34,16 @@ public class ObjectInteract : MonoBehaviour
         {
             pickHandler = GetComponent<ObjectPickHandler>();
             pickHandler.enabled = false;
+
+        }
+        if (isTablet)
+        {
+            shouldWork = true;
         }
     }
     private void Update()
     {
+        
         if (objectCanvasGroup != null)
         {
             if (isInteracted || ObjectPickHandler.isCollected)
@@ -46,7 +53,8 @@ public class ObjectInteract : MonoBehaviour
         }
         if (playerInteract.GetObjectInteract() == this)
         {
-           
+            if (!shouldWork) return;
+
             if (objectCanvasGroup != null )
             {
                if(!isInteracted && !ObjectPickHandler.isCollected)
@@ -126,6 +134,7 @@ public class ObjectInteract : MonoBehaviour
            
             dialogueImages[currentImageIndex].SetActive(true);
         }
+       
     }
 
     public void NextDialogueImage()
@@ -150,17 +159,47 @@ public class ObjectInteract : MonoBehaviour
         }
         else
         {
+           
             interacting = false;
             isInteracted = false;
            
             if (isCigarette)
+            {
+                FindAnyObjectByType<ObjectInteract>().shouldWork = true;
+                FindAnyObjectByType<ObjectPickHandler>().shouldWork = true;
+                FindAnyObjectByType<ObjectMoving>().shouldWork = true;
+                Collider[] colliderArray = Physics.OverlapSphere(transform.position, 45);
+
+                foreach (Collider collider in colliderArray)
                 {
-                    pickHandler.enabled = true;
-                    enabled = false;
+                    if (collider.TryGetComponent(out ObjectInteract objectInteract))
+                    {
+
+                        objectInteract.shouldWork = true;
+                    }
+                    if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
+                    {
+
+                        objectPickHandler.shouldWork = true;
+                    }
+                    if (collider.TryGetComponent(out ObjectMoving objectMoving))
+                    {
+                        objectMoving.shouldWork = true;
+
+                    }
+
+                }
+                pickHandler.enabled = true;
+
+                enabled = false;
                 }
 
             if (isTablet)
             {
+                if (FindFirstObjectByType<ObjectInteract>().isCigarette)
+                {
+                    FindFirstObjectByType<ObjectInteract>().shouldWork = true;
+                }
                 Destroy(gameObject, 0.1f);// using delay for Movment and point and click to enable
             }
            

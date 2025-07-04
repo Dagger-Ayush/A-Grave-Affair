@@ -20,10 +20,14 @@ public class ObjectMoving : MonoBehaviour
 
  
     [SerializeField] private DialogAudio dialogAudio;
+
+    public bool shouldWork = false;
+  
     void Update()
     {
         if (playerInteract.ObjectMoving() == this && !isCompleted)
         {
+            if(!shouldWork)return;
             if (objectCanvasGroup != null )
             {
                objectCanvasGroup.alpha = 1; 

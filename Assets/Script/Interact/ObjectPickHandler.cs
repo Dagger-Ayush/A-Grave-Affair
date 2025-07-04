@@ -44,8 +44,8 @@ public class ObjectPickHandler : MonoBehaviour
 
     private ObjectInteract objectInteract;
     [SerializeField] private string[] clue;
- 
 
+    public bool shouldWork = false;
     private void Start()
     { 
         if (checkClue)
@@ -59,6 +59,7 @@ public class ObjectPickHandler : MonoBehaviour
         }
         inspectionCamara = pickReferences.inspectionCamara;
         XrayToggle = pickReferences.XrayToggle;
+
     }
     private void Update()
     {
@@ -67,6 +68,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void ObjectHandler()
     {
+        if (!shouldWork) return;
         if (objectCanvasGroup != null)
         {
             if (isCollected || ObjectInteract.isInteracted)
