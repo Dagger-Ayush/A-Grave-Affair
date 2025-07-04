@@ -3,15 +3,11 @@ using UnityEngine.UI;
 
 public class ClueBoxManager : MonoBehaviour
 {
-    public GameObject clueBox; // Assign the shared clue box GameObject
+    public GameObject clueBox; 
     private GameObject currentButton;
 
-    /// <summary>
-    /// Call this method from a button, passing the GameObject of the clicked button.
-    /// </summary>
     public void ToggleClueBoxBelow(Transform buttonTransform)
     {
-        // If the same button is clicked again, toggle clueBox visibility
         if (clueBox.activeSelf && currentButton == buttonTransform.gameObject)
         {
             clueBox.SetActive(false);

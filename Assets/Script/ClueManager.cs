@@ -14,10 +14,14 @@ public class ClueManager : MonoBehaviour
 
     public List<string> collectedClues = new();
 
+    public AudioSource audioSource;
+    public AudioClip clueAddSound;
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void AddClue(string clueText)
@@ -25,6 +29,9 @@ public class ClueManager : MonoBehaviour
         if (collectedClues.Contains(clueText)) return;
 
         collectedClues.Add(clueText);
+
+        if (clueAddSound != null && audioSource != null)
+            audioSource.PlayOneShot(clueAddSound);
     }
     public bool ClueCheck(string clueText)
     {
