@@ -39,13 +39,15 @@ public class ObjectPickHandler : MonoBehaviour
     [SerializeField]private float inspectionCamFov = 40;
 
     [SerializeField]private bool isLighter = false;
+    [SerializeField]private bool isLetter = false;
+
     [SerializeField]private bool checkClue = false;
 
 
     private ObjectInteract objectInteract;
     [SerializeField] private string[] clue;
 
-    public bool shouldWork = false;
+   [HideInInspector] public bool shouldWork = false;
     private void Start()
     { 
         if (checkClue)
@@ -115,7 +117,7 @@ public class ObjectPickHandler : MonoBehaviour
            
         }
        
-        if (isPicked && Input.GetKeyDown(pickReferences.XrayToggle))
+        if (isPicked && Input.GetKeyDown(pickReferences.XrayToggle) && isLetter)
         {
             if (!isVision)
                 XrayVisionEnable();

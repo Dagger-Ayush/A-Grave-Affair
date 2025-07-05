@@ -12,8 +12,12 @@ public class DialogSystem : MonoBehaviour
     [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private Transform player;
     [SerializeField] private DialogAudio[] dialogAudio;
+
+   
     private void Start()
     {
+       
+
         if (isDogBed)
         {
             enabled = false;
@@ -21,6 +25,7 @@ public class DialogSystem : MonoBehaviour
     }
     private void Update()
     {
+       
         if (isDogBed )
         {
             if (!interacting)
@@ -77,7 +82,6 @@ public class DialogSystem : MonoBehaviour
         {
             interacting = false;
             playerInteract.isPointAndMovementEnabled = false;
-
 
             if (isDogBed)
             {

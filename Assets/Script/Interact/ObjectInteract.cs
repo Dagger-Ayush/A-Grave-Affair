@@ -25,7 +25,7 @@ public class ObjectInteract : MonoBehaviour
 
     [SerializeField] private DialogAudio[] dialogAudio;
 
-    public bool shouldWork = false;
+    [HideInInspector] public bool shouldWork = false;
     private void Start()
     {
         

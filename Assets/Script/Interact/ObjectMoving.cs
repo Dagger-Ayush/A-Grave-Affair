@@ -1,6 +1,9 @@
+using System.Collections;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.UI;
 
 public class ObjectMoving : MonoBehaviour
 {  
@@ -18,11 +21,16 @@ public class ObjectMoving : MonoBehaviour
     [HideInInspector]public bool canInteract = false;
     private static bool canInteractWithBed = false;
 
- 
+   
     [SerializeField] private DialogAudio dialogAudio;
 
-    public bool shouldWork = false;
-  
+    [HideInInspector] public bool shouldWork = false;
+
+
+    [SerializeField] private Animation anim;
+    [SerializeField] private Transform Dog;
+    [SerializeField] private Image fadeImage;
+
     void Update()
     {
         if (playerInteract.ObjectMoving() == this && !isCompleted)
@@ -103,8 +111,50 @@ public class ObjectMoving : MonoBehaviour
 
         foodBowlEmpty.SetActive(false);
         foodBowlFilled.SetActive(true);
+
+        StartCoroutine(FadeInAndOut());
+        
+
         canInteractWithBed = true;
         canInteract = false;
 
+    }
+    IEnumerator FadeInAndOut()
+    {
+       
+        float time = 0f;
+        bool fade = false;
+        Color color = fadeImage.color;
+
+        while (true)
+        {
+            if (!fade)
+            {
+                fadeImage.gameObject.SetActive(true);
+                time += Time.deltaTime ;
+                if (time >= 1.25f)
+                {
+                    Dog.transform.localPosition = Vector3.zero;
+                    
+                    time = 1f;
+                    fade = true;
+                }
+            }
+            else
+            {
+                time -= Time.deltaTime ;
+                if (time <= 0f)
+                {
+                    fadeImage.gameObject.SetActive(false);
+                    anim.Play("Scene");
+                    time = 0f;
+                    break; // End after fade out
+                }
+            }
+
+            color.a = time;
+            fadeImage.color = color;
+            yield return null;
+        }
     }
 }
