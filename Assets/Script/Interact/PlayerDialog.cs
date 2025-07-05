@@ -44,8 +44,8 @@ public class PlayerDialog : MonoBehaviour
     }
     private IEnumerator StartInteraction()
     {   
-        //yield return new WaitForSeconds(5.3f);
-        yield return new WaitForSeconds(1);
+        
+        yield return new WaitForSeconds(2);
         isInteraction = true;
         currentImageIndex = 0;
 
