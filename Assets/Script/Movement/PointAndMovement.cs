@@ -10,8 +10,12 @@ public class PointAndMovement : MonoBehaviour
     private Camera mainCamera;
     public NavMeshAgent agent;
 
+    [SerializeField]
+    private float playerSpeed = 10f;
+
     [HideInInspector] public bool isMoving;
-    
+    private Coroutine coroutine;
+
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -23,8 +27,8 @@ public class PointAndMovement : MonoBehaviour
 
     void Update()
     {
-
         animator.SetBool("IsIdle", true);
+        //animator.SetBool("IsIdle", true);
         KeyMove();
     }
 
@@ -39,12 +43,14 @@ public class PointAndMovement : MonoBehaviour
         mouseClickAction.performed -= Move;
         mouseClickAction.Disable();
     }
-
     private void Move(InputAction.CallbackContext context)
     {
+
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit) && hit.collider)
         {
+
+            if (coroutine != null) StopCoroutine(coroutine);
             if (!isMoving)
             {
                 isMoving = true;
@@ -57,12 +63,22 @@ public class PointAndMovement : MonoBehaviour
             }
             transform.LookAt(hit.point);
         }
+
     }
 
     void KeyMove()
     {
-        float x = Input.GetAxis("Horizontal") ;
-        float z = Input.GetAxis("Vertical") ;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        float rayDistance;
+        if (groundPlane.Raycast(ray, out rayDistance))
+        {
+            Vector3 point = ray.GetPoint(rayDistance);
+            LookAt(point);
+        }
+
+        float x = Input.GetAxis("Horizontal") * playerSpeed;
+        float z = Input.GetAxis("Vertical") * playerSpeed;
         if (x != 0 || z != 0)
         {
             animator.SetBool("IsWalking", true);
@@ -72,20 +88,26 @@ public class PointAndMovement : MonoBehaviour
             }
             if (agent.hasPath)
             {
-                agent.ResetPath();
+                agent.ResetPath(); // Stop following NavMesh path
             }
+
         }
         else
         {
 
             animator.SetBool("IsWalking", false);
         }
-       
+        //transform.position = new Vector3(x, 0, z);
+
         Vector3 dir = transform.right * x + transform.forward * z;
         dir.y = rb.linearVelocity.y;
         rb.linearVelocity = dir;
+
+
+
     }
-   
+
+  
     void LookAt(Vector3 point)
     {
         Vector3 direction = point - transform.position;
