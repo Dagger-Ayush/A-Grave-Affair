@@ -5,7 +5,8 @@ public class ObjectInteract : MonoBehaviour
 {  
   
     [Header("Dialogues Interaction reference's")]
-    [SerializeField] private CanvasGroup objectCanvasGroup;
+    [SerializeField] private CanvasGroup inRange;
+    [SerializeField] private CanvasGroup outRange;
     [SerializeField] private PlayerInteract playerInteract;
 
 
@@ -44,26 +45,26 @@ public class ObjectInteract : MonoBehaviour
     private void Update()
     {
         
-        if (objectCanvasGroup != null)
+        if (inRange != null)
         {
             if (isInteracted || ObjectPickHandler.isCollected)
             {
-                objectCanvasGroup.alpha = 0;
+                inRange.alpha = 0;
             }
         }
         if (playerInteract.GetObjectInteract() == this)
         {
             if (!shouldWork) return;
-
-            if (objectCanvasGroup != null )
+            outRange.alpha = 0;
+            if (inRange != null )
             {
                if(!isInteracted && !ObjectPickHandler.isCollected)
                 {
-                    objectCanvasGroup.alpha = 1;
+                    inRange.alpha = 1;
                 }
             else
                 {
-                    objectCanvasGroup.alpha = 0;
+                    inRange.alpha = 0;
                 }
             }
             ObjectHandler();
@@ -217,9 +218,10 @@ public class ObjectInteract : MonoBehaviour
         }
        
         interacting = false;
-        if (objectCanvasGroup != null)
+        if (inRange != null && shouldWork && !isInteracted)
         {
-            objectCanvasGroup.alpha = 0;
+            inRange.alpha = 0;
+            outRange.alpha = 1;
         }
        
     }

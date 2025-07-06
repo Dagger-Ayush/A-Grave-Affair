@@ -10,7 +10,8 @@ public class ObjectMoving : MonoBehaviour
     public enum ObjectType{ DogBed, DogBowl};
    [SerializeField] private ObjectType objectType;
 
-    [SerializeField] private CanvasGroup objectCanvasGroup;
+    [SerializeField] private CanvasGroup inRange;
+    [SerializeField] private CanvasGroup outRange;
     [SerializeField] private PlayerInteract playerInteract;
 
     
@@ -36,9 +37,10 @@ public class ObjectMoving : MonoBehaviour
         if (playerInteract.ObjectMoving() == this && !isCompleted)
         {
             if(!shouldWork)return;
-            if (objectCanvasGroup != null )
+            outRange.alpha = 0;
+            if (inRange != null )
             {
-               objectCanvasGroup.alpha = 1; 
+               inRange.alpha = 1; 
             }
             if (Input.GetKeyDown(KeyCode.E) )
             {
@@ -75,17 +77,19 @@ public class ObjectMoving : MonoBehaviour
             }
             
         }
-        else
+        else if(playerInteract.ObjectMoving() == null && !isCompleted && shouldWork)
         {
-            if (objectCanvasGroup != null)
+            if (inRange != null)
             {
-                objectCanvasGroup.alpha = 0;
+                outRange.alpha = 1;
+                inRange.alpha = 0;
             }
 
         }
-        if (objectCanvasGroup != null && isCompleted)
+        if (inRange != null && isCompleted)
         {
-            objectCanvasGroup.alpha = 0;
+            outRange.alpha = 0;
+            inRange.alpha = 0;
         }
     }
     void DogBedMoving()

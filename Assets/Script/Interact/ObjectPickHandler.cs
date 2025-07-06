@@ -23,7 +23,8 @@ public class ObjectPickHandler : MonoBehaviour
     private KeyCode XrayToggle;
    
     [SerializeField] private PlayerInteract playerInteract;
-    [SerializeField] private CanvasGroup objectCanvasGroup;
+    [SerializeField] private CanvasGroup inRange;
+    [SerializeField] private CanvasGroup outRange;
 
     public float rotationSensitivity = 4f;
 
@@ -70,12 +71,14 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void ObjectHandler()
     {
+
         if (!shouldWork) return;
-        if (objectCanvasGroup != null)
+        outRange.alpha = 0;
+        if (inRange != null)
         {
             if (isCollected || ObjectInteract.isInteracted)
             {
-                objectCanvasGroup.alpha = 0;
+                inRange.alpha = 0;
             }
         }
         if (isPicked && Input.GetKeyDown(KeyCode.E))
@@ -85,15 +88,15 @@ public class ObjectPickHandler : MonoBehaviour
         }
         if (playerInteract.GetObjectPickHandler() == this)
         {
-            if (objectCanvasGroup != null)
+            if (inRange != null)
             {
                 if (!isCollected && !ObjectInteract.isInteracted)
                 {
-                    objectCanvasGroup.alpha = 1;
+                    inRange.alpha = 1;
                 }
                 else
                 {
-                    objectCanvasGroup.alpha = 0;
+                    inRange.alpha = 0;
                 }
             }
             if (isbusy) return;
@@ -284,7 +287,11 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void Avoid()
     {
-        
-        objectCanvasGroup.alpha = 0;
+       if (shouldWork && !isCollected)
+        {
+            inRange.alpha = 0;
+            outRange.alpha = 1;
+        }
+       
     }
 }

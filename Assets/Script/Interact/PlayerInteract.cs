@@ -8,10 +8,12 @@ public class PlayerInteract : MonoBehaviour
     private PointAndMovement pointAndMovement;
     private PlayerDialog playerDialog;
     public Transform player;
+    [SerializeField] private DialogAudio BackGroundAudio;
 
-    
+   
     private void Start()
     {
+        BackGroundAudio.sorce.Play();
         pointAndMovement = GetComponent<PointAndMovement>();
         playerDialog = GetComponent<PlayerDialog>();
     }
