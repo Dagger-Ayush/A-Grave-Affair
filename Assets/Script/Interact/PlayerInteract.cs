@@ -13,9 +13,13 @@ public class PlayerInteract : MonoBehaviour
    
     private void Start()
     {
-        BackGroundAudio.sorce.Play();
+       
         pointAndMovement = GetComponent<PointAndMovement>();
         playerDialog = GetComponent<PlayerDialog>();
+
+
+
+        BackGroundAudio.sorce.Play();
     }
     void Update()
     {

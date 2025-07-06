@@ -16,17 +16,21 @@ public class PointAndMovement : MonoBehaviour
     [HideInInspector] public bool isMoving;
     private Coroutine coroutine;
 
+    private PlayerInteract PlayerInteract;
     private void Awake()
     {
         mainCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
       
         agent = GetComponent<NavMeshAgent>();
+
+        PlayerInteract = GetComponent<PlayerInteract>();
     }
    
 
     void Update()
     {
+       
         animator.SetBool("IsIdle", true);
         //animator.SetBool("IsIdle", true);
         KeyMove();
@@ -79,8 +83,11 @@ public class PointAndMovement : MonoBehaviour
 
         float x = Input.GetAxis("Horizontal") * playerSpeed;
         float z = Input.GetAxis("Vertical") * playerSpeed;
+
+        bool isWalking;
         if (x != 0 || z != 0)
         {
+            isWalking = true;
             animator.SetBool("IsWalking", true);
             if (!isMoving)
             {
@@ -93,6 +100,10 @@ public class PointAndMovement : MonoBehaviour
 
         }
         else
+        {
+            isWalking = false;
+        }
+         if (!isWalking || agent.hasPath || PlayerInteract.isPointAndMovementEnabled) 
         {
 
             animator.SetBool("IsWalking", false);

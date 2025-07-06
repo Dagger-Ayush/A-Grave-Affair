@@ -14,8 +14,9 @@ public class DialogAudio : MonoBehaviour
 
     public bool loop;
     public bool isMute;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+
+    private void Awake()
     {
         if (sorce == null)
         {
@@ -27,8 +28,8 @@ public class DialogAudio : MonoBehaviour
         sorce.pitch = pitch;
         sorce.mute = isMute;
         sorce.loop = loop;
-
     }
+    
 
   
 }
