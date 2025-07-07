@@ -17,6 +17,7 @@ public class PointAndMovement : MonoBehaviour
     private Coroutine coroutine;
 
     private PlayerInteract PlayerInteract;
+    bool isWalking;
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -26,14 +27,23 @@ public class PointAndMovement : MonoBehaviour
 
         PlayerInteract = GetComponent<PlayerInteract>();
     }
-   
 
+    private void Start()
+    {
+        animator.SetBool("IsIdle", true);
+    }
     void Update()
     {
-       
-        animator.SetBool("IsIdle", true);
+
+        if (!isWalking || agent.hasPath || PlayerInteract.isPointAndMovementEnabled)
+        {
+
+            animator.SetBool("IsWalking", false);
+        }
         //animator.SetBool("IsIdle", true);
         KeyMove();
+
+
     }
 
     private void OnEnable()
@@ -84,7 +94,7 @@ public class PointAndMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal") * playerSpeed;
         float z = Input.GetAxis("Vertical") * playerSpeed;
 
-        bool isWalking;
+       
         if (x != 0 || z != 0)
         {
             isWalking = true;
@@ -103,11 +113,7 @@ public class PointAndMovement : MonoBehaviour
         {
             isWalking = false;
         }
-         if (!isWalking || agent.hasPath || PlayerInteract.isPointAndMovementEnabled) 
-        {
-
-            animator.SetBool("IsWalking", false);
-        }
+         
         //transform.position = new Vector3(x, 0, z);
 
         Vector3 dir = transform.right * x + transform.forward * z;
@@ -121,6 +127,7 @@ public class PointAndMovement : MonoBehaviour
   
     void LookAt(Vector3 point)
     {
+        if (!isMoving) return;
         Vector3 direction = point - transform.position;
         direction.y = 0;
 

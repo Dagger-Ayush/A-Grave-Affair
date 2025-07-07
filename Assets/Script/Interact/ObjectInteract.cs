@@ -1,6 +1,7 @@
 ﻿
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 public class ObjectInteract : MonoBehaviour
 {  
   
@@ -27,6 +28,8 @@ public class ObjectInteract : MonoBehaviour
     [SerializeField] private DialogAudio[] dialogAudio;
 
     [HideInInspector] public bool shouldWork = false;
+
+    
     private void Start()
     {
         
@@ -199,6 +202,11 @@ public class ObjectInteract : MonoBehaviour
             {
                 if (FindFirstObjectByType<ObjectInteract>().isCigarette)
                 {
+                    if(playerInteract. tabletImage != null)
+                    {
+                        playerInteract.tabletImage.enabled = true;
+                    }
+                    
                     FindFirstObjectByType<ObjectInteract>().shouldWork = true;
                 }
                 Destroy(gameObject, 0.1f);// using delay for Movment and point and click to enable

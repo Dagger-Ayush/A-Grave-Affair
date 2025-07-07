@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Cinemachine.Samples;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerDialog : MonoBehaviour
 {
@@ -9,10 +10,11 @@ public class PlayerDialog : MonoBehaviour
     [SerializeField] private DialogAudio[] dialogAudio;
     private int currentImageIndex = 0;
     [HideInInspector]public bool isInteraction;
-
+    [SerializeField] private NavMeshObstacle casket;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        StartCoroutine(AfterAnimationPosition());
         pointAndMovement = GetComponent<PointAndMovement>();
         StartCoroutine(StartInteraction());
     }
@@ -31,9 +33,10 @@ public class PlayerDialog : MonoBehaviour
 
         if (currentImageIndex <= 1)
         {
+            pointAndMovement.enabled = false;
             dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
             dialogueImages[currentImageIndex].transform.position = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
-            pointAndMovement.enabled = false;
+           
         }
         if (pointAndMovement.isMoving)
         {
@@ -88,5 +91,12 @@ public class PlayerDialog : MonoBehaviour
       
 
     }
-  
+    private IEnumerator AfterAnimationPosition()
+    {
+
+        yield return new WaitForSeconds(5.30f);
+
+        casket.enabled = true;
+    }
+
 }

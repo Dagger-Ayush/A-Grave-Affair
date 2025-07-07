@@ -30,13 +30,14 @@ public class TabletManager : MonoBehaviour
     public PointAndMovement pointAndMovement;
     public PlayerInteract playerInteract;
     private PuzzleData currentDisplayedPuzzle = null;
-    
+
     private void Start()
     {
         SetY(hiddenY);
     }
     private void Update()
     {
+       
         if (Input.GetKeyDown(KeyCode.Tab) && playerInteract.isPointAndMovementEnabled == false)
         {
             isOpen = !isOpen;

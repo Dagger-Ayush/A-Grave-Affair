@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerInteract : MonoBehaviour
 {
@@ -10,7 +11,8 @@ public class PlayerInteract : MonoBehaviour
     public Transform player;
     [SerializeField] private DialogAudio BackGroundAudio;
 
-   
+    public Image tabletImage;
+    private bool shouldTabletWork;
     private void Start()
     {
        
@@ -29,11 +31,16 @@ public class PlayerInteract : MonoBehaviour
         if (ObjectInteract.isInteracted || ObjectPickHandler.isCollected || isPointAndMovementEnabled)
         {
             pointAndMovement.agent.SetDestination(player.transform.position);
-           
+            tabletImage.enabled= false;
             pointAndMovement.enabled = false;
         }
         else if (!ObjectInteract.isInteracted || !ObjectPickHandler.isCollected || !isPointAndMovementEnabled && !playerDialog.isInteraction)
         {
+            if (shouldTabletWork)
+            {
+                tabletImage.enabled = true;
+            }
+           
             pointAndMovement.enabled = true;
             
         }
@@ -55,12 +62,14 @@ public class PlayerInteract : MonoBehaviour
                 if (ObjectInteract.isInteracted && objectInteract.enabled == true)
                 {
                     isPointAndMovementEnabled = true;
-                   
-                  
+ 
                 }
                 else if (!ObjectInteract.isInteracted && objectInteract.enabled == true)
                 {
-                   
+                  if( objectInteract.isCigarette == true)
+                    { 
+                        shouldTabletWork = true; 
+                    }
                     isPointAndMovementEnabled = false;
                 }
                 return objectInteract;

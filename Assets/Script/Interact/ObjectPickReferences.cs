@@ -1,5 +1,6 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ObjectPickReferences : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class ObjectPickReferences : MonoBehaviour
     public GameObject XrayCamara;
 
     private bool isSwitch;
+
+
+    public Image tabletImage;
+
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)
