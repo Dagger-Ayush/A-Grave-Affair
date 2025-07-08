@@ -101,7 +101,7 @@ public class ObjectMoving : MonoBehaviour
 
         isCompleted = true;
 
-        float objectMove = 1;
+        float objectMove = 2;
 
         float z = transform.position.z ;
         

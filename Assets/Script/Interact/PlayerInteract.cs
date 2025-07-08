@@ -66,7 +66,7 @@ public class PlayerInteract : MonoBehaviour
                 }
                 else if (!ObjectInteract.isInteracted && objectInteract.enabled == true)
                 {
-                  if( objectInteract.isCigarette == true)
+                  if( objectInteract.isTablet == true)
                     { 
                         shouldTabletWork = true; 
                     }

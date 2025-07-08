@@ -12,12 +12,12 @@ public class DialogSystem : MonoBehaviour
     [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private Transform player;
     [SerializeField] private DialogAudio[] dialogAudio;
-
+    private ObjectInteract dialogSystem;
    
     private void Start()
     {
        
-
+        dialogSystem = GetComponent<ObjectInteract>();
         if (isDogBed)
         {
             enabled = false;
@@ -85,8 +85,10 @@ public class DialogSystem : MonoBehaviour
 
             if (isDogBed)
             {
+                dialogSystem.enabled = true;
                 objectPickHandler.enabled = true;
                 enabled = false;
+              
             }
         }
     }

@@ -10,11 +10,11 @@ public class PlayerDialog : MonoBehaviour
     [SerializeField] private DialogAudio[] dialogAudio;
     private int currentImageIndex = 0;
     [HideInInspector]public bool isInteraction;
-    [SerializeField] private NavMeshObstacle casket;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        StartCoroutine(AfterAnimationPosition());
+       
         pointAndMovement = GetComponent<PointAndMovement>();
         StartCoroutine(StartInteraction());
     }
@@ -48,7 +48,7 @@ public class PlayerDialog : MonoBehaviour
     private IEnumerator StartInteraction()
     {   
         
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(4.18f);
         isInteraction = true;
         currentImageIndex = 0;
 
@@ -91,12 +91,6 @@ public class PlayerDialog : MonoBehaviour
       
 
     }
-    private IEnumerator AfterAnimationPosition()
-    {
-
-        yield return new WaitForSeconds(5.30f);
-
-        casket.enabled = true;
-    }
+   
 
 }

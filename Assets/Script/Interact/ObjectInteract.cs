@@ -19,7 +19,7 @@ public class ObjectInteract : MonoBehaviour
      public static bool isInteracted;
     private Vector2 turn;
 
-   [SerializeField] private bool isTablet;// the player need not need to press E to enable Dialog
+   public bool isTablet;// the player need not need to press E to enable Dialog
 
     private ObjectPickHandler pickHandler;
     public bool isCigarette;

@@ -18,20 +18,20 @@ public class PointAndMovement : MonoBehaviour
 
     private PlayerInteract PlayerInteract;
     bool isWalking;
+  
     private void Awake()
     {
+       
         mainCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
       
         agent = GetComponent<NavMeshAgent>();
 
         PlayerInteract = GetComponent<PlayerInteract>();
+        animator.SetTrigger("isBed");
     }
 
-    private void Start()
-    {
-        animator.SetBool("IsIdle", true);
-    }
+   
     void Update()
     {
 
@@ -73,6 +73,7 @@ public class PointAndMovement : MonoBehaviour
             agent.ResetPath();
             if (Vector3.Distance(agent.destination, hit.point) > 0.1f)
             {
+                animator.SetBool("IsWalking", true);
                 agent.SetDestination(hit.point);
             }
             transform.LookAt(hit.point);
