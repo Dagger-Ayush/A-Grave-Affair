@@ -34,15 +34,7 @@ public class PointAndMovement : MonoBehaviour
    
     void Update()
     {
-
-        if (!isWalking || agent.hasPath || PlayerInteract.isPointAndMovementEnabled)
-        {
-
-            animator.SetBool("IsWalking", false);
-        }
-        //animator.SetBool("IsIdle", true);
         KeyMove();
-
 
     }
 
@@ -114,7 +106,12 @@ public class PointAndMovement : MonoBehaviour
         {
             isWalking = false;
         }
-         
+        if (!isWalking || agent.hasPath || PlayerInteract.isPointAndMovementEnabled)
+        {
+
+            animator.SetBool("IsWalking", false);
+        }
+
         //transform.position = new Vector3(x, 0, z);
 
         Vector3 dir = transform.right * x + transform.forward * z;

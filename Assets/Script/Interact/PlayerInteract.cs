@@ -10,6 +10,7 @@ public class PlayerInteract : MonoBehaviour
     private PlayerDialog playerDialog;
     public Transform player;
     [SerializeField] private DialogAudio BackGroundAudio;
+    [SerializeField] private Animator animator;
 
     public Image tabletImage;
     private bool shouldTabletWork;
@@ -33,6 +34,7 @@ public class PlayerInteract : MonoBehaviour
             pointAndMovement.agent.SetDestination(player.transform.position);
             tabletImage.enabled= false;
             pointAndMovement.enabled = false;
+            animator.SetBool("IsWalking", false);
         }
         else if (!ObjectInteract.isInteracted || !ObjectPickHandler.isCollected || !isPointAndMovementEnabled && !playerDialog.isInteraction)
         {
