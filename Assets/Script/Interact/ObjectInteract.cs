@@ -9,7 +9,7 @@ public class ObjectInteract : MonoBehaviour
     [SerializeField] private CanvasGroup inRange;
     [SerializeField] private CanvasGroup outRange;
     [SerializeField] private PlayerInteract playerInteract;
-
+    [SerializeField] private ObjectPickReferences pickReferences;
 
     [Header("dialogue references")]
     [SerializeField] private GameObject[] dialogueImages;
@@ -20,7 +20,7 @@ public class ObjectInteract : MonoBehaviour
     private Vector2 turn;
 
    public bool isTablet;// the player need not need to press E to enable Dialog
-
+    public bool isDogBed;
     private ObjectPickHandler pickHandler;
     public bool isCigarette;
 
@@ -29,7 +29,7 @@ public class ObjectInteract : MonoBehaviour
 
     [HideInInspector] public bool shouldWork = false;
 
-    
+    private bool InteractedWithDogBed = false;
     private void Start()
     {
         
@@ -43,6 +43,10 @@ public class ObjectInteract : MonoBehaviour
         if (isTablet)
         {
             shouldWork = true;
+        }
+        if (isDogBed)
+        {
+            enabled = false;
         }
     }
     private void Update()
@@ -87,7 +91,18 @@ public class ObjectInteract : MonoBehaviour
                                                                                   playerInteract.player.transform.position.y + 4.4f,
                                                                                   playerInteract.player.transform.position.z - 2);
             }
-         
+
+        }
+        if (isDogBed && !InteractedWithDogBed)
+        {
+            if (!interacting)
+            {
+                StartInteraction();
+            }
+            else if (interacting && Input.GetKeyDown(KeyCode.E))
+            {
+                NextDialogueImage();
+            }
         }
     }
     private void ObjectHandler()
@@ -172,7 +187,8 @@ public class ObjectInteract : MonoBehaviour
                 FindAnyObjectByType<ObjectInteract>().shouldWork = true;
                 FindAnyObjectByType<ObjectPickHandler>().shouldWork = true;
                 FindAnyObjectByType<ObjectMoving>().shouldWork = true;
-                Collider[] colliderArray = Physics.OverlapSphere(transform.position, 45);
+
+                Collider[] colliderArray = Physics.OverlapSphere(transform.position, 100);
 
                 foreach (Collider collider in colliderArray)
                 {
@@ -183,8 +199,16 @@ public class ObjectInteract : MonoBehaviour
                     }
                     if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
                     {
+                       
+                            objectPickHandler.shouldWork = true;
 
-                        objectPickHandler.shouldWork = true;
+
+
+                        if (objectPickHandler.isLetter_1 || objectPickHandler.isLetter_2)
+                        {
+                            objectPickHandler.shouldWork = false;
+
+                        }
                     }
                     if (collider.TryGetComponent(out ObjectMoving objectMoving))
                     {
@@ -211,7 +235,12 @@ public class ObjectInteract : MonoBehaviour
                 }
                 Destroy(gameObject, 0.1f);// using delay for Movment and point and click to enable
             }
-           
+            if (isDogBed)
+            {
+                InteractedWithDogBed = true;
+                pickReferences.lighterObjectPickHandler.enabled = true;
+               
+            }
         }
     }
 

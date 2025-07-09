@@ -116,12 +116,12 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectMoving objectMoving))
             {
-                if (objectMoving.canInteract)
+                if (objectMoving.canInteract && objectMoving.enabled == true)
                 {
                     isPointAndMovementEnabled = true;
 
                 }
-                else
+                else if (!objectMoving.canInteract && objectMoving.enabled == true)
                 {
                     isPointAndMovementEnabled = false;
                 }

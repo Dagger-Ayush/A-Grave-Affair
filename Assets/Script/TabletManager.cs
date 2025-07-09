@@ -31,19 +31,23 @@ public class TabletManager : MonoBehaviour
     public PlayerInteract playerInteract;
     private PuzzleData currentDisplayedPuzzle = null;
 
+    
+
     private void Start()
     {
         SetY(hiddenY);
     }
     private void Update()
     {
-       
+
+        
         if (Input.GetKeyDown(KeyCode.Tab) && playerInteract.isPointAndMovementEnabled == false)
         {
             isOpen = !isOpen;
             StopAllCoroutines();
             StartCoroutine(SlideTablet(isOpen));
         }
+
     }
 
     public void ToggleClueContainer()
@@ -159,7 +163,7 @@ public class TabletManager : MonoBehaviour
     
     void BuildSentenceWithDropZone(string sentence)
     {
-        
+       
         foreach (Transform child in sentencePanel)
             Destroy(child.gameObject);
 
@@ -223,6 +227,7 @@ public class TabletManager : MonoBehaviour
 
     public void DisplayCompletedSentence(PuzzleData puzzle)
     {
+       
         // Clear previous sentence
         foreach (Transform child in sentencePanel)
             Destroy(child.gameObject);
@@ -232,7 +237,7 @@ public class TabletManager : MonoBehaviour
 
         string[] tokens = puzzle.sentenceTemplate.Split(' ');
         int clueIndex = 0;
-
+       
         foreach (string token in tokens)
         {
             GameObject element;
@@ -245,6 +250,7 @@ public class TabletManager : MonoBehaviour
                 if (text != null)
                     text.text = puzzle.correctAnswers[clueIndex];
                 clueIndex++;
+               
             }
             else
             {
@@ -272,4 +278,5 @@ public class TabletManager : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(sentencePanel);
     }
+   
 }

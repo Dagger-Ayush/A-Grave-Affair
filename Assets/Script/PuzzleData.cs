@@ -9,4 +9,5 @@ public class PuzzleData : ScriptableObject
     public List<string> requiredClues;
 
     public bool isCompleted = false;
+
 }

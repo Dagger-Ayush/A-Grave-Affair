@@ -12,16 +12,13 @@ public class DialogSystem : MonoBehaviour
     [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private Transform player;
     [SerializeField] private DialogAudio[] dialogAudio;
-    private ObjectInteract dialogSystem;
+    private ObjectInteract objectInteract;
    
     private void Start()
     {
        
-        dialogSystem = GetComponent<ObjectInteract>();
-        if (isDogBed)
-        {
-            enabled = false;
-        }
+        objectInteract = GetComponent<ObjectInteract>();
+      
     }
     private void Update()
     {
@@ -52,13 +49,14 @@ public class DialogSystem : MonoBehaviour
     }
     public void StartInteraction()
     {
+        playerInteract.isPointAndMovementEnabled = true;
         interacting = true;
         currentImageIndex = 0;
        
 
         if (dialogueImages.Length > 0)
         {
-            playerInteract.isPointAndMovementEnabled = true;
+            
             dialogueImages[currentImageIndex].SetActive(true);
             dialogAudio[currentImageIndex].sorce.Play();
         }
@@ -85,7 +83,7 @@ public class DialogSystem : MonoBehaviour
 
             if (isDogBed)
             {
-                dialogSystem.enabled = true;
+                objectInteract.enabled = true;
                 objectPickHandler.enabled = true;
                 enabled = false;
               

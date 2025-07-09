@@ -40,7 +40,8 @@ public class ObjectPickHandler : MonoBehaviour
     [SerializeField]private float inspectionCamFov = 40;
 
     [SerializeField]private bool isLighter = false;
-    [SerializeField]private bool isLetter = false;
+    public bool isLetter_1 = false;
+    public bool isLetter_2 = false;
 
     [SerializeField]private bool checkClue = false;
 
@@ -119,14 +120,17 @@ public class ObjectPickHandler : MonoBehaviour
             Avoid();
            
         }
-       
-        if (isPicked && Input.GetKeyDown(pickReferences.XrayToggle) && isLetter)
+       if(isPicked && isLetter_1 || isLetter_2)
         {
-            if (!isVision)
-                XrayVisionEnable();
-            else
-                XrayVisionDisable();
+            if (Input.GetKeyDown(pickReferences.XrayToggle))
+            {
+                if (!isVision)
+                    XrayVisionEnable();
+                else
+                    XrayVisionDisable();
+            }
         }
+        
        
     }
 
@@ -212,6 +216,7 @@ public class ObjectPickHandler : MonoBehaviour
             }
 
         }
+       
         yield return new WaitForSeconds(1);
         isbusy = false;
     }
@@ -223,6 +228,11 @@ public class ObjectPickHandler : MonoBehaviour
         isVision = true;
         if (XrayObject != null) XrayObject.SetActive(true);
         pickReferences.XrayCamara.SetActive(true);
+
+        if (isLetter_2)
+        {
+            pickReferences.gameOverTrigger.SetActive(true);
+        }
     }
 
     private void XrayVisionDisable()

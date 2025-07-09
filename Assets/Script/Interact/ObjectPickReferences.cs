@@ -15,9 +15,9 @@ public class ObjectPickReferences : MonoBehaviour
 
     private bool isSwitch;
 
+    public GameObject gameOverTrigger;
 
-    public Image tabletImage;
-
+    public ObjectPickHandler lighterObjectPickHandler;//for dog (ObjectPickHandler of lighter)
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)

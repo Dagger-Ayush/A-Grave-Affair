@@ -12,12 +12,24 @@ public class PuzzleValidator : MonoBehaviour
     public TabletManager tabletManager;
     public TMP_Text feedbackText;
     public List<PuzzleData> allPuzzles;
-
+    int CorrectFilledCount = 0;//Checking for if the entier Puzzle is filled correct
+    bool isIncreased;
     private void Start()
     {
         ResetPuzzleCompletion();
     }
+    private void Update()
+    {
+       
+        if (currentPuzzle != null && currentPuzzle.isCompleted && !isIncreased)
+        {
+            CorrectFilledCount++;
+            isIncreased = true;
+        }
+        LetterEnabling();
 
+    }
+    
     //void Update()
     //{
     //    if (Input.GetKeyDown(KeyCode.V))
@@ -49,6 +61,8 @@ public class PuzzleValidator : MonoBehaviour
 
     public void CheckAllDropZonesFilled()
     {
+       
+        
         foreach (var zone in dropZones)
         {
             if (zone.currentClue == null)
@@ -72,6 +86,7 @@ public class PuzzleValidator : MonoBehaviour
 
         if (incorrectCount == 0)
         {
+            isIncreased = false;
             feedbackText.text = "Sentence is filled correctly.";
             Debug.Log("Puzzle is Correct");
 
@@ -127,6 +142,34 @@ public class PuzzleValidator : MonoBehaviour
         foreach (PuzzleData puzzle in allPuzzles)
         {
             puzzle.isCompleted = false;
+        }
+    }
+    private void LetterEnabling()
+    {
+
+        if (CorrectFilledCount >= 2)
+        {
+
+            Collider[] colliderArray = Physics.OverlapSphere(transform.position, 100);
+
+            foreach (Collider collider in colliderArray)
+            {
+                if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
+                {
+
+                    if (objectPickHandler.isLetter_1)
+                    {
+                        objectPickHandler.shouldWork = true;
+                    }
+                    if (objectPickHandler.isLetter_2)
+                    {
+                     
+                        objectPickHandler.shouldWork = true;
+                    }
+
+                }
+            }
+
         }
     }
 }

@@ -13,8 +13,8 @@ public class ObjectMoving : MonoBehaviour
     [SerializeField] private CanvasGroup inRange;
     [SerializeField] private CanvasGroup outRange;
     [SerializeField] private PlayerInteract playerInteract;
+    private ObjectInteract objectInteract;
 
-    
     [SerializeField] private GameObject foodBowlEmpty, foodBowlFilled;
     [SerializeField] private GameObject dialogueImages;
 
@@ -32,11 +32,16 @@ public class ObjectMoving : MonoBehaviour
     [SerializeField] private Transform Dog;
     [SerializeField] private Image fadeImage;
 
+    private void Start()
+    {
+         objectInteract = GetComponent<ObjectInteract>();
+    }
     void Update()
     {
+        if (!shouldWork) return;
         if (playerInteract.ObjectMoving() == this && !isCompleted)
         {
-            if(!shouldWork)return;
+            
             outRange.alpha = 0;
             if (inRange != null )
             {
@@ -44,7 +49,7 @@ public class ObjectMoving : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E) )
             {
-                if (isCompleted) return;
+               
                 switch (objectType)
                 {
                     case ObjectType.DogBed:
@@ -95,11 +100,11 @@ public class ObjectMoving : MonoBehaviour
     void DogBedMoving()
     {
 
-        DialogSystem dialogSystem = GetComponent<DialogSystem>();
+       
 
-        dialogSystem.enabled = true;
+        objectInteract.enabled = true;
 
-        isCompleted = true;
+      
 
         float objectMove = 2;
 
@@ -107,7 +112,9 @@ public class ObjectMoving : MonoBehaviour
         
         transform.position = new Vector3(transform.position.x, transform.position.y, z -= objectMove);
 
-      
+        isCompleted = true;
+
+
     }
     void DogBowlFilling()
     {
@@ -123,7 +130,7 @@ public class ObjectMoving : MonoBehaviour
         canInteract = false;
 
     }
-    IEnumerator FadeInAndOut()
+    public IEnumerator FadeInAndOut()
     {
        
         float time = 0f;
