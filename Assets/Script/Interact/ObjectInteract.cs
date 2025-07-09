@@ -15,7 +15,7 @@ public class ObjectInteract : MonoBehaviour
     [SerializeField] private GameObject[] dialogueImages;
     private int currentImageIndex = 0;
 
-    [HideInInspector]public  bool interacting;
+    public  bool interacting;
      public static bool isInteracted;
     private Vector2 turn;
 
@@ -51,7 +51,32 @@ public class ObjectInteract : MonoBehaviour
     }
     private void Update()
     {
-        
+
+        if (interacting || isInteracted)
+        {
+            if (dialogueImages[currentImageIndex].tag == "Screen")
+            {
+                dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
+                dialogueImages[currentImageIndex].transform.position = new Vector3(playerInteract.player.transform.position.x - 1.75f,
+                                                                                  playerInteract.player.transform.position.y + 4.4f,
+                                                                                  playerInteract.player.transform.position.z - 2);
+            }
+
+        }
+        if (isDogBed && !InteractedWithDogBed)
+        {
+            if (!interacting)
+            {
+                StartInteraction();
+            }
+            else if (interacting && Input.GetKeyDown(KeyCode.E))
+            {
+                NextDialogueImage();
+            }
+        }
+
+        if (isDogBed && !InteractedWithDogBed) return;
+
         if (inRange != null)
         {
             if (isInteracted || ObjectPickHandler.isCollected)
@@ -77,33 +102,13 @@ public class ObjectInteract : MonoBehaviour
             ObjectHandler();
         }
 
-        else if (playerInteract.GetObjectInteract() == null)
+        else if (playerInteract.GetObjectInteract() == null  )
         {
+            
             Avoid();
         }
        
-        if (interacting == true)
-        {
-            if (dialogueImages[currentImageIndex].tag == "Screen")
-            {
-                dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
-                dialogueImages[currentImageIndex].transform.position = new Vector3(playerInteract.player.transform.position.x - 1.75f,
-                                                                                  playerInteract.player.transform.position.y + 4.4f,
-                                                                                  playerInteract.player.transform.position.z - 2);
-            }
-
-        }
-        if (isDogBed && !InteractedWithDogBed)
-        {
-            if (!interacting)
-            {
-                StartInteraction();
-            }
-            else if (interacting && Input.GetKeyDown(KeyCode.E))
-            {
-                NextDialogueImage();
-            }
-        }
+      
     }
     private void ObjectHandler()
     {
@@ -141,8 +146,6 @@ public class ObjectInteract : MonoBehaviour
         isInteracted = true;
         currentImageIndex = 0;
        
-        playerInteract.player.transform.LookAt(transform.position);
-        
        
         if (dialogueImages.Length > 0)
         {
@@ -237,16 +240,16 @@ public class ObjectInteract : MonoBehaviour
             }
             if (isDogBed)
             {
-                InteractedWithDogBed = true;
+                
                 pickReferences.lighterObjectPickHandler.enabled = true;
-               
+                InteractedWithDogBed = true;
             }
         }
     }
 
     private void Avoid()
     {   
-
+       
         if (currentImageIndex < dialogueImages.Length)
         {
             dialogueImages[currentImageIndex].SetActive(false);

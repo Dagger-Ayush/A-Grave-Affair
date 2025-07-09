@@ -18,7 +18,10 @@ public class DialogSystem : MonoBehaviour
     {
        
         objectInteract = GetComponent<ObjectInteract>();
-      
+        if (isDogBed)
+        {
+            enabled = false;
+        }
     }
     private void Update()
     {
