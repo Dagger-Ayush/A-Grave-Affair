@@ -12,8 +12,11 @@ public class PuzzleValidator : MonoBehaviour
     public TabletManager tabletManager;
     public TMP_Text feedbackText;
     public List<PuzzleData> allPuzzles;
-    int CorrectFilledCount = 0;//Checking for if the entier Puzzle is filled correct
+
+    [Header ("Extra References")]
+    public static int CorrectFilledCount = 0;//Checking for if the entier Puzzle is filled correct
     bool isIncreased;
+   
     private void Start()
     {
         ResetPuzzleCompletion();
@@ -149,7 +152,7 @@ public class PuzzleValidator : MonoBehaviour
 
         if (CorrectFilledCount >= 2)
         {
-
+           
             Collider[] colliderArray = Physics.OverlapSphere(transform.position, 100);
 
             foreach (Collider collider in colliderArray)

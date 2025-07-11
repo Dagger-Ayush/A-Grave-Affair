@@ -32,7 +32,6 @@ public class TabletManager : MonoBehaviour
     private PuzzleData currentDisplayedPuzzle = null;
 
     
-
     private void Start()
     {
         SetY(hiddenY);
@@ -278,5 +277,5 @@ public class TabletManager : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(sentencePanel);
     }
-   
+  
 }
