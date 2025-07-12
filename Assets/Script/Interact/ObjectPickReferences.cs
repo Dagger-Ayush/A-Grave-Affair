@@ -18,6 +18,8 @@ public class ObjectPickReferences : MonoBehaviour
     public GameObject gameOverTrigger;
 
     public ObjectPickHandler lighterObjectPickHandler;//for dog (ObjectPickHandler of lighter)
+    public GameObject XrayOnImage;
+    public GameObject XrayOfImage;
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)

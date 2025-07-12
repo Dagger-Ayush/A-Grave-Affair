@@ -42,6 +42,7 @@ public class ObjectInteract : MonoBehaviour
         }
         if (isTablet)
         {
+            outRange.alpha = 1;
             shouldWork = true;
         }
         if (isDogBed)
@@ -87,6 +88,7 @@ public class ObjectInteract : MonoBehaviour
         if (playerInteract.GetObjectInteract() == this)
         {
             if (!shouldWork) return;
+
             outRange.alpha = 0;
             if (inRange != null )
             {

@@ -122,12 +122,23 @@ public class ObjectPickHandler : MonoBehaviour
         }
        if(isPicked && isLetter_1 || isLetter_2)
         {
+            
             if (Input.GetKeyDown(pickReferences.XrayToggle))
             {
                 if (!isVision)
                     XrayVisionEnable();
                 else
                     XrayVisionDisable();
+            }
+            if (!isVision)
+            {
+                pickReferences.XrayOnImage.SetActive(true);
+                pickReferences.XrayOfImage.SetActive(false);
+            }
+            else
+            {
+                pickReferences.XrayOfImage.SetActive(true);
+                pickReferences.XrayOnImage.SetActive(false);
             }
         }
         
