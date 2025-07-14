@@ -53,8 +53,9 @@ public class ObjectInteract : MonoBehaviour
     private void Update()
     {
 
-        if (interacting || isInteracted)
-        {
+        
+            if (currentImageIndex<dialogueImages.Length)
+            {
             if (dialogueImages[currentImageIndex].tag == "Screen")
             {
                 dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
@@ -62,8 +63,10 @@ public class ObjectInteract : MonoBehaviour
                                                                                   playerInteract.player.transform.position.y + 4.4f,
                                                                                   playerInteract.player.transform.position.z - 2);
             }
+           
+            }
 
-        }
+        
         if (isDogBed && !InteractedWithDogBed)
         {
             if (!interacting)
@@ -254,7 +257,7 @@ public class ObjectInteract : MonoBehaviour
        
         if (currentImageIndex < dialogueImages.Length)
         {
-            dialogueImages[currentImageIndex].SetActive(false);
+            //dialogueImages[currentImageIndex].SetActive(false);
             currentImageIndex = 0;
 
         }
