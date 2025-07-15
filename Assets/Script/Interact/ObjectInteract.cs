@@ -23,7 +23,7 @@ public class ObjectInteract : MonoBehaviour
     public bool isDogBed;
     private ObjectPickHandler pickHandler;
     public bool isCigarette;
-
+    [SerializeField] private bool isLighter = false;
 
     [SerializeField] private DialogAudio[] dialogAudio;
 
@@ -248,6 +248,10 @@ public class ObjectInteract : MonoBehaviour
                 
                 pickReferences.lighterObjectPickHandler.enabled = true;
                 InteractedWithDogBed = true;
+            }
+            if (isLighter)
+            {
+                Destroy(gameObject, 0.1f);
             }
         }
     }
