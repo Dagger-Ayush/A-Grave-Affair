@@ -66,6 +66,10 @@ public class ClueManager : MonoBehaviour
                 TMP_Text clueText = clueGO.GetComponentInChildren<TMP_Text>();
                 if (clueText != null)
                     clueText.text = clue;
+
+                DraggableClue draggable = clueGO.GetComponent<DraggableClue>();
+                if (draggable != null)
+                    draggable.clueText = clue;
             }
         }
 

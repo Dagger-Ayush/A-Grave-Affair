@@ -19,6 +19,7 @@ public class TabletManager : MonoBehaviour
     public GameObject clueBox;
     public GameObject dropZonePrefab;
     public GameObject wordPrefab;
+    public GameObject correctWordPrefab;
     public PuzzleValidator validator;
     //public List<PuzzleData> puzzles;
     public TMP_Text sentenceText;
@@ -204,7 +205,9 @@ public class TabletManager : MonoBehaviour
             element.transform.SetParent(currentRow.transform, false);
             rowWidth += elementWidth;
         }
+        
         LayoutRebuilder.ForceRebuildLayoutImmediate(sentencePanel);
+        
     }
     private GameObject CreateNewRow()
     {
@@ -244,7 +247,7 @@ public class TabletManager : MonoBehaviour
             if (token == "_" && clueIndex < puzzle.correctAnswers.Count)
             {
                 // Create clue word prefab for the correct answer
-                element = Instantiate(wordPrefab);
+                element = Instantiate(correctWordPrefab);
                 var text = element.GetComponentInChildren<TMP_Text>();
                 if (text != null)
                     text.text = puzzle.correctAnswers[clueIndex];

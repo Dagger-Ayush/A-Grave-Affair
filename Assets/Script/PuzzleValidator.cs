@@ -43,6 +43,11 @@ public class PuzzleValidator : MonoBehaviour
     //}
     public bool ValidatePuzzle()
     {
+        if (dropZones.Count != currentPuzzle.correctAnswers.Count)
+        {
+            Debug.LogError($"Mismatch: dropZones.Count = {dropZones.Count}, correctAnswers.Count = {currentPuzzle.correctAnswers.Count}");
+            return false;
+        }
         for (int i = 0; i < dropZones.Count; i++)
         {
             var clue = dropZones[i].currentClue;
@@ -64,8 +69,9 @@ public class PuzzleValidator : MonoBehaviour
 
     public void CheckAllDropZonesFilled()
     {
-       
-        
+        Debug.Log("Validating puzzle: " + currentPuzzle.name);
+        dropZones = dropZones.Where(dz => dz != null).ToList();
+
         foreach (var zone in dropZones)
         {
             if (zone.currentClue == null)
@@ -94,6 +100,11 @@ public class PuzzleValidator : MonoBehaviour
             Debug.Log("Puzzle is Correct");
 
             currentPuzzle.isCompleted = true;
+
+            if (tabletManager != null)
+            {
+                tabletManager.DisplayCompletedSentence(currentPuzzle);
+            }
 
             string fullSentence = currentPuzzle.sentenceTemplate;
 
