@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Diagnostics.CodeAnalysis;
@@ -143,11 +143,10 @@ public class ObjectPickHandler : MonoBehaviour
         }
         else if(!isCollected)
         {
-
+            XrayVisionDisable();
             pickReferences.XrayOfImage.SetActive(false);
             pickReferences.XrayOnImage.SetActive(false);
         }
-        
        
     }
 
@@ -186,6 +185,12 @@ public class ObjectPickHandler : MonoBehaviour
         
         yield return new WaitForSeconds(0.3f);
         isbusy = false;
+        if (isLetter_2 && isPicked && isCollected && isVision)
+        {
+            pickReferences.gameOverTrigger.SetActive(true);
+        }
+
+
     }
 
     public IEnumerator ObjectDrop()
@@ -246,7 +251,7 @@ public class ObjectPickHandler : MonoBehaviour
         if (XrayObject != null) XrayObject.SetActive(true);
         pickReferences.XrayCamara.SetActive(true);
 
-        if (isLetter_2)
+        if (isLetter_2 && isCollected )
         {
             pickReferences.gameOverTrigger.SetActive(true);
         }

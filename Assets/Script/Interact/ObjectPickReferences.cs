@@ -39,7 +39,7 @@ public class ObjectPickReferences : MonoBehaviour
         */
         if (!isSwitch)
         {
-            MainCam.Lens.OrthographicSize = 0.25f;
+            MainCam.Lens.OrthographicSize = 0.3f;
 
             isSwitch = true;
         }
