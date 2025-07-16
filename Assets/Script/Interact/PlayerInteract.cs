@@ -29,15 +29,17 @@ public class PlayerInteract : MonoBehaviour
         GetObjectInteract();
         GetObjectPickHandler();
 
-        if (ObjectInteract.isInteracted || ObjectPickHandler.isCollected || isPointAndMovementEnabled)
+        if (ObjectInteract.isInteracted || ObjectPickHandler.isCollected || ObjectMoving.canInteract)
         {
+            isPointAndMovementEnabled = true;
             pointAndMovement.agent.SetDestination(player.transform.position);
             tabletImage.enabled= false;
             pointAndMovement.enabled = false;
             animator.SetBool("IsWalking", false);
         }
-        else if (!ObjectInteract.isInteracted || !ObjectPickHandler.isCollected || !isPointAndMovementEnabled && !playerDialog.isInteraction)
+        else if (!ObjectInteract.isInteracted || !ObjectPickHandler.isCollected || !ObjectMoving.canInteract  && !playerDialog.isInteraction)
         {
+            isPointAndMovementEnabled = false;
             if (shouldTabletWork)
             {
                 tabletImage.enabled = true;
@@ -61,19 +63,11 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectInteract objectInteract))
             {
-                if (ObjectInteract.isInteracted && objectInteract.enabled == true)
+                if (objectInteract.isTablet == true)
                 {
-                    isPointAndMovementEnabled = true;
- 
+                    shouldTabletWork = true;
                 }
-                else if (!ObjectInteract.isInteracted && objectInteract.enabled == true)
-                {
-                  if( objectInteract.isTablet == true)
-                    { 
-                        shouldTabletWork = true; 
-                    }
-                    isPointAndMovementEnabled = false;
-                }
+              
                 return objectInteract;
             }
 
@@ -90,23 +84,14 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
             {
-                if (ObjectPickHandler.isCollected && objectPickHandler.enabled == true)
-                {
-                    isPointAndMovementEnabled = true;
-                   
-                }
-                else if (!ObjectPickHandler.isCollected && objectPickHandler.enabled ==true)
-                {
-                    
-                    isPointAndMovementEnabled = false;
-                }
+               
                 return objectPickHandler;
             }
 
         }
         return null;
     }
-    public ObjectMoving ObjectMoving()
+    public ObjectMoving ObjectMovingHandler()
     {
         //checking if the object is in range
 
@@ -116,15 +101,7 @@ public class PlayerInteract : MonoBehaviour
         {
             if (collider.TryGetComponent(out ObjectMoving objectMoving))
             {
-                if (objectMoving.canInteract && objectMoving.enabled == true)
-                {
-                    isPointAndMovementEnabled = true;
-
-                }
-                else if (!objectMoving.canInteract && objectMoving.enabled == true)
-                {
-                    isPointAndMovementEnabled = false;
-                }
+               
                 return objectMoving;
             }
 

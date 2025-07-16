@@ -19,7 +19,7 @@ public class ObjectMoving : MonoBehaviour
     [SerializeField] private GameObject dialogueImages;
 
     private bool isCompleted = false;
-    [HideInInspector]public bool canInteract = false;
+    [HideInInspector]public static bool canInteract = false;
     private static bool canInteractWithBed = false;
 
    
@@ -39,7 +39,7 @@ public class ObjectMoving : MonoBehaviour
     void Update()
     {
         if (!shouldWork) return;
-        if (playerInteract.ObjectMoving() == this && !isCompleted)
+        if (playerInteract.ObjectMovingHandler() == this && !isCompleted)
         {
             
             outRange.alpha = 0;
@@ -82,7 +82,7 @@ public class ObjectMoving : MonoBehaviour
             }
             
         }
-        else if(playerInteract.ObjectMoving() == null && !isCompleted && shouldWork)
+        else if(playerInteract.ObjectMovingHandler() == null && !isCompleted && shouldWork)
         {
             if (inRange != null)
             {
