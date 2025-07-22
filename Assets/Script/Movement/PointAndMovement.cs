@@ -98,10 +98,14 @@ public class PointAndMovement : MonoBehaviour
         }
 
     }
-
+    /*
     void KeyMove()
     {
-        if(currentMovementMode == MovementMode.Keyboard)
+        float x = Input.GetAxis("Horizontal") * playerSpeed;
+        float z = Input.GetAxis("Vertical") * playerSpeed;
+
+
+        if (currentMovementMode == MovementMode.Keyboard)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
@@ -109,16 +113,16 @@ public class PointAndMovement : MonoBehaviour
             if (groundPlane.Raycast(ray, out rayDistance))
             {
                 Vector3 point = ray.GetPoint(rayDistance);
-                LookAt(point);
+                if (x != 0 || z != 0)
+                {
+                    LookAt(point);
+                }
             }
         }
 
-        float x = Input.GetAxis("Horizontal") * playerSpeed;
-        float z = Input.GetAxis("Vertical") * playerSpeed;
-
-       
         if (x != 0 || z != 0)
         {
+           
             currentMovementMode = MovementMode.Keyboard;
             isWalking = true;
 
@@ -149,8 +153,52 @@ public class PointAndMovement : MonoBehaviour
         dir.y = rb.linearVelocity.y;
         rb.linearVelocity = dir;
     }
+    */
+    void KeyMove()
+    {
+        float z = Input.GetAxis("Vertical") * playerSpeed; // Only W or S, but we restrict it below
 
-  
+        if (z > 0) // Only allow forward (W)
+        {
+            currentMovementMode = MovementMode.Keyboard;
+            isWalking = true;
+
+            if (!isMoving)
+            {
+                isMoving = true;
+            }
+
+            if (agent.hasPath)
+            {
+                agent.ResetPath(); // Stop NavMesh path if moving via keyboard
+            }
+
+            // Look where mouse is pointing
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+            float rayDistance;
+            if (groundPlane.Raycast(ray, out rayDistance))
+            {
+                Vector3 point = ray.GetPoint(rayDistance);
+                LookAt(point);
+            }
+
+            Vector3 dir = transform.forward * z;
+            dir.y = rb.linearVelocity.y;
+            rb.linearVelocity = dir;
+        }
+        else
+        {
+            isWalking = false;
+
+            if (currentMovementMode == MovementMode.Keyboard)
+            {
+                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            }
+        }
+    }
+
+
     void LookAt(Vector3 point)
     {
         if (!isMoving) return;
