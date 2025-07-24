@@ -8,6 +8,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     private Camera uiCamera;
     private Coroutine hoverRoutine;
     private bool isHovering = false;
+    private string currentHoveredClueId = "";
 
     private void Awake()
     {
@@ -39,10 +40,16 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
         if (isHovering)
         {
-            CursorManager.Instance.SetNormalCursor();
+            ResetCursorState();
             isHovering = false;
-            ObjectHovering.isRunning = false;
+            currentHoveredClueId = "";
         }
+    }
+
+    private void ResetCursorState()
+    {
+        CursorManager.Instance.SetNormalCursor();
+        ObjectHovering.isRunning = false;
     }
 
     private System.Collections.IEnumerator CheckHover()
@@ -51,17 +58,37 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         {
             int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, uiCamera);
 
-
-            if (Input.GetMouseButtonDown(0) && linkIndex != -1)
+            // Reset if not hovering over any link
+            if (linkIndex == -1)
             {
-                var linkInfo = text.textInfo.linkInfo[linkIndex];
-                ClueManager.Instance.AddClue(linkInfo.GetLinkID());
+                if (!string.IsNullOrEmpty(currentHoveredClueId))
+                {
+                    currentHoveredClueId = "";
+                    ResetCursorState();
+                }
+                yield return null;
+                continue;
             }
 
+            // Get current hovered clue info
+            var linkInfo = text.textInfo.linkInfo[linkIndex];
+            currentHoveredClueId = linkInfo.GetLinkID();
+            bool isClueCollected = ClueManager.Instance.ClueCheck(currentHoveredClueId);
 
-            bool shouldShowClueCursor = linkIndex != -1;
+            // Handle click only on uncollected clues
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (!isClueCollected)
+                {
+                    ClueManager.Instance.AddClue(currentHoveredClueId);
+                    ResetCursorState();
+                    yield return new WaitForEndOfFrame(); //  immediate cursor reset
+                    continue;
+                }
+            }
 
-            if (shouldShowClueCursor)
+            // Only show clue cursor for uncollected clues
+            if (!isClueCollected)
             {
                 if (!ObjectHovering.isRunning)
                 {
@@ -69,18 +96,13 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
                     ObjectHovering.isRunning = true;
                 }
             }
-            else
+            else if (ObjectHovering.isRunning)
             {
-                if (ObjectHovering.isRunning)
-                {
-                    CursorManager.Instance.SetNormalCursor();
-                    ObjectHovering.isRunning = false;
-                }
+                ResetCursorState();
             }
 
             yield return null;
         }
-
 
         StopHover();
     }
@@ -98,5 +120,3 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         StopHover();
     }
 }
-
-
