@@ -84,7 +84,7 @@ public class ObjectPickHandler : MonoBehaviour
         }
         if (isPicked && Input.GetKeyDown(KeyCode.E))
         {
-            if (isbusy) return;
+            if (isbusy || InteractClueManager.isClueShowing) return;
             StartCoroutine(ObjectDrop());
         }
         if (playerInteract.GetObjectPickHandler() == this)
@@ -312,6 +312,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private Vector3 GetMouseWorldPosition()
     {
+        
         Vector3 mousePoint = Input.mousePosition;
         mousePoint.z = inspectionCamara.WorldToScreenPoint(transform.position).z;
         return inspectionCamara.ScreenToWorldPoint(mousePoint);
