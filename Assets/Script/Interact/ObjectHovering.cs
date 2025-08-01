@@ -92,7 +92,7 @@ public class ObjectHovering : MonoBehaviour
 
                 if (mouseHovering)
                 {
-                    CursorManager.Instance.SetClueCursor();
+                    CursorManager.Instance.SetCursor(CursorState.Clue);
                     // Cursor.SetCursor(cursorTextureInRange, cursorHotspot, CursorMode.Auto);
 
                     if (Input.GetMouseButtonDown(0))
@@ -103,8 +103,15 @@ public class ObjectHovering : MonoBehaviour
                 }
                 else
                 {
-
-                    CursorManager.Instance.SetNormalCursor();
+                    if (!TabletManager.isTabletOpen)
+                    {
+                        CursorManager.Instance.SetCursor(CursorState.Normal);
+                    }
+                    else
+                    {
+                        CursorManager.Instance.SetCursor(CursorState.Tablet);
+                    }
+                    //CursorManager.Instance.SetCursor(CursorState.Normal);
                     //Cursor.SetCursor(cursorTextureOutRange, cursorHotspot, CursorMode.Auto);
                     mouseHovering = false;
 
@@ -121,7 +128,7 @@ public class ObjectHovering : MonoBehaviour
 
         yield return new WaitForSeconds(1.8f);
 
-        CursorManager.Instance.SetNormalCursor();
+        CursorManager.Instance.SetCursor(CursorState.Normal);
         ObjectPickHandler.isMouseLocked = false;
         Cursor.lockState = CursorLockMode.None;
         interactClueManager.isFinished = true;

@@ -48,7 +48,10 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     private void ResetCursorState()
     {
-        CursorManager.Instance.SetNormalCursor();
+        if (TabletManager.isTabletOpen)
+            CursorManager.Instance.SetCursor(CursorState.Tablet);
+        else
+            CursorManager.Instance.SetCursor(CursorState.Normal);
         ObjectHovering.isRunning = false;
     }
 
@@ -92,7 +95,10 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             {
                 if (!ObjectHovering.isRunning)
                 {
-                    CursorManager.Instance.SetClueCursor();
+                    if (TabletManager.isTabletOpen)
+                        CursorManager.Instance.SetCursor(CursorState.Tablet); 
+                    else
+                        CursorManager.Instance.SetCursor(CursorState.Clue);
                     ObjectHovering.isRunning = true;
                 }
             }

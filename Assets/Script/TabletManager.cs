@@ -40,7 +40,6 @@ public class TabletManager : MonoBehaviour
     private void Update()
     {
 
-        
         if (Input.GetKeyDown(KeyCode.Tab) && playerInteract.isPointAndMovementEnabled == false)
         {
             isOpen = !isOpen;
@@ -79,6 +78,15 @@ public class TabletManager : MonoBehaviour
             yield return null;
         }
         SetY(endY);
+
+        if(show)
+        {
+            CursorManager.Instance.SetCursor(CursorState.Tablet);
+        }
+        else
+        {
+            CursorManager.Instance.SetCursor(CursorState.Normal);
+        }
 
         Time.timeScale = show ? 0f : 1f;
 

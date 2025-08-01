@@ -34,6 +34,12 @@ public class DraggableClue : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (TabletManager.isTabletOpen)
+        {
+            CursorManager.Instance.SetDraggingClue(true);
+            CursorManager.Instance.SetCursor(CursorState.TabletDrag);
+        }
+
         sourceDropZone = GetComponentInParent<DropZone>();
         originalParent = transform.parent;
 
@@ -52,7 +58,11 @@ public class DraggableClue : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             ReturnToSource();
 
         canvasGroup.blocksRaycasts = true;
-       
+        if (TabletManager.isTabletOpen)
+        {
+            CursorManager.Instance.SetDraggingClue(false);
+            CursorManager.Instance.SetCursor(CursorState.Tablet);
+        }
     }
     private void ReturnToSource()
     {
