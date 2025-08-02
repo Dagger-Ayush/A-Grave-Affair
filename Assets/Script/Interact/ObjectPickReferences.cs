@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,8 @@ public class ObjectPickReferences : MonoBehaviour
     public ObjectPickHandler lighterObjectPickHandler;//for dog (ObjectPickHandler of lighter)
     public GameObject XrayOnImage;
     public GameObject XrayOfImage;
+
+    public TextMeshProUGUI currentClueCount;
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)

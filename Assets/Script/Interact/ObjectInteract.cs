@@ -30,6 +30,7 @@ public class ObjectInteract : MonoBehaviour
     [HideInInspector] public bool shouldWork = false;
 
     private bool InteractedWithDogBed = false;
+
     private void Start()
     {
         
@@ -141,8 +142,8 @@ public class ObjectInteract : MonoBehaviour
                 gameObject.GetComponent<Renderer>().enabled = false;
             }
            
-        } 
-        
+        }
+       
     }
     public void StartInteraction()
     {
@@ -158,8 +159,19 @@ public class ObjectInteract : MonoBehaviour
             {
                 dialogAudio[currentImageIndex].sorce.Play();
             }
-           
+
+            if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
+            {
+                pickReferences.currentClueCount.gameObject.SetActive(false);
+            }
+            else
+            {
+                dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
+            }
+
             dialogueImages[currentImageIndex].SetActive(true);
+
+          
         }
        
     }
@@ -168,8 +180,14 @@ public class ObjectInteract : MonoBehaviour
     {
         if (dialogueImages.Length == 0 )
             return;
-    
+        
+        if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>())
+        {
+            dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().storingData();
+        }
+        
         dialogueImages[currentImageIndex].SetActive(false);
+
         if (dialogueImages[currentImageIndex].tag == "Screen" || dialogueImages[currentImageIndex].tag == "Sound")
         {
             dialogAudio[currentImageIndex].sorce.Stop();
@@ -182,11 +200,20 @@ public class ObjectInteract : MonoBehaviour
             {
                 dialogAudio[currentImageIndex].sorce.Play();
             }
+            if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
+            {
+                pickReferences.currentClueCount.gameObject.SetActive(false);
+            }
+            else
+            {
+                dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
+            }
             dialogueImages[currentImageIndex].SetActive(true);
         }
         else
         {
            
+
             interacting = false;
             isInteracted = false;
            
@@ -245,8 +272,11 @@ public class ObjectInteract : MonoBehaviour
             }
             if (isDogBed)
             {
-                
-                pickReferences.lighterObjectPickHandler.enabled = true;
+                if (pickReferences.lighterObjectPickHandler!= null)
+                {
+                    pickReferences.lighterObjectPickHandler.enabled = true;
+                }
+
                 InteractedWithDogBed = true;
             }
             if (isLighter)

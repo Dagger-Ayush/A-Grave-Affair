@@ -121,6 +121,8 @@ public class ObjectHovering : MonoBehaviour
     }
     IEnumerator WordPicking(InteractClueManager interactClueManager)
     {
+
+        
         isBusy = true;
         Cursor.lockState = CursorLockMode.Locked;
         ObjectPickHandler.isMouseLocked = true;

@@ -3,10 +3,12 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System;
 
 public class ObjectPickHandler : MonoBehaviour
 {
-  
+    public static ObjectPickHandler Instance;
+
     private float time;
 
     private Vector3 offset;
@@ -50,6 +52,15 @@ public class ObjectPickHandler : MonoBehaviour
     [SerializeField] private string[] clue;
 
    [HideInInspector] public bool shouldWork = false;
+
+
+    public static int clueCount;
+    public  int clueCountMain;
+    public bool WillClueCountStop = false;
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     { 
         if (checkClue)
@@ -63,11 +74,20 @@ public class ObjectPickHandler : MonoBehaviour
         }
         inspectionCamara = pickReferences.inspectionCamara;
         XrayToggle = pickReferences.XrayToggle;
-
+        clueCountMain = clue.Length;
     }
     private void Update()
     {
         ObjectHandler();
+
+        if (clueCount > 0)
+        {
+            pickReferences.currentClueCount.text = "Clue count - " + clueCount.ToString();
+        }
+        else
+        {
+            pickReferences.currentClueCount.text = "Clue's Picked";
+        }
     }
 
     private void ObjectHandler()
@@ -147,6 +167,7 @@ public class ObjectPickHandler : MonoBehaviour
             pickReferences.XrayOfImage.SetActive(false);
             pickReferences.XrayOnImage.SetActive(false);
         }
+     
        
     }
 
@@ -155,6 +176,13 @@ public class ObjectPickHandler : MonoBehaviour
        
 
         isCollected = true;
+        pickReferences.currentClueCount.gameObject.SetActive(true);
+
+        if (!WillClueCountStop)
+        {
+            clueCount = clueCountMain; // Count of numbers
+        }
+        
         playerInteract.player.transform.LookAt(transform.position);
 
         isbusy = true;
@@ -195,6 +223,16 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectDrop()
     {
+        if (clueCount <= 0)
+        {
+            WillClueCountStop = true;
+        }
+       else
+        {
+            clueCountMain = clueCount;   
+        }
+        pickReferences.currentClueCount.gameObject.SetActive(false);
+
         XrayVisionDisable();
        
         transform.rotation = objectRotation;
@@ -316,6 +354,12 @@ public class ObjectPickHandler : MonoBehaviour
         Vector3 mousePoint = Input.mousePosition;
         mousePoint.z = inspectionCamara.WorldToScreenPoint(transform.position).z;
         return inspectionCamara.ScreenToWorldPoint(mousePoint);
+    }
+    public void ClueCountMinus()
+    {
+       
+            clueCount--;
+
     }
 
     private void Avoid()
