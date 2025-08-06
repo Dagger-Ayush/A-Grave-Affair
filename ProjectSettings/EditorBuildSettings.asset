@@ -8,6 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main Scene.unity
     guid: 96b1ea7e69e5f594ca1395bfdf12bdf9
+  - enabled: 1
+    path: Assets/Scenes/Nishwanth Test scenes/Room_1/Room_1.unity
+    guid: 680aa56021c6c3a4da4d8f078444f572
+  - enabled: 1
+    path: Assets/Scenes/Nishwanth Test scenes/Room_2/Room_2.unity
+    guid: cf3a90029f89bec4492a108b2a2c4406
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

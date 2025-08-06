@@ -16,13 +16,21 @@ public class PlayerInteract : MonoBehaviour
     private bool shouldTabletWork;
     private void Start()
     {
-       
-        pointAndMovement = GetComponent<PointAndMovement>();
-        playerDialog = GetComponent<PlayerDialog>();
+        if (pointAndMovement != null)
+        {
+            pointAndMovement = GetComponent<PointAndMovement>();
+        }
+        if (playerDialog != null)
+        {
+            playerDialog = GetComponent<PlayerDialog>();
+        }
 
 
+        if(BackGroundAudio != null)
+        {
+            BackGroundAudio.sorce.Play();
+        }
 
-        BackGroundAudio.sorce.Play();
     }
     void Update()
     {
@@ -44,9 +52,12 @@ public class PlayerInteract : MonoBehaviour
             {
                 tabletImage.enabled = true;
             }
-           
-            pointAndMovement.enabled = true;
-            
+           if(pointAndMovement != null)
+            {
+                pointAndMovement.enabled = true;
+
+            }
+
         }
 
 
@@ -103,6 +114,23 @@ public class PlayerInteract : MonoBehaviour
             {
                
                 return objectMoving;
+            }
+
+        }
+        return null;
+    }
+    public SceneChanger SceneChangerHandler()
+    {
+        //checking if the object is in range
+
+        Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRange);
+
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out SceneChanger sceneChanger))
+            {
+
+                return sceneChanger;
             }
 
         }
