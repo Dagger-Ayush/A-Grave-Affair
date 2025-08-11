@@ -16,17 +16,9 @@ public class PlayerInteract : MonoBehaviour
     private bool shouldTabletWork;
     private void Start()
     {
-        if (pointAndMovement != null)
-        {
-            pointAndMovement = GetComponent<PointAndMovement>();
-        }
-        if (playerDialog != null)
-        {
-            playerDialog = GetComponent<PlayerDialog>();
-        }
-
-
-        if(BackGroundAudio != null)
+        pointAndMovement = GetComponent<PointAndMovement>();
+        playerDialog = GetComponent<PlayerDialog>();
+        if (BackGroundAudio != null)
         {
             BackGroundAudio.sorce.Play();
         }
