@@ -10,6 +10,8 @@ public class ObjectHovering : MonoBehaviour
     float radius = 0.2f;
    
     [SerializeField] private AudioSource cursorAudioClip;
+
+
     private bool isSoundPlayed = false;
     private InteractClueManager interactClueManager; // for internal Use
     private Vector2 cursorHotspot;
@@ -80,13 +82,23 @@ public class ObjectHovering : MonoBehaviour
             {
                 if (objectInRange)
                 {
-
+                    if (interactClueManager != null)
+                    {
+                        interactClueManager.StartRepelEffect();
+                    }
                     if (!isSoundPlayed)
                     {
                         if(isBusy)return;
                         cursorAudioClip.Play();
 
                         StartCoroutine(Delay());
+                    }
+                }
+                else
+                {
+                    if (interactClueManager != null)
+                    {
+                        interactClueManager.StopRepelEffect();
                     }
                 }
 
@@ -102,7 +114,8 @@ public class ObjectHovering : MonoBehaviour
                     }
                 }
                 else
-                {
+                { 
+
                     if (!TabletManager.isTabletOpen)
                     {
                         CursorManager.Instance.SetCursor(CursorState.Normal);
