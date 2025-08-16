@@ -32,10 +32,12 @@ public class TabletManager : MonoBehaviour
     public PlayerInteract playerInteract;
     private PuzzleData currentDisplayedPuzzle = null;
 
-    
+    public GameObject[] tabs;
+    private int currentTab = 0;
     private void Start()
     {
         SetY(hiddenY);
+        ShowTab(currentTab);
     }
     private void Update()
     {
@@ -47,8 +49,30 @@ public class TabletManager : MonoBehaviour
             StartCoroutine(SlideTablet(isOpen));
         }
 
+        if(isTabletOpen && Input.GetKeyDown(KeyCode.Q))
+        {
+            NextTab();
+        }
     }
 
+    public void NextTab()
+    {
+        tabs[currentTab].SetActive(false); // hide current tab
+
+        currentTab = (currentTab + 1) % tabs.Length;
+
+        tabs[currentTab].SetActive(true); // show new tab
+    }
+
+    private void ShowTab(int index)
+    {
+        foreach (var tab in tabs)
+        {
+            tab.SetActive(false);
+        }
+
+        tabs[index].SetActive(true);
+    }
     public void ToggleClueContainer()
     {
         if(clueBox != null)
