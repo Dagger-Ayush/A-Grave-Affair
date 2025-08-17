@@ -6,6 +6,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 {
     [Header("Color Settings")]
     public Color hoverColor = Color.green;
+    public Color defaultLinkColor = Color.black; // Default color is black
 
     private TextMeshProUGUI textComponent;
     private Camera uiCamera;
@@ -40,8 +41,8 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         {
             int newLinkIndex = TMP_TextUtilities.FindIntersectingLink(textComponent, Input.mousePosition, uiCamera);
 
-            // Reset previous link if index changed
-            if (currentLinkIndex != -1 && currentLinkIndex != newLinkIndex)
+            // Reset previous link color if hover changed and clue not collected
+            if (currentLinkIndex != -1 && currentLinkIndex != newLinkIndex && !ClueManager.Instance.ClueCheck(currentClueId))
             {
                 ResetLinkColor(currentLinkIndex);
             }
@@ -61,15 +62,22 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
                     if (Input.GetMouseButtonDown(0))
                     {
                         ClueManager.Instance.AddClue(currentClueId);
+                        SetLinkColor(currentLinkIndex, hoverColor); // Permanently green after clicking
                     }
                 }
                 else
                 {
+                    SetLinkColor(currentLinkIndex, hoverColor); // Already collected, stay green
                     SetCursorState(CursorState.Normal);
                 }
             }
             else
             {
+                // If mouse leaves all links, reset color for non-collected
+                if (currentLinkIndex != -1 && !ClueManager.Instance.ClueCheck(currentClueId))
+                {
+                    ResetLinkColor(currentLinkIndex);
+                }
                 SetCursorState(CursorState.Normal);
             }
 
@@ -85,7 +93,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             hoverRoutine = null;
         }
 
-        if (currentLinkIndex != -1)
+        if (currentLinkIndex != -1 && !ClueManager.Instance.ClueCheck(currentClueId))
         {
             ResetLinkColor(currentLinkIndex);
         }
@@ -123,7 +131,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     private void ResetLinkColor(int linkIndex)
     {
-        textComponent.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
+        SetLinkColor(linkIndex, Color.black);
     }
 
     private void SetCursorState(CursorState state)
