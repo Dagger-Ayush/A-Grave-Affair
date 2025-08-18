@@ -107,7 +107,7 @@ public class ObjectHovering : MonoBehaviour
                     CursorManager.Instance.SetCursor(CursorState.Clue);
                     // Cursor.SetCursor(cursorTextureInRange, cursorHotspot, CursorMode.Auto);
 
-                    if (Input.GetMouseButtonDown(0))
+                    if (Input.GetMouseButtonDown(1))
                     {
                        
                         StartCoroutine(WordPicking(interactClueManager));

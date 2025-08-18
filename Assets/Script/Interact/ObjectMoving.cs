@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 
 public class ObjectMoving : MonoBehaviour
@@ -32,6 +30,10 @@ public class ObjectMoving : MonoBehaviour
     [SerializeField] private Transform Dog;
     [SerializeField] private Image fadeImage;
 
+
+    [SerializeField] private TextMeshProUGUI infoText;
+    [SerializeField] private DialogAudio dogBark;
+
     private void Start()
     {
          objectInteract = GetComponent<ObjectInteract>();
@@ -56,6 +58,12 @@ public class ObjectMoving : MonoBehaviour
                         if (canInteractWithBed)
                         {
                             DogBedMoving();
+                        }
+                        else
+                        {
+                            StartCoroutine(TextEnabler(infoText));
+                            dogBark.sorce.Play();
+                            infoText.text = "Can't Interact, if only I could get Fred to move";
                         }
                         break;
 
@@ -167,5 +175,12 @@ public class ObjectMoving : MonoBehaviour
             fadeImage.color = color;
             yield return null;
         }
+    }
+
+    private IEnumerator TextEnabler(TextMeshProUGUI text)
+    {
+        text.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        text.gameObject.SetActive(false);
     }
 }
