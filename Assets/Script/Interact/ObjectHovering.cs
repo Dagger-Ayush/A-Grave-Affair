@@ -20,6 +20,7 @@ public class ObjectHovering : MonoBehaviour
     public static bool isRunning = false; //maintaining the balance between ObjectHowering and CursorHoverOverClue cursor changing
 
    private static bool isBusy = false;
+    public InspectionTutorial inspectionTutorial;
     private void Awake()
     {
 
@@ -32,6 +33,8 @@ public class ObjectHovering : MonoBehaviour
     }
     void ObjectDectecting()
     {
+        if (inspectionTutorial.isRunning) return;
+       
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (Physics.Raycast(ray: ray, hitInfo: out RaycastHit hit)  )
@@ -107,7 +110,7 @@ public class ObjectHovering : MonoBehaviour
                     CursorManager.Instance.SetCursor(CursorState.Clue);
                     // Cursor.SetCursor(cursorTextureInRange, cursorHotspot, CursorMode.Auto);
 
-                    if (Input.GetMouseButtonDown(1))
+                    if (Input.GetMouseButtonDown(0))
                     {
                        
                         StartCoroutine(WordPicking(interactClueManager));

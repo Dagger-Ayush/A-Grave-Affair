@@ -42,6 +42,7 @@ public class ObjectPickHandler : MonoBehaviour
     [SerializeField]private float inspectionCamFov = 40;
 
     [SerializeField]private bool isLighter = false;
+    public bool isCigarette = false;
     public bool isLetter_1 = false;
     public bool isLetter_2 = false;
 
@@ -51,18 +52,29 @@ public class ObjectPickHandler : MonoBehaviour
     private ObjectInteract objectInteract;
     [SerializeField] private string[] clue;
 
-   [HideInInspector] public bool shouldWork = false;
+    public bool shouldWork = false;
 
 
     public static int clueCount;
-    public  int clueCountMain;
+    public int totalClues;
+    public int clueCountStoring = 0;
+    public static int clueCountMain;
     public bool WillClueCountStop = false;
+
+    private ObjectInteract objectInteractCigarette;
+
     private void Awake()
     {
         Instance = this;
     }
     private void Start()
-    { 
+    {
+        if (isCigarette)
+        {
+            objectInteractCigarette = GetComponent<ObjectInteract>();
+            objectInteractCigarette.enabled = false;
+
+        }
         if (checkClue)
         {
             objectInteract = GetComponent<ObjectInteract>();
@@ -74,19 +86,20 @@ public class ObjectPickHandler : MonoBehaviour
         }
         inspectionCamara = pickReferences.inspectionCamara;
         XrayToggle = pickReferences.XrayToggle;
-        clueCountMain = clue.Length;
+        clueCount = 0;
+
     }
     private void Update()
     {
         ObjectHandler();
 
-        if (clueCount > 0)
+        if (clueCount < clueCountMain)
         {
-            pickReferences.currentClueCount.text = "Clue count - " + clueCount.ToString();
+            pickReferences.currentClueCount.text = "Clues Found (" + clueCount.ToString() + "/" + clueCountMain.ToString() + ")";
         }
         else
         {
-            pickReferences.currentClueCount.text = "Clue's Picked";
+            pickReferences.currentClueCount.text = "Clue's Picked(" + clueCountMain.ToString() + "/" + clueCountMain.ToString() + ")";
         }
     }
 
@@ -104,7 +117,7 @@ public class ObjectPickHandler : MonoBehaviour
         }
         if (isPicked && Input.GetKeyDown(KeyCode.E))
         {
-            if (isbusy || InteractClueManager.isClueShowing) return;
+            if (isbusy || InteractClueManager.isClueShowing || pickReferences.inspectionTutorial.isRunning) return;
             StartCoroutine(ObjectDrop());
         }
         if (playerInteract.GetObjectPickHandler() == this)
@@ -128,7 +141,7 @@ public class ObjectPickHandler : MonoBehaviour
 
                 if (!isPicked)
                 {
-                    if (isCollected || ObjectInteract.isInteracted) return;
+                    if (isCollected || ObjectInteract.isInteracted ) return;
                     StartCoroutine(ObjectPickUp());
                 }
                 
@@ -173,16 +186,13 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectPickUp()
     {
-       
+
+        clueCount = clueCountStoring;
+        clueCountMain = totalClues;
 
         isCollected = true;
-        pickReferences.currentClueCount.gameObject.SetActive(true);
+        pickReferences.currentClue.SetActive(true);
 
-        if (!WillClueCountStop)
-        {
-            clueCount = clueCountMain; // Count of numbers
-        }
-        
         playerInteract.player.transform.LookAt(transform.position);
 
         isbusy = true;
@@ -191,6 +201,7 @@ public class ObjectPickHandler : MonoBehaviour
        
         pickReferences.SwitchCam();
 
+      
         pickReferences.inspectionBackroundimage.SetActive(true);
 
         objectTransform = transform.position;
@@ -223,15 +234,8 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectDrop()
     {
-        if (clueCount <= 0)
-        {
-            WillClueCountStop = true;
-        }
-       else
-        {
-            clueCountMain = clueCount;   
-        }
-        pickReferences.currentClueCount.gameObject.SetActive(false);
+        clueCountStoring = clueCount;
+        pickReferences.currentClue.SetActive(false);
 
         XrayVisionDisable();
        
@@ -355,13 +359,7 @@ public class ObjectPickHandler : MonoBehaviour
         mousePoint.z = inspectionCamara.WorldToScreenPoint(transform.position).z;
         return inspectionCamara.ScreenToWorldPoint(mousePoint);
     }
-    public void ClueCountMinus()
-    {
-       
-            clueCount--;
-
-    }
-
+  
     private void Avoid()
     {
        if (shouldWork && !isCollected)

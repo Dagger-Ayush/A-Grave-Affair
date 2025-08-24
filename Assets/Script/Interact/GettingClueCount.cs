@@ -9,6 +9,7 @@ public class GettingClueCount : MonoBehaviour
 
 
     public static int clueCount;
+    public int totalClues;
     [HideInInspector] public bool WillClueCountStop = false;
 
     public ObjectPickReferences pickReferences;
@@ -22,9 +23,9 @@ public class GettingClueCount : MonoBehaviour
     { 
         if (clueCount > 0)
             {
-                pickReferences.currentClueCount.text = "Clue count - " + clueCount.ToString();
-            }
-            else
+            pickReferences.currentClueCount.text = "Clues Found (" + clueCount.ToString() + "/" + totalClues.ToString() + ")";
+        }
+        else
             {
                 pickReferences.currentClueCount.text = "Clue's Picked";
             }
@@ -35,7 +36,7 @@ public class GettingClueCount : MonoBehaviour
         Debug.Log(clue);
         if (isClue)
         {
-            pickReferences.currentClueCount.gameObject.SetActive(true);
+            pickReferences.currentClue.SetActive(true);
 
             if (!WillClueCountStop)
             {
@@ -44,7 +45,7 @@ public class GettingClueCount : MonoBehaviour
         }
         else
         {
-            pickReferences.currentClueCount.gameObject.SetActive(false);
+            pickReferences.currentClue.SetActive(false);
         }
     }
     public void storingData()
@@ -57,6 +58,6 @@ public class GettingClueCount : MonoBehaviour
         {
             clue = clueCount;
         }
-        pickReferences.currentClueCount.gameObject.SetActive(false);
+        pickReferences.currentClue.SetActive(false);
     }
 }

@@ -21,7 +21,7 @@ public class ObjectInteract : MonoBehaviour
 
    public bool isTablet;// the player need not need to press E to enable Dialog
     public bool isDogBed;
-    private ObjectPickHandler pickHandler;
+    
     public bool isCigarette;
     [SerializeField] private bool isLighter = false;
 
@@ -34,13 +34,7 @@ public class ObjectInteract : MonoBehaviour
     private void Start()
     {
         
-        
-        if (isCigarette)
-        {
-            pickHandler = GetComponent<ObjectPickHandler>();
-            pickHandler.enabled = false;
-
-        }
+       
         if (isTablet)
         {
             outRange.alpha = 1;
@@ -162,7 +156,7 @@ public class ObjectInteract : MonoBehaviour
 
             if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
             {
-                pickReferences.currentClueCount.gameObject.SetActive(false);
+                pickReferences.currentClue.SetActive(false);
             }
             else
             {
@@ -202,7 +196,7 @@ public class ObjectInteract : MonoBehaviour
             }
             if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
             {
-                pickReferences.currentClueCount.gameObject.SetActive(false);
+                pickReferences.currentClue.SetActive(false);
             }
             else
             {
@@ -252,21 +246,19 @@ public class ObjectInteract : MonoBehaviour
                     }
 
                 }
-                pickHandler.enabled = true;
-
                 enabled = false;
                 }
 
             if (isTablet)
             {
-                if (FindFirstObjectByType<ObjectInteract>().isCigarette)
+                if (pickReferences.ObjectPickHandlerCigarette.isCigarette)
                 {
-                    if(playerInteract. tabletImage != null)
+                    if(playerInteract.tabletImage != null)
                     {
                         playerInteract.tabletImage.enabled = true;
                     }
-                    
-                    FindFirstObjectByType<ObjectInteract>().shouldWork = true;
+
+                    pickReferences.ObjectPickHandlerCigarette.shouldWork = true;
                 }
                 Destroy(gameObject, 0.1f);// using delay for Movment and point and click to enable
             }

@@ -28,8 +28,8 @@ public class ClueManager : MonoBehaviour
     {
         if (collectedClues.Contains(clueText)) return;
 
-        ObjectPickHandler.clueCount--;
-        GettingClueCount.clueCount--;
+        ObjectPickHandler.clueCount++;
+        GettingClueCount.clueCount++;
 
         collectedClues.Add(clueText);
 

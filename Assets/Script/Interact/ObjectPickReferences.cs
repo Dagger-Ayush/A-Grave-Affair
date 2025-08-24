@@ -23,6 +23,10 @@ public class ObjectPickReferences : MonoBehaviour
     public GameObject XrayOfImage;
 
     public TextMeshProUGUI currentClueCount;
+    public GameObject currentClue;
+
+    public ObjectPickHandler ObjectPickHandlerCigarette;
+    public InspectionTutorial inspectionTutorial;
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)

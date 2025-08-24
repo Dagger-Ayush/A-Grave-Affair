@@ -14,6 +14,8 @@ public class PlayerInteract : MonoBehaviour
 
     public Image tabletImage;
     private bool shouldTabletWork;
+
+    
     private void Start()
     {
         pointAndMovement = GetComponent<PointAndMovement>();
