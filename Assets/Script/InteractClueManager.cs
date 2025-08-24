@@ -23,7 +23,6 @@ public class InteractClueManager : MonoBehaviour
     private Coroutine repelCoroutine;
      private bool isRepelBusy;
 
-
     private void Awake()
     {
         instance = this;

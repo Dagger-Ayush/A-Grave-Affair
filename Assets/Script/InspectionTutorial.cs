@@ -24,6 +24,8 @@ public class InspectionTutorial : MonoBehaviour
     private Quaternion initialRotation;
     private bool hasRotated = false;
 
+
+    public bool isInspectionComplete = false;
     void Start()
     {
         if (targetObject != null)
@@ -100,6 +102,7 @@ public class InspectionTutorial : MonoBehaviour
         yield return new WaitForSeconds(3.5f);
         isRunning = false;
         packanimator.enabled = false;
+        isInspectionComplete = true;
     }
 
     IEnumerator ClueCheck()
