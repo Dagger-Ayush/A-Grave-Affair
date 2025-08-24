@@ -63,6 +63,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
                     {
                         ClueManager.Instance.AddClue(currentClueId);
                         SetLinkColor(currentLinkIndex, hoverColor); // Permanently green after clicking
+                        FloatingTextSpawner.Instance.SpawnFloatingText(currentClueId, Input.mousePosition);
                     }
                 }
                 else
