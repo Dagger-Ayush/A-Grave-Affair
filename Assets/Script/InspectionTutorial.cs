@@ -26,6 +26,7 @@ public class InspectionTutorial : MonoBehaviour
 
 
     public bool isInspectionComplete = false;
+    public bool isRotationComplete = false;
     void Start()
     {
         if (targetObject != null)
@@ -37,8 +38,14 @@ public class InspectionTutorial : MonoBehaviour
 
     void Update()
     {
+        if (hasRotated && Input.GetMouseButtonUp(0))
+        {
+            
+            RotationNextPage();
+        }
         if (!clueTriggered && ClueManager.Instance.ClueCheck(clue))
         {
+            
             StartCoroutine(ClueCheck());
           
         }
@@ -74,10 +81,7 @@ public class InspectionTutorial : MonoBehaviour
                     StartCoroutine(RotationCheck());
                     break;
             }
-            if (hasRotated && Input.GetMouseButtonUp(0))
-            {
-                RotationNextPage();
-            }
+           
         }
        
     }
@@ -100,9 +104,12 @@ public class InspectionTutorial : MonoBehaviour
     IEnumerator Delay()
     {
         yield return new WaitForSeconds(3.5f);
-        isRunning = false;
+
+        isRotationComplete = true;
+
         packanimator.enabled = false;
         isInspectionComplete = true;
+
     }
 
     IEnumerator ClueCheck()
@@ -112,14 +119,18 @@ public class InspectionTutorial : MonoBehaviour
         packanimator.SetBool("CluePicking", false);
         yield return new WaitForSeconds(0.2f);
         packanimator.enabled = false;
-
+        
         clueTriggered = true;
+
+        isRunning = false;
+        yield return new WaitForSeconds(0.2f);
+        enabled = false;
     }
     private IEnumerator RotationCheck()
     {
         yield return new WaitForSeconds(1.5f);
         packanimator.enabled = false;
-        if (Quaternion.Angle(initialRotation, targetObject.transform.rotation) > 10f)
+        if (Quaternion.Angle(initialRotation, targetObject.transform.rotation) > 0.1f)
         {
           hasRotated = true;  
         }
@@ -137,5 +148,6 @@ public class InspectionTutorial : MonoBehaviour
         }
         packanimator.SetBool("CluePicking", true);
         StartCoroutine(Delay());
+
     }
 }

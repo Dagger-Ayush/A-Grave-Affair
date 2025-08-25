@@ -33,7 +33,7 @@ public class ObjectHovering : MonoBehaviour
     }
     void ObjectDectecting()
     {
-        if (inspectionTutorial.isRunning) return;
+        if (!inspectionTutorial.isRotationComplete) return;
        
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
