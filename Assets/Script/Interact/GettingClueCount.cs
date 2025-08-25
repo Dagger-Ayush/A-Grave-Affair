@@ -20,8 +20,8 @@ public class GettingClueCount : MonoBehaviour
     }
   
     private void Update()
-    { 
-        if (clueCount > 0)
+    {
+        if (clueCount < totalClues)
             {
             pickReferences.currentClueCount.text = "Clues Found (" + clueCount.ToString() + "/" + totalClues.ToString() + ")";
         }
