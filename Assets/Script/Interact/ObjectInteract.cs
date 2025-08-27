@@ -21,6 +21,7 @@ public class ObjectInteract : MonoBehaviour
 
    public bool isTablet;// the player need not need to press E to enable Dialog
     public bool isDogBed;
+    public bool isBadge;
     
     public bool isCigarette;
     [SerializeField] private bool isLighter = false;
@@ -33,8 +34,8 @@ public class ObjectInteract : MonoBehaviour
 
     private void Start()
     {
+
         
-       
         if (isTablet)
         {
             outRange.alpha = 1;
@@ -112,7 +113,7 @@ public class ObjectInteract : MonoBehaviour
     }
     private void ObjectHandler()
     {
-        if (TabletManager.isTabletOpen) return;
+        if (TabletManager.isTabletOpen || pickReferences.interactionTutorial.isRunning) return;
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -215,6 +216,10 @@ public class ObjectInteract : MonoBehaviour
 
             if (isTablet)
             {
+                if (pickReferences.ObjectInteractBadge.isBadge)
+                {
+                    pickReferences.ObjectInteractBadge.shouldWork = true;
+                }
                 if (pickReferences.ObjectPickHandlerCigarette.isCigarette)
                 {
                     if(playerInteract.tabletImage != null)
@@ -223,7 +228,9 @@ public class ObjectInteract : MonoBehaviour
                     }
 
                     pickReferences.ObjectPickHandlerCigarette.shouldWork = true;
+
                 }
+                
                 Destroy(gameObject, 0.1f);// using delay for Movment and point and click to enable
             }
             if (isDogBed)

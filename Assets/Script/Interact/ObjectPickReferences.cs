@@ -26,7 +26,9 @@ public class ObjectPickReferences : MonoBehaviour
     public GameObject currentClue;
 
     public ObjectPickHandler ObjectPickHandlerCigarette;
+    public ObjectInteract ObjectInteractBadge;
     public InspectionTutorial inspectionTutorial;
+    public InteractionTutorial interactionTutorial;
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)

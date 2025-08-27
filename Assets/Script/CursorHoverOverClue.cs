@@ -15,6 +15,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     private int currentLinkIndex = -1;
     private string currentClueId = "";
 
+
     void Awake()
     {
         textComponent = GetComponent<TextMeshProUGUI>();
@@ -156,5 +157,10 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     void OnDisable()
     {
         StopHover();
+    }
+    public bool isHovered()
+    {
+        if(currentLinkIndex != -1) return true;
+        else return false;
     }
 }

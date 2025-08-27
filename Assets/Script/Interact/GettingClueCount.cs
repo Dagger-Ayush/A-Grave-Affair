@@ -4,7 +4,7 @@ using static UnityEngine.Rendering.DebugUI;
 public class GettingClueCount : MonoBehaviour
 {
     public static GettingClueCount instance;
-    public int clue;
+    private int clue;
     public bool isClue;
 
 
@@ -14,13 +14,22 @@ public class GettingClueCount : MonoBehaviour
 
     public ObjectPickReferences pickReferences;
 
+    public GameObject[] pickPrefab;
+
     private void Awake()
     {
         instance = this;
     }
-  
+ 
     private void Update()
     {
+        if (clueCount > 0)
+        {
+            if (pickPrefab != null)
+            {
+                pickPrefab[clueCount-1].SetActive(true);
+            }
+        }
         if (clueCount < totalClues)
             {
             pickReferences.currentClueCount.text = "Clues Found (" + clueCount.ToString() + "/" + totalClues.ToString() + ")";
@@ -33,7 +42,6 @@ public class GettingClueCount : MonoBehaviour
     }
     public void Checking()
     {
-        Debug.Log(clue);
         if (isClue)
         {
             pickReferences.currentClue.SetActive(true);
