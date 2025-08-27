@@ -249,6 +249,8 @@ public class ObjectPickHandler : MonoBehaviour
 
         if (isCigarette)
         {
+            objectInteractCigarette.enabled = true;
+
             //if(GetComponent<InspectionTutorial>().isInspectionComplete) 
             FindAnyObjectByType<ObjectInteract>().shouldWork = true;
             FindAnyObjectByType<ObjectPickHandler>().shouldWork = true;
@@ -282,6 +284,8 @@ public class ObjectPickHandler : MonoBehaviour
 
                 }
             }
+
+            enabled = false;
         }
         while (time < 1f)
         {

@@ -30,6 +30,7 @@ public class GettingClueCount : MonoBehaviour
                 pickPrefab[clueCount-1].SetActive(true);
             }
         }
+        /*
         if (clueCount < totalClues)
             {
             pickReferences.currentClueCount.text = "Clues Found (" + clueCount.ToString() + "/" + totalClues.ToString() + ")";
@@ -38,23 +39,19 @@ public class GettingClueCount : MonoBehaviour
             {
                 pickReferences.currentClueCount.text = "Clue's Picked";
             }
+        */
         
     }
     public void Checking()
     {
         if (isClue)
         {
-            pickReferences.currentClue.SetActive(true);
-
             if (!WillClueCountStop)
             {
                 clueCount = clue; // Count of numbers
             }
         }
-        else
-        {
-            pickReferences.currentClue.SetActive(false);
-        }
+       
     }
     public void storingData()
     {
@@ -66,6 +63,6 @@ public class GettingClueCount : MonoBehaviour
         {
             clue = clueCount;
         }
-        pickReferences.currentClue.SetActive(false);
+       
     }
 }

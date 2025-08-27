@@ -22,8 +22,7 @@ public class ObjectInteract : MonoBehaviour
    public bool isTablet;// the player need not need to press E to enable Dialog
     public bool isDogBed;
     public bool isBadge;
-    
-    public bool isCigarette;
+  
     [SerializeField] private bool isLighter = false;
 
     [SerializeField] private DialogAudio[] dialogAudio;
@@ -62,8 +61,8 @@ public class ObjectInteract : MonoBehaviour
            
             }
 
-        
-        if (isDogBed && !InteractedWithDogBed)
+
+        if (isDogBed && !InteractedWithDogBed )
         {
             if (!interacting)
             {
@@ -150,7 +149,7 @@ public class ObjectInteract : MonoBehaviour
        
         if (dialogueImages.Length > 0)
         {
-            if(dialogueImages[currentImageIndex].tag == "Screen")
+            if(dialogueImages[currentImageIndex].tag == "Screen" || dialogueImages[currentImageIndex].tag == "Sound")
             {
                 dialogAudio[currentImageIndex].sorce.Play();
             }
@@ -211,9 +210,7 @@ public class ObjectInteract : MonoBehaviour
 
             interacting = false;
             isInteracted = false;
-           
-        
-
+     
             if (isTablet)
             {
                 if (pickReferences.ObjectInteractBadge.isBadge)
