@@ -3,9 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using UnityEditor.ShaderGraph.Serialization;
 
 public class TabletManager : MonoBehaviour
 {
+    public static TabletManager Instance;
+
     public RectTransform tabletPanel;
     public float slideDuration = 0.3f;
     public float hiddenY = -450f;
@@ -34,6 +37,12 @@ public class TabletManager : MonoBehaviour
 
     public GameObject[] tabs;
     private int currentTab = 0;
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
     private void Start()
     {
         SetY(hiddenY);
@@ -78,7 +87,7 @@ public class TabletManager : MonoBehaviour
         if(clueBox != null)
             clueBox.SetActive(!clueBox.activeSelf);
     }
-    IEnumerator SlideTablet(bool show)
+    public IEnumerator SlideTablet(bool show)
     {
         float startY = tabletPanel.anchoredPosition.y;
         float endY = show ? visibleY : hiddenY;
@@ -123,6 +132,18 @@ public class TabletManager : MonoBehaviour
         isTabletOpen = show;
     }
 
+    public void CloseTablet()
+    {
+        if(isTabletOpen)
+        {
+            StartCoroutine(CloseTabletRoutine());
+        }
+    }
+    private IEnumerator CloseTabletRoutine()
+    {
+        yield return SlideTablet(false);
+        isTabletOpen = false;
+    }
     void SetY(float y)
     {
         Vector2 pos = tabletPanel.anchoredPosition;

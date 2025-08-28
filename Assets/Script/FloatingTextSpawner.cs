@@ -45,8 +45,8 @@ public class FloatingTextSpawner : MonoBehaviour
             }
             feedback.PlayFeedbacks();
         }
-        Destroy(ft, 1.7f);
-        StartCoroutine(DeactivateIconAfterDelay(2.5f));
+        Destroy(ft, 1.2f);
+        StartCoroutine(DeactivateIconAfterDelay(1.5f));
     }
 
     private System.Collections.IEnumerator DeactivateIconAfterDelay(float delay)

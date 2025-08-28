@@ -74,8 +74,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282139889
-  m_fontColor: {r: 0.9433962, g: 0.26754758, b: 0.23584905, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -701,7 +701,7 @@ MonoBehaviour:
         Mode: 2
         Space: 0
         RandomizeRemap: 0
-        AnimatePositionDuration: 2
+        AnimatePositionDuration: 1
         AnimatePositionTween:
           MMTweenDefinitionType: 1
           MMTweenCurve: 4
@@ -994,7 +994,7 @@ MonoBehaviour:
         DebugActive: 0
         FadeType: 1
         ID: 0
-        Duration: 1.6
+        Duration: 1
         Curve:
           MMTweenDefinitionType: 0
           MMTweenCurve: 4

@@ -21,4 +21,5 @@ MonoBehaviour:
   - Gift
   - Mrs. Marrow
   - Anniversary
-  isCompleted: 0
+  puzzleID: 3
+  isCompleted: 1

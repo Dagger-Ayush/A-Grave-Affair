@@ -122,13 +122,14 @@ public class PuzzleValidator : MonoBehaviour
 
             // Remove from clue box
             ClueManager.Instance.RemoveUsedClues(usedClues);
-           
 
-            //foreach (var zone in dropZones)
-            //{
-            //    if (zone != null)
-            //        zone.enabled = false;
-            //}
+            var progression = FindAnyObjectByType<PuzzleProgression>();
+            if(progression != null && currentPuzzle.puzzleID == 1)
+            {
+                progression.OnPuzzle1Solved();
+                Debug.LogWarning("working");
+            }
+
         }
         else if (incorrectCount <= 2)
         {

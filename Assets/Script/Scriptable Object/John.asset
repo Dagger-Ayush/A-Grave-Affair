@@ -10,23 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f38292b03a8bae48b6dddaa349b61bf, type: 3}
-  m_Name: Lighter
+  m_Name: John
   m_EditorClassIdentifier: 
-  sentenceTemplate: 'The _ is missing. It was _ by big _ as he is _ with _ things
-    . '
+  sentenceTemplate: John Marrow is a retired _ . He is also a _ .
   correctAnswers:
-  - Lighter
-  - Stolen
-  - Fred
-  - Obsessed
-  - Shiny
+  - Detective
+  - Chain smoker
   requiredClues:
-  - Shiny
-  - Lighter
-  - Fred
-  - Obsessed
-  - Toy
-  - Case
-  - Stolen
-  puzzleID: 2
-  isCompleted: 0
+  - Detective
+  - Chain smoker
+  puzzleID: 1
+  isCompleted: 1

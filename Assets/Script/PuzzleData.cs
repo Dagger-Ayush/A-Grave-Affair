@@ -8,6 +8,7 @@ public class PuzzleData : ScriptableObject
     public List<string> correctAnswers;
     public List<string> requiredClues;
 
+    public int puzzleID;
     public bool isCompleted = false;
 
 }
