@@ -40,7 +40,13 @@ public class InteractionTutorial : MonoBehaviour
 
     private void Update()
     {
-       
+        //if (Input.GetMouseButtonDown(0) && isCluePicked && hasTyped[3] == true)
+        if (Input.GetMouseButtonDown(0) && isInteractionComplete)
+        {
+            blurImage[1].SetActive(false);
+            interactionPages[3].SetActive(false);
+            isRunning = false;
+        }
         if (canHover)
         {
             if (cursor.isHovered() == true && !isCluePicked)
@@ -58,12 +64,7 @@ public class InteractionTutorial : MonoBehaviour
                 isCluePicked = true;
                 isInteractionComplete = true;
             }
-             if (Input.GetMouseButtonDown(0)  && isCluePicked && hasTyped[3] == true)
-            {
-                blurImage[1].SetActive(false);
-                interactionPages[3].SetActive(false);
-                isRunning = false;
-            }
+           
             return;
         }
         TutorialHandler();
