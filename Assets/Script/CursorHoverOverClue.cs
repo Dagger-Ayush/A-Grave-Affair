@@ -1,12 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections;
+using UnityEngine.UI;
 
 public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("Color Settings")]
-    public Color hoverColor = Color.green;
-    public Color defaultLinkColor = Color.black; // Default color is black
+    [Header("Hover Settings")]
+    public Color outlineColor = Color.red;
+    public float ovalPadding = 15f; 
+    public float cornerRadius = 20f; 
 
     private TextMeshProUGUI textComponent;
     private Camera uiCamera;
@@ -14,7 +17,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     private bool isHovering = false;
     private int currentLinkIndex = -1;
     private string currentClueId = "";
-
+    private GameObject ovalOutline;
 
     void Awake()
     {
@@ -36,16 +39,15 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         StopHover();
     }
 
-    private System.Collections.IEnumerator HoverCheck()
+    private IEnumerator HoverCheck()
     {
         while (isHovering)
         {
             int newLinkIndex = TMP_TextUtilities.FindIntersectingLink(textComponent, Input.mousePosition, uiCamera);
 
-            // Reset previous link color if hover changed and clue not collected
-            if (currentLinkIndex != -1 && currentLinkIndex != newLinkIndex && !ClueManager.Instance.ClueCheck(currentClueId))
+            if (currentLinkIndex != -1 && currentLinkIndex != newLinkIndex)
             {
-                ResetLinkColor(currentLinkIndex);
+                RemoveOutline();
             }
 
             currentLinkIndex = newLinkIndex;
@@ -57,29 +59,24 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
                 if (!ClueManager.Instance.ClueCheck(currentClueId))
                 {
-                    SetLinkColor(currentLinkIndex, hoverColor);
+                    CreateOutline(currentLinkIndex);
                     SetCursorState(CursorState.Clue);
 
                     if (Input.GetMouseButtonDown(0))
                     {
                         ClueManager.Instance.AddClue(currentClueId);
-                        SetLinkColor(currentLinkIndex, hoverColor); // Permanently green after clicking
                         FloatingTextSpawner.Instance.SpawnFloatingText(currentClueId, Input.mousePosition);
                     }
                 }
                 else
                 {
-                    SetLinkColor(currentLinkIndex, hoverColor); // Already collected, stay green
+                    RemoveOutline();
                     SetCursorState(CursorState.Normal);
                 }
             }
             else
             {
-                // If mouse leaves all links, reset color for non-collected
-                if (currentLinkIndex != -1 && !ClueManager.Instance.ClueCheck(currentClueId))
-                {
-                    ResetLinkColor(currentLinkIndex);
-                }
+                RemoveOutline();
                 SetCursorState(CursorState.Normal);
             }
 
@@ -95,22 +92,24 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             hoverRoutine = null;
         }
 
-        if (currentLinkIndex != -1 && !ClueManager.Instance.ClueCheck(currentClueId))
-        {
-            ResetLinkColor(currentLinkIndex);
-        }
-
+        RemoveOutline();
         isHovering = false;
         currentLinkIndex = -1;
         currentClueId = "";
         SetCursorState(CursorState.Normal);
     }
 
-    private void SetLinkColor(int linkIndex, Color color)
+    private void CreateOutline(int linkIndex)
     {
         if (linkIndex < 0 || linkIndex >= textComponent.textInfo.linkCount) return;
 
+        
+        RemoveOutline();
+
         var linkInfo = textComponent.textInfo.linkInfo[linkIndex];
+        float minX = float.MaxValue, maxX = float.MinValue;
+        float minY = float.MaxValue, maxY = float.MinValue;
+
         for (int i = 0; i < linkInfo.linkTextLength; i++)
         {
             int charIndex = linkInfo.linkTextfirstCharacterIndex + i;
@@ -119,21 +118,74 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             var charInfo = textComponent.textInfo.characterInfo[charIndex];
             if (!charInfo.isVisible) continue;
 
-            int meshIndex = charInfo.materialReferenceIndex;
-            int vertexIndex = charInfo.vertexIndex;
-
-            Color32[] vertexColors = textComponent.textInfo.meshInfo[meshIndex].colors32;
-            vertexColors[vertexIndex + 0] = color;
-            vertexColors[vertexIndex + 1] = color;
-            vertexColors[vertexIndex + 2] = color;
-            vertexColors[vertexIndex + 3] = color;
+            minX = Mathf.Min(minX, charInfo.bottomLeft.x);
+            maxX = Mathf.Max(maxX, charInfo.topRight.x);
+            minY = Mathf.Min(minY, charInfo.descender);
+            maxY = Mathf.Max(maxY, charInfo.ascender);
         }
-        textComponent.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
+
+        
+        Vector3 center = new Vector3((minX + maxX) * 0.5f, (minY + maxY) * 0.5f, 0);
+        float width = (maxX - minX) + ovalPadding;
+        float height = (maxY - minY) + ovalPadding;
+ 
+        ovalOutline = new GameObject("OvalOutline");
+        ovalOutline.transform.SetParent(transform, false);
+        RectTransform ovalRect = ovalOutline.AddComponent<RectTransform>();
+        ovalRect.sizeDelta = new Vector2(width, height);
+        ovalRect.localPosition = center;
+        
+        var ovalImage = ovalOutline.AddComponent<UnityEngine.UI.Image>();
+        ovalImage.sprite = CreateOvalSprite((int)width, (int)height);
+        ovalImage.color = outlineColor;
+        ovalImage.type = UnityEngine.UI.Image.Type.Sliced;
+
+       
+        ovalOutline.transform.SetAsFirstSibling();
     }
 
-    private void ResetLinkColor(int linkIndex)
+    private Sprite CreateOvalSprite(int width, int height)
     {
-        SetLinkColor(linkIndex, Color.black);
+       
+        int textureWidth = Mathf.Max(64, width);
+        int textureHeight = Mathf.Max(64, height);
+        Texture2D texture = new Texture2D(textureWidth, textureHeight);
+
+        Vector2 center = new Vector2(textureWidth / 2, textureHeight / 2);
+        float radiusX = textureWidth / 2 - 2; 
+        float radiusY = textureHeight / 2 - 2;
+
+        for (int y = 0; y < textureHeight; y++)
+        {
+            for (int x = 0; x < textureWidth; x++)
+            {
+                // Oval equation: (x-center.x)^2/radiusX^2 + (y-center.y)^2/radiusY^2 <= 1
+                float normalizedX = (x - center.x) / radiusX;
+                float normalizedY = (y - center.y) / radiusY;
+                float distance = normalizedX * normalizedX + normalizedY * normalizedY;
+
+                if (distance > 0.9f && distance <= 1.1f) 
+                {
+                    texture.SetPixel(x, y, Color.white);
+                }
+                else
+                {
+                    texture.SetPixel(x, y, Color.clear);
+                }
+            }
+        }
+
+        texture.Apply();
+        return Sprite.Create(texture, new Rect(0, 0, textureWidth, textureHeight), new Vector2(0.5f, 0.5f));
+    }
+
+    private void RemoveOutline()
+    {
+        if (ovalOutline != null)
+        {
+            Destroy(ovalOutline);
+            ovalOutline = null;
+        }
     }
 
     private void SetCursorState(CursorState state)
@@ -158,9 +210,9 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         StopHover();
     }
+
     public bool isHovered()
     {
-        if(currentLinkIndex != -1) return true;
-        else return false;
+        return currentLinkIndex != -1;
     }
 }
