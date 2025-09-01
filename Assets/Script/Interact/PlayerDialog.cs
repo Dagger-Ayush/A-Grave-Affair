@@ -40,9 +40,10 @@ public class PlayerDialog : MonoBehaviour
         if (currentImageIndex <= 1)
         {
             pointAndMovement.enabled = false;
+            /*
             dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
             dialogueImages[currentImageIndex].transform.position = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
-
+            */
         }
         if (pointAndMovement.isMoving)
         {

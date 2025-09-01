@@ -6,6 +6,7 @@ public class GettingClueCount : MonoBehaviour
     public static GettingClueCount instance;
     private int clue;
     public bool isClue;
+    public bool canTik;
 
 
     public static int clueCount;
@@ -23,13 +24,17 @@ public class GettingClueCount : MonoBehaviour
  
     private void Update()
     {
-        if (clueCount > 0)
+        if (canTik)
         {
-            if (pickPrefab != null)
+            if (clueCount > 0)
             {
-                pickPrefab[clueCount-1].SetActive(true);
+                if (pickPrefab != null)
+                {
+                    pickPrefab[clueCount - 1].SetActive(true);
+                }
             }
         }
+        
         /*
         if (clueCount < totalClues)
             {

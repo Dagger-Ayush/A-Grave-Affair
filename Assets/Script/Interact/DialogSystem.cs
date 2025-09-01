@@ -36,17 +36,7 @@ public class DialogSystem : MonoBehaviour
             {
                 NextDialogueImage();
             }
-            if (interacting == true)
-            {
-                if (dialogueImages[currentImageIndex].tag == "Screen")
-                {
-                    dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
-                    dialogueImages[currentImageIndex].transform.position = new Vector3(player.transform.position.x - 1.75f,
-                                                                                      player.transform.position.y + 4.4f,
-                                                                                      player.transform.position.z - 2);
-                }
-
-            }
+           
         }
         
     }

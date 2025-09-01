@@ -49,17 +49,7 @@ public class ObjectInteract : MonoBehaviour
     {
 
         
-            if (currentImageIndex<dialogueImages.Length)
-            {
-            if (dialogueImages[currentImageIndex].tag == "Screen")
-            {
-                dialogueImages[currentImageIndex].transform.rotation = Quaternion.Euler(0, 44, 0);
-                dialogueImages[currentImageIndex].transform.position = new Vector3(playerInteract.player.transform.position.x - 1.75f,
-                                                                                  playerInteract.player.transform.position.y + 4.4f,
-                                                                                  playerInteract.player.transform.position.z - 2);
-            }
            
-            }
 
 
         if (isDogBed && !InteractedWithDogBed )
