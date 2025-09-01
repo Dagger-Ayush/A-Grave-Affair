@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using Mono.Cecil.Cil;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,8 +9,8 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     [Header("Hover Settings")]
     public Color outlineColor = Color.red;
     public float ovalPadding = 15f;
-    public float outlineThickness = 3f;
-    public float animationDuration = 0.3f;
+    public int outlineThickness = 20;
+    public float animationDuration = 0.5f;
     public AnimationCurve animationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     private TextMeshProUGUI textComponent;
@@ -135,97 +133,78 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         ovalOutline = new GameObject("OvalOutline");
         ovalOutline.transform.SetParent(transform, false);
         RectTransform ovalRect = ovalOutline.AddComponent<RectTransform>();
-
-        // Start with zero size for animation
-        ovalRect.sizeDelta = Vector2.zero;
+        ovalRect.sizeDelta = targetSize;
         ovalRect.localPosition = targetPosition;
 
-        var ovalImage = ovalOutline.AddComponent<UnityEngine.UI.Image>();
-        ovalImage.sprite = CreateOvalSprite((int)targetSize.x, (int)targetSize.y);
-        ovalImage.color = outlineColor;
-        ovalImage.type = UnityEngine.UI.Image.Type.Simple;
-        ovalImage.preserveAspect = true;
+        var ovalImage = ovalOutline.AddComponent<RawImage>();
+        ovalImage.texture = new Texture2D(1, 1); // will be replaced in animation
+        ovalImage.color = Color.white;
 
         ovalOutline.transform.SetAsFirstSibling();
 
-        // Start the animation
         if (animationRoutine != null) StopCoroutine(animationRoutine);
-        animationRoutine = StartCoroutine(AnimateOutline(ovalRect));
+        animationRoutine = StartCoroutine(AnimateDraw(ovalImage));
     }
 
-    private IEnumerator AnimateOutline(RectTransform rectTransform)
+    private IEnumerator AnimateDraw(RawImage image)
     {
+        int texW = Mathf.RoundToInt(targetSize.x * 2);
+        int texH = Mathf.RoundToInt(targetSize.y * 2);
+        Texture2D texture = new Texture2D(texW, texH, TextureFormat.RGBA32, false);
+        image.texture = texture;
+
+        Vector2 center = new Vector2(texW / 2f, texH / 2f);
+        float radiusX = texW / 2f - outlineThickness;
+        float radiusY = texH / 2f - outlineThickness;
+
+        // Fill transparent
+        Color[] clear = new Color[texW * texH];
+        for (int i = 0; i < clear.Length; i++) clear[i] = Color.clear;
+        texture.SetPixels(clear);
+
         float elapsed = 0f;
-        Vector2 initialSize = Vector2.zero;
-        Color initialColor = new Color(outlineColor.r, outlineColor.g, outlineColor.b, 0);
-        Color targetColor = outlineColor;
-
-        Image image = rectTransform.GetComponent<Image>();
-        if (image) image.color = initialColor;
-
         while (elapsed < animationDuration)
         {
             float t = animationCurve.Evaluate(elapsed / animationDuration);
+            float angle = Mathf.Lerp(0, 360, t);
 
-            // Animate size
-            rectTransform.sizeDelta = Vector2.Lerp(initialSize, targetSize, t);
+            // redraw arc each frame
+            DrawArc(texture, center, radiusX, radiusY, angle, outlineColor);
 
-            // Animate alpha
-            if (image) image.color = Color.Lerp(initialColor, targetColor, t);
-
+            texture.Apply();
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        // Ensure final values
-        rectTransform.sizeDelta = targetSize;
-        if (image) image.color = targetColor;
+        DrawArc(texture, center, radiusX, radiusY, 360, outlineColor);
+        texture.Apply();
     }
 
-    private Sprite CreateOvalSprite(int width, int height)
+    private void DrawArc(Texture2D tex, Vector2 center, float rx, float ry, float angleMax, Color col)
     {
-        int textureWidth = Mathf.Max(64, width);
-        int textureHeight = Mathf.Max(64, height);
-        Texture2D texture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
-
-        // Fill with transparent
-        Color[] transparentPixels = new Color[textureWidth * textureHeight];
-        for (int i = 0; i < transparentPixels.Length; i++)
+        int steps = 360 * 4; // resolution
+        for (int i = 0; i < steps; i++)
         {
-            transparentPixels[i] = Color.clear;
-        }
-        texture.SetPixels(transparentPixels);
+            float angle = (i / (float)steps) * 360f;
+            if (angle > angleMax) break;
 
-        // Draw oval outline
-        Vector2 center = new Vector2(textureWidth / 2f, textureHeight / 2f);
-        float radiusX = textureWidth / 2f - outlineThickness;
-        float radiusY = textureHeight / 2f - outlineThickness;
+            float rad = angle * Mathf.Deg2Rad;
+            int x = Mathf.RoundToInt(center.x + Mathf.Cos(rad) * rx);
+            int y = Mathf.RoundToInt(center.y + Mathf.Sin(rad) * ry);
 
-        for (int y = 0; y < textureHeight; y++)
-        {
-            for (int x = 0; x < textureWidth; x++)
+            if (x >= 0 && y >= 0 && x < tex.width && y < tex.height)
             {
-                // Calculate normalized position (-1 to 1)
-                float nx = (x - center.x) / radiusX;
-                float ny = (y - center.y) / radiusY;
-
-                // Calculate distance from edge (1 = at edge, 0 = at center)
-                float distance = Mathf.Sqrt(nx * nx + ny * ny);
-
-                // Draw outline if we're near the edge
-                if (distance >= 0.9f && distance <= 1.1f)
+                tex.SetPixel(x, y, col);
+                // thickness
+                for (int j = 1; j < outlineThickness; j++)
                 {
-                    // Smooth alpha based on distance from perfect edge
-                    float alpha = 1f - Mathf.Abs(distance - 1f) * 10f;
-                    texture.SetPixel(x, y, new Color(1, 1, 1, Mathf.Clamp01(alpha)));
+                    if (x + j < tex.width) tex.SetPixel(x + j, y, col);
+                    if (x - j >= 0) tex.SetPixel(x - j, y, col);
+                    if (y + j < tex.height) tex.SetPixel(x, y + j, col);
+                    if (y - j >= 0) tex.SetPixel(x, y - j, col);
                 }
             }
         }
-
-        texture.Apply();
-        texture.filterMode = FilterMode.Bilinear;
-
-        return Sprite.Create(texture, new Rect(0, 0, textureWidth, textureHeight), new Vector2(0.5f, 0.5f));
     }
 
     private void RemoveOutline()
