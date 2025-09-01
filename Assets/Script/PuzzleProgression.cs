@@ -51,5 +51,41 @@ public class PuzzleProgression : MonoBehaviour
         if(puzzle3 != null) puzzle3.SetActive(true);
 
         Debug.Log("Puzzle 2 & 3 unlocked.");
+        EnablingObjects();
+    }
+
+    private void EnablingObjects()
+    {
+        //FindAnyObjectByType<ObjectInteract>().shouldWork = true;
+       // FindAnyObjectByType<ObjectPickHandler>().shouldWork = true;
+        //FindAnyObjectByType<ObjectMoving>().shouldWork = true;
+
+        Collider[] colliderArray = Physics.OverlapSphere(transform.position, 100);
+
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out ObjectInteract objectInteract))
+            {
+                objectInteract.shouldWork = true;
+            }
+            if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
+            {
+
+                objectPickHandler.shouldWork = true;
+
+
+
+                if (objectPickHandler.isLetter_1 || objectPickHandler.isLetter_2)
+                {
+                    objectPickHandler.shouldWork = false;
+
+                }
+            }
+            if (collider.TryGetComponent(out ObjectMoving objectMoving))
+            {
+                objectMoving.shouldWork = true;
+
+            }
+        }
     }
 }
