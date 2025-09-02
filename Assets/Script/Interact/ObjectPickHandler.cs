@@ -153,7 +153,7 @@ public class ObjectPickHandler : MonoBehaviour
             Avoid();
            
         }
-       if(isCollected && isLetter_1 || isLetter_2)
+       if(isCollected )//&& isLetter_1 || isLetter_2)
         {
             
             if (Input.GetKeyDown(pickReferences.XrayToggle))
@@ -314,7 +314,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!isPicked) return;
+        if (!isPicked|| isVision) return;
 
         // Create drag plane perpendicular to camera
         dragPlane = new Plane(-inspectionCamara.transform.forward, transform.position);
@@ -328,9 +328,8 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void OnMouseDrag()
     {
-        if (!isPicked) return;
-        if (isMouseLocked) return;
-
+        if (!isPicked || isMouseLocked|| isVision) return;
+       
         if (isMovable)
         {
             Ray ray = inspectionCamara.ScreenPointToRay(Input.mousePosition);
