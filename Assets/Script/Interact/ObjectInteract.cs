@@ -47,11 +47,6 @@ public class ObjectInteract : MonoBehaviour
     }
     private void Update()
     {
-
-        
-           
-
-
         if (isDogBed && !InteractedWithDogBed )
         {
             if (!interacting)

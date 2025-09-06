@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
+using UnityEditor.Rendering.PostProcessing;
 using UnityEngine;
 
 public class InteractionTutorial : MonoBehaviour
@@ -26,10 +27,14 @@ public class InteractionTutorial : MonoBehaviour
 
     public bool canHover = false;
     public bool isHovered = false;
-    public bool isCluePicked = false;
     
     private void Start()
     {
+        canHover = false;
+        isHovered = false;
+        isInteractionComplete = false;
+        isTyping = false;
+        isRunning = false;
         // Initialize the hasTyped array based on text length
         hasTyped = new bool[fullText.Length];
 
@@ -40,41 +45,55 @@ public class InteractionTutorial : MonoBehaviour
 
     private void Update()
     {
-        //if (Input.GetMouseButtonDown(0) && isCluePicked && hasTyped[3] == true)
-        if (Input.GetMouseButtonDown(0) && isInteractionComplete)
+        if (ClueManager.Instance.ClueCheck(clue) && !isInteractionComplete)
         {
+            ShowPanel(3);
+            if (hasTyped[3] == true)
+            {
+                isInteractionComplete = true;
+            }
+            return;   
+        }
+        if (!interactHandler.interacting)
+        {
+            foreach (var page in interactionPages)
+                page.SetActive(false);
             blurImage[1].SetActive(false);
             interactionPages[3].SetActive(false);
             isRunning = false;
         }
-        if (canHover)
+        if (Input.GetMouseButtonDown(0) && isInteractionComplete)
         {
-            if (cursor.isHovered() == true && !isCluePicked)
+            if (interactionPages[3].activeSelf)
             {
-                ShowPanel(2);
-                isHovered = true;
+                interactionPages[3].SetActive(false);
             }
-            else if (cursor.isHovered() == false && !isCluePicked)
-            {
-                ShowPanel(1);
-            }
-            if (ClueManager.Instance.ClueCheck(clue) && !isCluePicked && isHovered)
-            {
-                ShowPanel(3);
-                isCluePicked = true;
-                isInteractionComplete = true;
-            }
-           
-            return;
+            isRunning = false;
         }
-        TutorialHandler();
+        if (!isInteractionComplete && interactHandler.interacting)
+        {
+            if (canHover)
+            {
+                if (cursor.isHovered() == true)
+                {
+                    ShowPanel(2);
+                    isHovered = true;
+                }
+                else if (cursor.isHovered() == false)
+                {
+                    ShowPanel(1);
+                }
+            }
+            else
+            {
+                TutorialHandler();
+            }
+        }
     }
 
     private void TutorialHandler()
     {
-        if (!interactHandler.interacting) return;
-
-        if (Input.GetMouseButtonDown(0)&& !isInteractionComplete && !canHover)
+        if (Input.GetMouseButtonDown(0))
         {
             if (!isTyping && hasTyped[count])
                 count++;

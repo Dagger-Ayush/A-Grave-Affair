@@ -12,18 +12,29 @@ public class PuzzleProgression : MonoBehaviour
 
     private bool puzzle1Solved = false;
 
+    [SerializeField] private GameObject dummyObjectDialog;
+    [SerializeField] private DialogAudio dialogAudio;
+
+    private bool isDialogEnabled = false;
+    private bool isDialogStarted = false;
+    private bool isPuzzleCompleted = false;
+
     void Start()
     {
         puzzle1.SetActive(true);
         puzzle2.SetActive(false); 
         puzzle3.SetActive(false);
     }
-
+    private void Update()
+    {
+        PuzzleCompleteDialog();
+    }
     public void OnPuzzle1Solved()
     {
+       
         if (puzzle1Solved) return;
         puzzle1Solved = true;
-
+        EnablingObjects();
         StartCoroutine(CloseTabletAfterDelay());        
     }
 
@@ -37,6 +48,8 @@ public class PuzzleProgression : MonoBehaviour
         if(TabletManager.Instance !=null)
         {
             TabletManager.Instance.CloseTablet();
+          
+           
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -51,7 +64,7 @@ public class PuzzleProgression : MonoBehaviour
         if(puzzle3 != null) puzzle3.SetActive(true);
 
         Debug.Log("Puzzle 2 & 3 unlocked.");
-        EnablingObjects();
+        isPuzzleCompleted = true;
     }
 
     private void EnablingObjects()
@@ -87,5 +100,27 @@ public class PuzzleProgression : MonoBehaviour
 
             }
         }
+    }
+    void PuzzleCompleteDialog()
+    {
+        if (!isDialogEnabled && isPuzzleCompleted)
+        {
+            if (!isDialogStarted)
+            {
+                dummyObjectDialog.SetActive(true);
+                dialogAudio.sorce.Play();
+                isDialogStarted = true;
+            }
+            else if (isDialogStarted && Input.GetKeyDown(KeyCode.E))
+            {
+                dummyObjectDialog.SetActive(false);
+                dialogAudio.sorce.Stop();
+                isDialogEnabled = true;
+
+
+            }
+
+        }
+
     }
 }

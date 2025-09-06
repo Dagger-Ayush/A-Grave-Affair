@@ -27,6 +27,8 @@ public class InspectionTutorial : MonoBehaviour
     [HideInInspector] public bool isInspectionComplete = false;
     [HideInInspector] public bool isRotationComplete = false;
 
+
+    public GameObject[] interactionPages;
     void Start()
     {
         if (targetObject != null)
@@ -40,23 +42,31 @@ public class InspectionTutorial : MonoBehaviour
 
     void Update()
     {
+        if (!pickHandler.isPicked)
+        {
+            interactionPages[0].SetActive(false);
+        }
        
         if (!clueTriggered && ClueManager.Instance.ClueCheck(clue))
         {
-            StartCoroutine(ClueCheck());
+            StartCoroutine(CluePickHandler());
+        }
+        if (interactionPages[0].activeSelf && Input.GetMouseButton(0))
+        {
+            
+            interactionPages[0].SetActive(false);
+            enabled = false;
         }
 
         if (pickHandler.isPicked)
         {
-            if (!hasRotated)
-            {
-                if (Input.GetMouseButtonDown(0))
+           
+                if (Input.GetMouseButtonDown(0) && !hasRotated)
                 {
                     if (!isTyping && hasTyped[count])
                         count++;
                 }
-            }
-
+           
             switch (count)
             {
                 case 0:
@@ -83,8 +93,16 @@ public class InspectionTutorial : MonoBehaviour
                     break;
             }
         }
+      
     }
-
+    IEnumerator EndPage(float time)
+    {
+        interactionPages[0].SetActive(false);
+        yield return new WaitForSeconds(time);
+        interactionPages[0].SetActive(true);
+        StartCoroutine(TypeText(textMeshPro[3], fullText[3], 3));
+        
+    }
     IEnumerator TypeText(TMP_Text text, string message, int index)
     {
         if (isTyping) yield break;
@@ -101,19 +119,20 @@ public class InspectionTutorial : MonoBehaviour
     }
 
   
-    IEnumerator ClueCheck()
+    IEnumerator CluePickHandler()
     {
         packanimator.enabled = true;
         yield return new WaitForSeconds(0.2f);
         packanimator.SetBool("CluePicking", false);
+        StartCoroutine(EndPage(1.5f));
+      
         yield return new WaitForSeconds(0.2f);
         packanimator.enabled = false;
 
         clueTriggered = true;
 
         isRunning = false;
-        yield return new WaitForSeconds(0.2f);
-        enabled = false; // kept same as your original
+
     }
 
     private IEnumerator RotationCheck()
@@ -125,7 +144,7 @@ public class InspectionTutorial : MonoBehaviour
         {
             packanimator.enabled = false;
 
-            if (Quaternion.Angle(initialRotation, targetObject.transform.rotation) > 1f)
+            if (Quaternion.Angle(initialRotation, targetObject.transform.rotation) > 5f)
             {
                 if (Input.GetMouseButtonUp(0))
                 {

@@ -135,16 +135,11 @@ public class ObjectPickHandler : MonoBehaviour
             }
             if (isbusy) return;
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) && !isPicked)
             {
-
-
-                if (!isPicked)
-                {
                     if (isCollected || ObjectInteract.isInteracted ) return;
                     StartCoroutine(ObjectPickUp());
-                }
-                
+               
             }
         }
         
@@ -153,7 +148,7 @@ public class ObjectPickHandler : MonoBehaviour
             Avoid();
            
         }
-       if(isCollected )//&& isLetter_1 || isLetter_2)
+       if(isCollected)//&& isLetter_1 || isLetter_2)
         {
             
             if (Input.GetKeyDown(pickReferences.XrayToggle))
@@ -174,11 +169,9 @@ public class ObjectPickHandler : MonoBehaviour
                 pickReferences.XrayOnImage.SetActive(true);
             }
         }
-        else if(!isCollected)
+        else 
         {
-            XrayVisionDisable();
-            pickReferences.XrayOfImage.SetActive(false);
-            pickReferences.XrayOnImage.SetActive(false);
+            XrayVisionDisable();  
         }
      
        
@@ -310,6 +303,9 @@ public class ObjectPickHandler : MonoBehaviour
         isVision = false;
         if (XrayObject != null) XrayObject.SetActive(false);
         pickReferences. XrayCamara.SetActive(false);
+
+        pickReferences.XrayOfImage.SetActive(false);
+        pickReferences.XrayOnImage.SetActive(false);
     }
 
     private void OnMouseDown()
