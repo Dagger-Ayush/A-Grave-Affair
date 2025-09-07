@@ -28,6 +28,15 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         textComponent = GetComponent<TextMeshProUGUI>();
         uiCamera = GetCanvasCamera();
+
+        // Disable raycast blocking from this object's Image (if any)
+        Image img = GetComponent<Image>();
+        if (img != null)
+            img.raycastTarget = false;
+
+        RawImage rawImg = GetComponent<RawImage>();
+        if (rawImg != null)
+            rawImg.raycastTarget = false;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
