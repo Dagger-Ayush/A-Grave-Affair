@@ -10,6 +10,7 @@ TagManager:
   - Screen
   - Ground
   - Sound
+  - Object
   layers:
   - Default
   - TransparentFX
