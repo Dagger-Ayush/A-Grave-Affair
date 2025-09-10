@@ -13,7 +13,22 @@ public class Visionhover : MonoBehaviour
 
     public GameObject vision;
     public Image visionBorder;
-    
+
+    public Camera visionCamera;
+    public float scale = 0.75f;
+    public float orthoSize = 3f;
+
+    private Vector3 scaleStore;
+    private float orthoSizeStore;
+
+    private Coroutine currentRoutine;
+    public float lerpSpeed = 5f;
+    private void Start()
+    {
+        scaleStore = vision.transform.localScale;
+
+        orthoSizeStore = visionCamera.orthographicSize;
+    }
     void Update()
     {
         bool found = false;
@@ -32,6 +47,7 @@ public class Visionhover : MonoBehaviour
             {
                 if (collider.CompareTag("Object"))
                 {
+                    HoverEffect();
                     SetColor(collider.gameObject, hoverColor, visionClue);
                     found = true;
                     break;
@@ -43,6 +59,7 @@ public class Visionhover : MonoBehaviour
         {
             foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Object"))
             {
+                UnHoverEffect();
                 SetColor(obj, unHoverColor, visionUnClue);
             }
         }
@@ -55,5 +72,40 @@ public class Visionhover : MonoBehaviour
             visionBorder.color = visionColor;
         }
     }
-    
+    public void HoverEffect()
+    {
+        StartSmoothLerp(new Vector3(scale, scale, scale), orthoSize);
+    }
+
+   
+    public void UnHoverEffect()
+    {
+        StartSmoothLerp(scaleStore, orthoSizeStore);
+    }
+
+    private void StartSmoothLerp(Vector3 targetScale, float targetOrthoSize)
+    {
+        if (currentRoutine != null)
+            StopCoroutine(currentRoutine);
+
+        currentRoutine = StartCoroutine(SmoothLerp(targetScale, targetOrthoSize));
+    }
+
+    private System.Collections.IEnumerator SmoothLerp(Vector3 targetScale, float targetOrthoSize)
+    {
+        Vector3 startScale = vision.transform.localScale;
+        float startOrthoSize = visionCamera.orthographicSize;
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime * lerpSpeed;
+
+            vision.transform.localScale = Vector3.Lerp(startScale, targetScale, t);
+            visionCamera.orthographicSize = Mathf.Lerp(startOrthoSize, targetOrthoSize, t);
+
+            yield return null;
+        }
+    }
+
 }

@@ -33,7 +33,7 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 1
+    value: 8
   threshold:
     overrideState: 1
     value: 1
@@ -57,7 +57,7 @@ MonoBehaviour:
     value: 0
   dirtTexture:
     overrideState: 1
-    value: {fileID: 0}
+    value: {fileID: 2800000, guid: bbdde3348122a0948a1c3acc677ab87b, type: 3}
     defaultState: 1
   dirtIntensity:
     overrideState: 1
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40b924e2dad56384a8df2a1e111bb675, type: 3}
   m_Name: Vignette
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
