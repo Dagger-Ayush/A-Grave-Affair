@@ -16,10 +16,20 @@ public class PuzzleValidator : MonoBehaviour
     [Header ("Extra References")]
     public static int CorrectFilledCount = 0;//Checking for if the entier Puzzle is filled correct
     bool isIncreased;
+
+    [Header ("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip allCorrectClip;
+    [SerializeField] private AudioClip twoOrLessIncorrectClip;
+    [SerializeField] private AudioClip allIncorrectClip;
    
     private void Start()
     {
         ResetPuzzleCompletion();
+
+        if(audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
     }
     private void Update()
     {
@@ -95,6 +105,8 @@ public class PuzzleValidator : MonoBehaviour
 
         if (incorrectCount == 0)
         {
+            PlayClipSafe(allCorrectClip);
+
             isIncreased = false;
             feedbackText.text = "Sentence is filled correctly.";
             Debug.Log("Puzzle is Correct");
@@ -133,13 +145,32 @@ public class PuzzleValidator : MonoBehaviour
         }
         else if (incorrectCount <= 2)
         {
+            PlayClipSafe(twoOrLessIncorrectClip);
+
             feedbackText.text = "2 or fewer clues are incorrect.";
             Debug.Log($"{incorrectCount} clue{(incorrectCount > 1 ? "s" : "")} incorrect.");
         }
         else
         {
+            PlayClipSafe(allIncorrectClip);
+
             feedbackText.text = "The sentence is filled incorrectly.";
             Debug.Log("The sentence is filled incorrectly.");
+        }
+    }
+
+    private void PlayClipSafe(AudioClip clip)
+    {
+        if(clip == null) 
+            return;
+
+        if(audioSource != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.LogError("No audio Source");
         }
     }
    
