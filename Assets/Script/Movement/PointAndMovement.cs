@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.AI;
 public class PointAndMovement : MonoBehaviour
 {
+    public static PointAndMovement instance;
     [SerializeField] private InputAction mouseClickAction;
     
     private Rigidbody rb;
@@ -24,7 +25,8 @@ public class PointAndMovement : MonoBehaviour
 
     private void Awake()
     {
-       
+        if (instance == null) instance = this;
+
         mainCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
       

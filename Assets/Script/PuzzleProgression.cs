@@ -14,6 +14,7 @@ public class PuzzleProgression : MonoBehaviour
 
     [SerializeField] private GameObject dummyObjectDialog;
     [SerializeField] private DialogAudio dialogAudio;
+    [SerializeField] private PlayerInteract playerInteract;
 
     private bool isDialogEnabled = false;
     private bool isDialogStarted = false;

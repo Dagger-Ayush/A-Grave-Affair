@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class InspectionTutorial : MonoBehaviour
 {
+    public static InspectionTutorial Instance;
+
     public Animator packanimator;
     public ObjectPickHandler pickHandler;
     public Animator clueanimator;
@@ -29,6 +31,11 @@ public class InspectionTutorial : MonoBehaviour
 
 
     public GameObject[] interactionPages;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         if (targetObject != null)
@@ -51,10 +58,11 @@ public class InspectionTutorial : MonoBehaviour
         {
             StartCoroutine(CluePickHandler());
         }
-        if (interactionPages[0].activeSelf && Input.GetMouseButton(0))
-        {
-            
+        if (interactionPages[0].activeSelf && Input.GetMouseButton(0) && !isTyping)
+        { 
             interactionPages[0].SetActive(false);
+
+            isRunning = false;
             enabled = false;
         }
 
@@ -130,8 +138,6 @@ public class InspectionTutorial : MonoBehaviour
         packanimator.enabled = false;
 
         clueTriggered = true;
-
-        isRunning = false;
 
     }
 

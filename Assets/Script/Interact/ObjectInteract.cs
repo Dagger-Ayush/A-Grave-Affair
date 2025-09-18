@@ -204,11 +204,7 @@ public class ObjectInteract : MonoBehaviour
                 }
                 if (pickReferences.ObjectPickHandlerCigarette.isCigarette)
                 {
-                    if(playerInteract.tabletImage != null)
-                    {
-                        playerInteract.tabletImage.enabled = true;
-                    }
-
+                   
                     pickReferences.ObjectPickHandlerCigarette.shouldWork = true;
 
                 }

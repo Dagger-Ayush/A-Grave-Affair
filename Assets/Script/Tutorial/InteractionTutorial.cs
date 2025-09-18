@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class InteractionTutorial : MonoBehaviour
 {
+    public static InteractionTutorial Instance;
     public GameObject[] interactionPages;
     private int count = 0;
     [HideInInspector] public bool isRunning;
@@ -27,7 +28,11 @@ public class InteractionTutorial : MonoBehaviour
 
     public bool canHover = false;
     public bool isHovered = false;
-    
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         canHover = false;

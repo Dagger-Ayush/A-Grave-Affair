@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class PlayerInteract : MonoBehaviour
 {
+    public static PlayerInteract Instance;
+
     [SerializeField] private float interactRange = 1f;
     [HideInInspector] public bool isPointAndMovementEnabled;
     private PointAndMovement pointAndMovement;
@@ -15,7 +17,10 @@ public class PlayerInteract : MonoBehaviour
     public Image tabletImage;
     private bool shouldTabletWork;
 
-    
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         pointAndMovement = GetComponent<PointAndMovement>();
