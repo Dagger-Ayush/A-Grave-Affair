@@ -23,6 +23,7 @@ public class PointAndMovement : MonoBehaviour
     private enum MovementMode { None, NavMesh, Keyboard }
     private MovementMode currentMovementMode = MovementMode.None;
 
+    public bool StopBedAniWork = false;
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -33,7 +34,10 @@ public class PointAndMovement : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         PlayerInteract = GetComponent<PlayerInteract>();
-        animator.SetTrigger("isBed");
+        if (!StopBedAniWork)
+        {
+            animator.SetTrigger("isBed");
+        }
     }
 
    

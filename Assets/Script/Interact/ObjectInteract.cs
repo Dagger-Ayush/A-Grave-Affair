@@ -27,7 +27,7 @@ public class ObjectInteract : MonoBehaviour
 
     [SerializeField] private DialogAudio[] dialogAudio;
 
-    [HideInInspector] public bool shouldWork = false;
+   public bool shouldWork = false;
 
     private bool InteractedWithDogBed = false;
 
@@ -57,9 +57,8 @@ public class ObjectInteract : MonoBehaviour
             {
                 NextDialogueImage();
             }
+            return;
         }
-
-        if (isDogBed && !InteractedWithDogBed) return;
 
         if (inRange != null)
         {
@@ -97,7 +96,10 @@ public class ObjectInteract : MonoBehaviour
     }
     private void ObjectHandler()
     {
-        if (TabletManager.isTabletOpen || pickReferences.interactionTutorial.isRunning) return;
+        if (TabletManager.Instance != null && pickReferences != null)
+        {
+            if (TabletManager.isTabletOpen || pickReferences.interactionTutorial.isRunning) return;
+        }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -126,7 +128,7 @@ public class ObjectInteract : MonoBehaviour
     }
     public void StartInteraction()
     {
-        
+       
         interacting = true;
         isInteracted = true;
         currentImageIndex = 0;
@@ -134,18 +136,24 @@ public class ObjectInteract : MonoBehaviour
        
         if (dialogueImages.Length > 0)
         {
-            if(dialogueImages[currentImageIndex].tag == "Screen" || dialogueImages[currentImageIndex].tag == "Sound")
+            if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
+     && dialogAudio.Length > currentImageIndex
+     && dialogAudio[currentImageIndex] != null
+     && dialogAudio[currentImageIndex].sorce != null)
             {
                 dialogAudio[currentImageIndex].sorce.Play();
             }
+            if (pickReferences != null)
+            {
+                if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
+                {
 
-            if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
-            {
-                pickReferences.currentClue.SetActive(false);
-            }
-            else
-            {
-                dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
+                    pickReferences.currentClue.SetActive(false);
+                }
+                else
+                {
+                    dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
+                }
             }
 
             dialogueImages[currentImageIndex].SetActive(true);
@@ -167,7 +175,10 @@ public class ObjectInteract : MonoBehaviour
         
         dialogueImages[currentImageIndex].SetActive(false);
 
-        if (dialogueImages[currentImageIndex].tag == "Screen" || dialogueImages[currentImageIndex].tag == "Sound")
+        if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
+    && dialogAudio.Length > currentImageIndex
+    && dialogAudio[currentImageIndex] != null
+    && dialogAudio[currentImageIndex].sorce != null)
         {
             dialogAudio[currentImageIndex].sorce.Stop();
         }
@@ -175,17 +186,23 @@ public class ObjectInteract : MonoBehaviour
 
         if (currentImageIndex < dialogueImages.Length )
         {
-            if (dialogueImages[currentImageIndex].tag == "Screen" || dialogueImages[currentImageIndex].tag == "Sound")
+            if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
+    && dialogAudio.Length > currentImageIndex
+    && dialogAudio[currentImageIndex] != null
+    && dialogAudio[currentImageIndex].sorce != null)
             {
                 dialogAudio[currentImageIndex].sorce.Play();
             }
-            if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
+            if (pickReferences != null)
             {
-                pickReferences.currentClue.SetActive(false);
-            }
-            else
-            {
-                dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
+                if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
+                {
+                    pickReferences.currentClue.SetActive(false);
+                }
+                else
+                {
+                    dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
+                }
             }
             dialogueImages[currentImageIndex].SetActive(true);
         }
