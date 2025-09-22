@@ -166,6 +166,7 @@ public class PointAndMovement : MonoBehaviour
 
         if (z > 0) // Only allow forward (W)
         {
+            MovementRotation(z);
             currentMovementMode = MovementMode.Keyboard;
             isWalking = true;
 
@@ -179,19 +180,7 @@ public class PointAndMovement : MonoBehaviour
                 agent.ResetPath(); // Stop NavMesh path if moving via keyboard
             }
 
-            // Look where mouse is pointing
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-            float rayDistance;
-            if (groundPlane.Raycast(ray, out rayDistance))
-            {
-                Vector3 point = ray.GetPoint(rayDistance);
-                LookAt(point);
-            }
-
-            Vector3 dir = transform.forward * z;
-            dir.y = rb.linearVelocity.y;
-            rb.linearVelocity = dir;
+          
         }
         else
         {
@@ -216,5 +205,21 @@ public class PointAndMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
+    }
+    void MovementRotation(float z)
+    {
+        // Look where mouse is pointing
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        float rayDistance;
+        if (groundPlane.Raycast(ray, out rayDistance))
+        {
+            Vector3 point = ray.GetPoint(rayDistance);
+            LookAt(point);
+        }
+
+        Vector3 dir = transform.forward * z;
+        dir.y = rb.linearVelocity.y;
+        rb.linearVelocity = dir;
     }
 }
