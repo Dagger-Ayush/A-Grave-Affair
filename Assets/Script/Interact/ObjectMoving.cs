@@ -71,11 +71,7 @@ public class ObjectMoving : MonoBehaviour
                         if (!canInteract)
                         {
                             dialogAudio.sorce.Play();
-                            dialogueImages.SetActive(true);
-                            dialogueImages.transform.rotation = Quaternion.Euler(0, 44, 0);
-                            dialogueImages.transform.position = new Vector3(playerInteract.player.transform.position.x - 1.75f,
-                                                                            playerInteract.player.transform.position.y + 4.4f,
-                                                                            playerInteract.player.transform.position.z - 2);
+                            dialogueImages.SetActive(true); 
                             canInteract = true;
                         }
                         else

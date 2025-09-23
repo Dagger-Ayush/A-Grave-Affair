@@ -1,59 +1,55 @@
-﻿
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
+using static ObjectPickHandler;
+
 public class ObjectInteract : MonoBehaviour
-{  
-  
+{
+    public enum InteractType { Tablet, DogBed, Badge, Lighter, None }
+    public InteractType type = InteractType.None;
+
     [Header("Dialogues Interaction reference's")]
     [SerializeField] private CanvasGroup inRange;
     [SerializeField] private CanvasGroup outRange;
     [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private ObjectPickReferences pickReferences;
 
-    [Header("dialogue references")]
+    [Header("Dialogue references")]
     [SerializeField] private GameObject[] dialogueImages;
     private int currentImageIndex = 0;
 
-    public  bool interacting;
-     public static bool isInteracted;
+    public static bool isInteracted;
+    [HideInInspector] public bool isRunning;
     private Vector2 turn;
-
-   public bool isTablet;// the player need not need to press E to enable Dialog
-    public bool isDogBed;
-    public bool isBadge;
-  
-    [SerializeField] private bool isLighter = false;
 
     [SerializeField] private DialogAudio[] dialogAudio;
 
-   public bool shouldWork = false;
-
+    public bool shouldWork = false;
     private bool InteractedWithDogBed = false;
 
     private void Start()
     {
-
-        
-        if (isTablet)
+        if (type == InteractType.Tablet)
         {
             outRange.alpha = 1;
             shouldWork = true;
         }
-        if (isDogBed)
+
+        if (type == InteractType.DogBed)
         {
             enabled = false;
         }
     }
+
     private void Update()
     {
-        if (isDogBed && !InteractedWithDogBed )
+        if (type == InteractType.DogBed && !InteractedWithDogBed)
         {
-            if (!interacting)
+            if (!isInteracted)
             {
                 StartInteraction();
             }
-            else if (interacting && Input.GetKeyDown(KeyCode.E))
+            else if (isInteracted && Input.GetKeyDown(KeyCode.E))
             {
                 NextDialogueImage();
             }
@@ -67,33 +63,33 @@ public class ObjectInteract : MonoBehaviour
                 inRange.alpha = 0;
             }
         }
+
         if (playerInteract.GetObjectInteract() == this)
         {
             if (!shouldWork) return;
 
             outRange.alpha = 0;
-            if (inRange != null )
+
+            if (inRange != null)
             {
-               if(!isInteracted && !ObjectPickHandler.isCollected)
+                if (!isInteracted && !ObjectPickHandler.isCollected)
                 {
                     inRange.alpha = 1;
                 }
-            else
+                else
                 {
                     inRange.alpha = 0;
                 }
             }
+
             ObjectHandler();
         }
-
-        else if (playerInteract.GetObjectInteract() == null  )
+        else if (playerInteract.GetObjectInteract() == null)
         {
-            
             Avoid();
         }
-       
-      
     }
+
     private void ObjectHandler()
     {
         if (TabletManager.Instance != null && pickReferences != null)
@@ -103,51 +99,46 @@ public class ObjectInteract : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-                    if (!interacting)
-                    {
-                     if (isInteracted || ObjectPickHandler.isCollected) return;
-                      StartInteraction();
-                    }
-                    else
-                    {
-                        NextDialogueImage();
-                    }
-                  
-            
+            if (!isInteracted && !ObjectPickHandler.isCollected)
+            {
+                StartInteraction();
+            }
+            else
+            {
+                NextDialogueImage();
+            }
         }
-        if (isTablet)
+
+        if (type == InteractType.Tablet)
         {
-            if (!interacting && currentImageIndex < dialogueImages.Length)
+            if (!isInteracted && currentImageIndex < dialogueImages.Length)
             {
                 StartInteraction();
                 gameObject.GetComponent<Renderer>().enabled = false;
             }
-           
         }
-       
     }
+
     public void StartInteraction()
     {
-       
-        interacting = true;
+        isRunning = true;
         isInteracted = true;
         currentImageIndex = 0;
-       
-       
+
         if (dialogueImages.Length > 0)
         {
             if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
-     && dialogAudio.Length > currentImageIndex
-     && dialogAudio[currentImageIndex] != null
-     && dialogAudio[currentImageIndex].sorce != null)
+                && dialogAudio.Length > currentImageIndex
+                && dialogAudio[currentImageIndex] != null
+                && dialogAudio[currentImageIndex].sorce != null)
             {
                 dialogAudio[currentImageIndex].sorce.Play();
             }
+
             if (pickReferences != null)
             {
                 if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
                 {
-
                     pickReferences.currentClue.SetActive(false);
                 }
                 else
@@ -157,42 +148,40 @@ public class ObjectInteract : MonoBehaviour
             }
 
             dialogueImages[currentImageIndex].SetActive(true);
-
-          
         }
-       
     }
 
     public void NextDialogueImage()
     {
-        if (dialogueImages.Length == 0 )
-            return;
-        
+        if (dialogueImages.Length == 0) return;
+
         if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>())
         {
             dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().storingData();
         }
-        
+
         dialogueImages[currentImageIndex].SetActive(false);
 
         if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
-    && dialogAudio.Length > currentImageIndex
-    && dialogAudio[currentImageIndex] != null
-    && dialogAudio[currentImageIndex].sorce != null)
+            && dialogAudio.Length > currentImageIndex
+            && dialogAudio[currentImageIndex] != null
+            && dialogAudio[currentImageIndex].sorce != null)
         {
             dialogAudio[currentImageIndex].sorce.Stop();
         }
+
         currentImageIndex++;
 
-        if (currentImageIndex < dialogueImages.Length )
+        if (currentImageIndex < dialogueImages.Length)
         {
             if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
-    && dialogAudio.Length > currentImageIndex
-    && dialogAudio[currentImageIndex] != null
-    && dialogAudio[currentImageIndex].sorce != null)
+                && dialogAudio.Length > currentImageIndex
+                && dialogAudio[currentImageIndex] != null
+                && dialogAudio[currentImageIndex].sorce != null)
             {
                 dialogAudio[currentImageIndex].sorce.Play();
             }
+
             if (pickReferences != null)
             {
                 if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
@@ -204,40 +193,40 @@ public class ObjectInteract : MonoBehaviour
                     dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
                 }
             }
+
             dialogueImages[currentImageIndex].SetActive(true);
         }
         else
         {
-           
-
-            interacting = false;
+            isRunning = false;
             isInteracted = false;
-     
-            if (isTablet)
+
+            if (type == InteractType.Tablet)
             {
-                if (pickReferences.ObjectInteractBadge.isBadge)
+                if (pickReferences.ObjectInteractBadge.type == InteractType.Badge)
                 {
                     pickReferences.ObjectInteractBadge.shouldWork = true;
                 }
-                if (pickReferences.ObjectPickHandlerCigarette.isCigarette)
-                {
-                   
-                    pickReferences.ObjectPickHandlerCigarette.shouldWork = true;
 
+                if (pickReferences.ObjectPickHandlerCigarette.type == InspectType.Cigarette)
+                {
+                    pickReferences.ObjectPickHandlerCigarette.shouldWork = true;
                 }
-                
-                Destroy(gameObject, 0.1f);// using delay for Movment and point and click to enable
+
+                Destroy(gameObject, 0.1f); // small delay for movement and point-and-click to enable
             }
-            if (isDogBed)
+
+            if (type == InteractType.DogBed)
             {
-                if (pickReferences.lighterObjectPickHandler!= null)
+                if (pickReferences.lighterObjectPickHandler != null)
                 {
                     pickReferences.lighterObjectPickHandler.enabled = true;
                 }
 
                 InteractedWithDogBed = true;
             }
-            if (isLighter)
+
+            if (type == InteractType.Lighter)
             {
                 Destroy(gameObject, 0.1f);
             }
@@ -245,24 +234,19 @@ public class ObjectInteract : MonoBehaviour
     }
 
     private void Avoid()
-    {   
-       
+    {
         if (currentImageIndex < dialogueImages.Length)
         {
-            //dialogueImages[currentImageIndex].SetActive(false);
             currentImageIndex = 0;
-
         }
-       
-        interacting = false;
+
+        isRunning = false;
+        isInteracted = false;
+
         if (inRange != null && shouldWork && !isInteracted)
         {
             inRange.alpha = 0;
             outRange.alpha = 1;
         }
-       
     }
-    
-    
-    
 }

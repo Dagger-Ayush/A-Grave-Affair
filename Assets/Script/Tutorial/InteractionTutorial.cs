@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEditor.Rendering.PostProcessing;
 using UnityEngine;
+using static ObjectInteract;
 
 public class InteractionTutorial : MonoBehaviour
 {
@@ -59,7 +60,7 @@ public class InteractionTutorial : MonoBehaviour
             }
             return;   
         }
-        if (!interactHandler.interacting)
+        if (!interactHandler.isRunning)
         {
             foreach (var page in interactionPages)
                 page.SetActive(false);
@@ -75,8 +76,9 @@ public class InteractionTutorial : MonoBehaviour
             }
             isRunning = false;
         }
-        if (!isInteractionComplete && interactHandler.interacting)
+        if (!isInteractionComplete && interactHandler.isRunning) 
         {
+
             if (canHover)
             {
                 if (cursor.isHovered() == true)

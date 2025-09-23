@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using static ObjectPickHandler;
 
 public class PuzzleProgression : MonoBehaviour
 {
@@ -89,7 +90,7 @@ public class PuzzleProgression : MonoBehaviour
 
 
 
-                if (objectPickHandler.isLetter_1 || objectPickHandler.isLetter_2)
+                if (objectPickHandler.type == InspectType.Letter_1 || objectPickHandler.type == InspectType.Letter_2)
                 {
                     objectPickHandler.shouldWork = false;
 

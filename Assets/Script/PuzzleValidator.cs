@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static ObjectPickHandler;
 
 public class PuzzleValidator : MonoBehaviour
 {
@@ -203,11 +204,11 @@ public class PuzzleValidator : MonoBehaviour
                 if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
                 {
 
-                    if (objectPickHandler.isLetter_1)
+                    if (objectPickHandler.type == InspectType.Letter_1)
                     {
                         objectPickHandler.shouldWork = true;
                     }
-                    if (objectPickHandler.isLetter_2)
+                    if (objectPickHandler.type == InspectType.Letter_2)
                     {
                      
                         objectPickHandler.shouldWork = true;

@@ -1,49 +1,55 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
-public class Visionhover : MonoBehaviour
+public class VisionHover : MonoBehaviour
 {
-    [Header("Hover")]
-    public float radius = 0.2f;
-    public Color hoverColor = Color.white;
-    public Color unHoverColor = Color.blue;
-    [Header("Vision")]
-    public Color visionClue = Color.white;
-    public Color visionUnClue = Color.blue;
+    [Header("Hover Settings")]
+    [SerializeField] private float radius = 0.2f;
+    [SerializeField] private Color hoverColor = Color.white;
+    [SerializeField] private Color unHoverColor = Color.blue;
 
-    public GameObject vision;
-    public Image visionBorder;
+    [Header("Vision Colors")]
+    [SerializeField] private Color visionClue = Color.white;
+    [SerializeField] private Color visionUnClue = Color.blue;
 
-    public Camera visionCamera;
-    public float scale = 0.75f;
-    public float orthoSize = 3f;
+    [Header("References")]
+    [SerializeField] private GameObject vision;
+    [SerializeField] private Image visionBorder;
+    [SerializeField] private Camera visionCamera;
+
+    [Header("Animation")]
+    [SerializeField] private float scale = 0.75f;
+    [SerializeField] private float orthoSize = 3f;
+    [SerializeField] private float lerpSpeed = 5f;
 
     private Vector3 scaleStore;
     private float orthoSizeStore;
-
     private Coroutine currentRoutine;
-    public float lerpSpeed = 5f;
+
     private void Start()
     {
-        scaleStore = vision.transform.localScale;
+        if (vision != null)
+            scaleStore = vision.transform.localScale;
 
-        orthoSizeStore = visionCamera.orthographicSize;
+        if (visionCamera != null)
+            orthoSizeStore = visionCamera.orthographicSize;
     }
-    void Update()
+
+    private void Update()
     {
+        if (vision == null || !vision.activeSelf) return;
+
         bool found = false;
 
-        
+        // Raycast from vision object position
         Ray ray = Camera.main.ScreenPointToRay(vision.transform.position);
-       
+
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (!vision.activeSelf) return;
+            Collider[] colliders = Physics.OverlapSphere(hit.point, radius);
 
-            Collider[] colliderArray = Physics.OverlapSphere(hit.point, radius);
-
-           
-            foreach (Collider collider in colliderArray)
+            foreach (Collider collider in colliders)
             {
                 if (collider.CompareTag("Object"))
                 {
@@ -53,8 +59,8 @@ public class Visionhover : MonoBehaviour
                     break;
                 }
             }
-
         }
+
         if (!found)
         {
             foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Object"))
@@ -64,20 +70,25 @@ public class Visionhover : MonoBehaviour
             }
         }
     }
-    void SetColor(GameObject obj, Color objectColor,Color visionColor)
+
+    private void SetColor(GameObject obj, Color objectColor, Color visionColor)
     {
-        if (obj != null)
+        if (obj.TryGetComponent(out MeshRenderer renderer))
         {
-            obj.GetComponent<MeshRenderer>().material.color = objectColor;
+            renderer.material.color = objectColor;
+        }
+
+        if (visionBorder != null)
+        {
             visionBorder.color = visionColor;
         }
     }
+
     public void HoverEffect()
     {
         StartSmoothLerp(new Vector3(scale, scale, scale), orthoSize);
     }
 
-   
     public void UnHoverEffect()
     {
         StartSmoothLerp(scaleStore, orthoSizeStore);
@@ -91,7 +102,7 @@ public class Visionhover : MonoBehaviour
         currentRoutine = StartCoroutine(SmoothLerp(targetScale, targetOrthoSize));
     }
 
-    private System.Collections.IEnumerator SmoothLerp(Vector3 targetScale, float targetOrthoSize)
+    private IEnumerator SmoothLerp(Vector3 targetScale, float targetOrthoSize)
     {
         Vector3 startScale = vision.transform.localScale;
         float startOrthoSize = visionCamera.orthographicSize;
@@ -107,5 +118,4 @@ public class Visionhover : MonoBehaviour
             yield return null;
         }
     }
-
 }
