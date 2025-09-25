@@ -1,23 +1,4 @@
-//using UnityEngine;
-//using UnityEngine.UI;
 
-//public class CharacterButton : MonoBehaviour
-//{
-//    public CharacterData characterData;
-//    private CharacterInfoUI infoUI;
-
-//    void Start()
-//    {
-//        infoUI = FindAnyObjectByType<CharacterInfoUI>();
-//        GetComponent<Button>().onClick.AddListener(OnClick);
-//    }
-
-//    void OnClick()
-//    {
-//        if(infoUI != null && characterData != null)
-//            infoUI.DisplayCharacter(characterData);
-//    }
-//}
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -35,7 +16,6 @@ public class CharacterButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private CharacterInfoUI infoUI;
     private Coroutine rippleRoutine;
 
-    // Static to ensure only one button is selected at a time
     private static CharacterButton currentlySelected;
 
     void Start()
@@ -44,7 +24,7 @@ public class CharacterButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
         GetComponent<Button>().onClick.AddListener(OnClick);
 
         if (roundBackground != null)
-            roundBackground.SetActive(false); // ensure hidden by default
+            roundBackground.SetActive(false); 
 
         if(rippleImage != null)
             rippleImage.gameObject.SetActive(false);
@@ -52,11 +32,9 @@ public class CharacterButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void OnClick()
     {
-        // Update character info panel
         if (infoUI != null && characterData != null)
             infoUI.DisplayCharacter(characterData);
 
-        // Handle round background selection
         if (currentlySelected != null && currentlySelected != this)
         {
             currentlySelected.roundBackground?.SetActive(false);
@@ -100,11 +78,11 @@ public class CharacterButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         while (true)
         {
-            // Reset
+            
             rippleImage.transform.localScale = Vector3.zero;
             rippleImage.color = new Color(1, 1, 1, 1);
 
-            float duration = 1f; // ripple speed
+            float duration = 1f; 
             float elapsed = 0f;
 
             while (elapsed < duration)
