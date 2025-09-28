@@ -5,8 +5,11 @@ using static ObjectPickHandler;
 
 public class ObjectInteract : MonoBehaviour
 {
-    public enum InteractType { Tablet, DogBed, Badge, Lighter, None }
+    public static ObjectInteract Instance;
+    public enum InteractType { Tablet, DogBed, Badge, Lighter,InteractiveAutomatic, NonInteractiveAutomatic, None }
     public InteractType type = InteractType.None;
+
+    public static bool isInteracted;
 
     [Header("Dialogues Interaction reference's")]
     [SerializeField] private CanvasGroup inRange;
@@ -18,7 +21,7 @@ public class ObjectInteract : MonoBehaviour
     [SerializeField] private GameObject[] dialogueImages;
     private int currentImageIndex = 0;
 
-    public static bool isInteracted;
+   
     [HideInInspector] public bool isRunning;
     private Vector2 turn;
 
@@ -26,7 +29,13 @@ public class ObjectInteract : MonoBehaviour
 
     public bool shouldWork = false;
     private bool InteractedWithDogBed = false;
+    [HideInInspector] public bool isAutoComplete = false;
+    [HideInInspector] public bool isAutoCompleteNearObject = false;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         if (type == InteractType.Tablet)
@@ -43,6 +52,19 @@ public class ObjectInteract : MonoBehaviour
 
     private void Update()
     {
+        
+        if (type == InteractType.NonInteractiveAutomatic && !isAutoComplete)
+        {
+            if (!isInteracted)
+            {
+                StartInteraction();
+            }
+            else if (isInteracted && Input.GetKeyDown(KeyCode.E))
+            {
+                NextDialogueImage();
+            }
+            return;
+        }
         if (type == InteractType.DogBed && !InteractedWithDogBed)
         {
             if (!isInteracted)
@@ -68,8 +90,22 @@ public class ObjectInteract : MonoBehaviour
         {
             if (!shouldWork) return;
 
-            outRange.alpha = 0;
-
+            if (type == InteractType.InteractiveAutomatic && !isAutoCompleteNearObject)
+            {
+                if (!isInteracted)
+                {
+                    StartInteraction();
+                }
+                else if (isInteracted && Input.GetKeyDown(KeyCode.E))
+                {
+                    NextDialogueImage();
+                }
+                return;
+            }
+            if (outRange != null)
+            {
+                outRange.alpha = 0;
+            }
             if (inRange != null)
             {
                 if (!isInteracted && !ObjectPickHandler.isCollected)
@@ -225,6 +261,18 @@ public class ObjectInteract : MonoBehaviour
 
                 InteractedWithDogBed = true;
             }
+            if (type == InteractType.InteractiveAutomatic)
+            {
+                isAutoCompleteNearObject = true;
+                playerInteract.player.GetComponent<PointAndMovement>().enabled = true;
+                
+            } 
+            if ( type == InteractType.NonInteractiveAutomatic)
+            {
+                isAutoComplete = true;
+                playerInteract.player.GetComponent<PointAndMovement>().enabled = true;
+
+            }
 
             if (type == InteractType.Lighter)
             {
@@ -248,5 +296,10 @@ public class ObjectInteract : MonoBehaviour
             inRange.alpha = 0;
             outRange.alpha = 1;
         }
+    }
+    public bool InteractionCheck()
+    {
+        if (!isInteracted) return false;
+        else return true;
     }
 }

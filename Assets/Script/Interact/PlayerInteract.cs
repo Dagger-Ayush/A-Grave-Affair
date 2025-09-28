@@ -44,27 +44,39 @@ public class PlayerInteract : MonoBehaviour
         GetObjectPickHandler();
 
         // Interaction / Pickup / Movement checks
-        if (ObjectInteract.isInteracted || ObjectPickHandler.isCollected || ObjectMoving.canInteract)
+        bool canInteract = (ObjectInteract.Instance != null && ObjectInteract.Instance.InteractionCheck())
+                           || (ObjectPickHandler.isCollected)
+                           || (ObjectMoving.canInteract);
+
+        bool isPlayerInteracting = playerDialog != null && playerDialog.isInteraction;
+
+        if (canInteract)
         {
             isPointAndMovementEnabled = true;
-            pointAndMovement.agent.SetDestination(player.transform.position);
-            tabletImage.enabled = false;
-            pointAndMovement.enabled = false;
-            animator.SetBool("IsWalking", false);
+
+            if (pointAndMovement != null && pointAndMovement.agent != null && player != null)
+                pointAndMovement.agent.SetDestination(player.position);
+
+            if (tabletImage != null)
+                tabletImage.enabled = false;
+
+            if (pointAndMovement != null)
+                pointAndMovement.enabled = false;
+
+            if (animator != null)
+                animator.SetBool("IsWalking", false);
         }
-        else if (!ObjectInteract.isInteracted &&
-                 !ObjectPickHandler.isCollected &&
-                 !ObjectMoving.canInteract &&
-                 !playerDialog.isInteraction)
+        else if (!canInteract && !isPlayerInteracting)
         {
             isPointAndMovementEnabled = false;
 
-            if (shouldTabletWork)
+            if (shouldTabletWork && tabletImage != null)
                 tabletImage.enabled = true;
 
             if (pointAndMovement != null)
                 pointAndMovement.enabled = true;
         }
+
     }
 
     // -------------------

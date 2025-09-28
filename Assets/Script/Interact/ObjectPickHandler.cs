@@ -113,7 +113,10 @@ public class ObjectPickHandler : MonoBehaviour
 
         if (isPicked && Input.GetKeyDown(KeyCode.E))
         {
-            if (isbusy || InteractClueManager.isClueShowing || pickReferences.inspectionTutorial.isRunning) return;
+            if (InteractClueManager.instance != null || pickReferences.inspectionTutorial != null)
+            {
+                if (isbusy || InteractClueManager.isClueShowing || pickReferences.inspectionTutorial.isRunning) return;
+            }
             StartCoroutine(ObjectDrop());
         }
 
