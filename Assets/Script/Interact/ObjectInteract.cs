@@ -128,7 +128,7 @@ public class ObjectInteract : MonoBehaviour
 
     private void ObjectHandler()
     {
-        if (TabletManager.Instance != null && pickReferences != null)
+        if (TabletManager.Instance != null && pickReferences != null && pickReferences.interactionTutorial!= null)
         {
             if (TabletManager.isTabletOpen || pickReferences.interactionTutorial.isRunning) return;
         }
