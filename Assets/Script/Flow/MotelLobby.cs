@@ -1,4 +1,5 @@
-﻿using Unity.Cinemachine;
+﻿using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class MotelLobby : MonoBehaviour
@@ -61,8 +62,6 @@ public class MotelLobby : MonoBehaviour
                 introPanDone = true;
             }
         }
-
-        // ------------------- Dialog logic -------------------
         if (introPanDone && motelStartDialogs && motelStartDialogs.isAutoComplete)
         {
             // After phase 1, smoothly move camera dummy to follow player
@@ -76,15 +75,21 @@ public class MotelLobby : MonoBehaviour
         if (DialogsPhase_2 && DialogsPhase_2.isAutoCompleteNearObject)
         {
             ImageFade.instance.FadeInOut();
-            enablingInteract.enabled = true;
-            enablingInteract.shouldWork = true;
-
-            enablingInspect[0].enabled = true;
-            enablingInspect[0].shouldWork = true;
-            enablingInspect[1].enabled = true;
-            enablingInspect[1].shouldWork = true;
-
-            DialogsPhase_2.enabled = false;
+            StartCoroutine(ObjectsEnable());
         }
     }
-}
+    IEnumerator ObjectsEnable()
+    {
+        yield return new WaitForSeconds(1.5f);
+        enablingInteract.enabled = true;
+        enablingInteract.shouldWork = true;
+
+        enablingInspect[0].enabled = true;
+        enablingInspect[0].shouldWork = true;
+        enablingInspect[1].enabled = true;
+        enablingInspect[1].shouldWork = true;
+
+        DialogsPhase_2.enabled = false;
+    }
+
+    }

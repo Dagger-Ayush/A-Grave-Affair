@@ -72,14 +72,14 @@ public class PointAndMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        mouseClickAction.Enable();
-        mouseClickAction.performed += Move;
+       // mouseClickAction.Enable();
+       // mouseClickAction.performed += Move;
     }
 
     private void OnDisable()
     {
-        mouseClickAction.performed -= Move;
-        mouseClickAction.Disable();
+       // mouseClickAction.performed -= Move;
+       // mouseClickAction.Disable();
     }
     private void Move(InputAction.CallbackContext context)
     {
@@ -100,7 +100,10 @@ public class PointAndMovement : MonoBehaviour
             {
                 agent.SetDestination(hit.point);
             }
-            transform.LookAt(hit.point);
+            Vector3 lookTarget = hit.point;
+            lookTarget.y = transform.position.y; // keep same Y so no tilt
+            transform.LookAt(lookTarget);
+
         }
 
     }

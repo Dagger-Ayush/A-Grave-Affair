@@ -55,7 +55,7 @@ public class PlayerInteract : MonoBehaviour
             isPointAndMovementEnabled = true;
 
             if (pointAndMovement != null && pointAndMovement.agent != null && player != null)
-                pointAndMovement.agent.SetDestination(player.position);
+                player.GetComponent<Rigidbody>().isKinematic = true;
 
             if (tabletImage != null)
                 tabletImage.enabled = false;
@@ -68,6 +68,7 @@ public class PlayerInteract : MonoBehaviour
         }
         else if (!canInteract && !isPlayerInteracting)
         {
+            player.GetComponent<Rigidbody>().isKinematic = false;
             isPointAndMovementEnabled = false;
 
             if (shouldTabletWork && tabletImage != null)

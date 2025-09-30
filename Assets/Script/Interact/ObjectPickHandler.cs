@@ -9,7 +9,7 @@ public class ObjectPickHandler : MonoBehaviour
 {
     public static ObjectPickHandler Instance;
 
-    public enum InspectType { Cigarette, Lighter, Letter_1, Letter_2, None }
+    public enum InspectType { Cigarette, Lighter, Letter_1, Letter_2, TutorialLetter, None }
     public InspectType type = InspectType.None;
 
     public enum MoveType { Movable, Static }
@@ -180,7 +180,10 @@ public class ObjectPickHandler : MonoBehaviour
         isCollected = true;
         pickReferences.currentClue.SetActive(true);
 
-        playerInteract.player.transform.LookAt(transform.position);
+        Vector3 target = transform.position;
+        target.y = playerInteract.player.transform.position.y; // lock Y so no tilt
+        playerInteract.player.transform.LookAt(target);
+
 
         isbusy = true;
         time = 0;

@@ -12,6 +12,7 @@ public class PlayerDialog : MonoBehaviour
     [HideInInspector] public bool isInteraction;
     private bool isEndDialogRunning;
     private PlayerInteract playerInteract;
+    [SerializeField] private Collider bedCollider;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -58,6 +59,11 @@ public class PlayerDialog : MonoBehaviour
     {
 
         yield return new WaitForSeconds(4.18f);
+
+        if (bedCollider != null)
+        {
+            bedCollider.enabled = true;
+        }
         isInteraction = true;
         currentImageIndex = 0;
 

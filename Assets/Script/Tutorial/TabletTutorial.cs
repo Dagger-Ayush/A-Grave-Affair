@@ -2,6 +2,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class TabletTutorial : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class TabletTutorial : MonoBehaviour
     private bool FirstPageComplete;
     private bool endDialog;
 
-    public Canvas canvas;
+    public SortingGroup canvas;
     private Coroutine typingCoroutine;
 
     private void Awake()
