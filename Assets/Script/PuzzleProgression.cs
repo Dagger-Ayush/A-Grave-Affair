@@ -9,9 +9,12 @@ public class PuzzleProgression : MonoBehaviour
     public GameObject puzzle1;
     public GameObject puzzle2;
     public GameObject puzzle3;
+    public GameObject puzzle4;
     public TMP_Text feedbackText;
 
     private bool puzzle1Solved = false;
+    private bool puzzle2Solved = false;
+    private bool puzzle3Solved = false;
 
     [SerializeField] private GameObject dummyObjectDialog;
     [SerializeField] private AudioManager audioManager;
@@ -27,6 +30,7 @@ public class PuzzleProgression : MonoBehaviour
         puzzle1.SetActive(true);
         puzzle2.SetActive(false); 
         puzzle3.SetActive(false);
+        if (puzzle4 != null) puzzle4.SetActive(false);
     }
     private void Update()
     {
@@ -34,40 +38,78 @@ public class PuzzleProgression : MonoBehaviour
     }
     public void OnPuzzle1Solved()
     {
-       
+
         if (puzzle1Solved) return;
         puzzle1Solved = true;
         EnablingObjects();
-        StartCoroutine(CloseTabletAfterDelay());        
+        StartCoroutine(CloseTabletAfterDelay(() =>
+        {
+            puzzle1.SetActive(false);
+
+            TabletManager.Instance.puzzlePanel.SetActive(false);
+            TabletManager.Instance.clueBox.SetActive(false);
+            feedbackText.text = " ";
+
+            if (puzzle2 != null) puzzle2.SetActive(true);
+            if (puzzle3 != null) puzzle3.SetActive(true);
+
+            Debug.Log("Puzzle 2 & 3 unlocked.");
+            isPuzzleCompleted = true;
+        }));
     }
 
-    private IEnumerator CloseTabletAfterDelay()
+    public void OnPuzzle2Solved()
+    {
+        if (puzzle2Solved) return;
+        puzzle2Solved = true;
+        Debug.Log("Puzzle 2 solved");
+        CheckPuzzle2And3Completion();
+    }
+
+    public void OnPuzzle3Solved()
+    {
+        if (puzzle3Solved) return;
+        puzzle3Solved = true;
+        Debug.Log("Puzzle 3 solved");
+        CheckPuzzle2And3Completion();
+    }
+
+    public void CheckPuzzle2And3Completion()
+    {
+        if (puzzle2Solved && puzzle3Solved)
+        {
+            StartCoroutine(CloseTabletAfterDelay(() =>
+            {
+                if (puzzle2 != null) puzzle2.SetActive(false);
+                if (puzzle3 != null) puzzle3.SetActive(false);
+                if (puzzle4 != null) puzzle4.SetActive(true);
+
+                TabletManager.Instance.puzzlePanel.SetActive(false);
+                TabletManager.Instance.clueBox.SetActive(false);
+                feedbackText.text = " ";
+
+                Debug.Log("Puzzle 4 unlocked, replacing Puzzle 2 & 3.");
+            }));
+        }
+    }
+
+    private IEnumerator CloseTabletAfterDelay(System.Action onClose)
     {
         Time.timeScale = 1f;
 
         yield return new WaitForSeconds(2f);
 
 
-        if(TabletManager.Instance !=null)
+        if (TabletManager.Instance != null)
         {
             TabletManager.Instance.CloseTablet();
-          
-           
+
+
         }
 
         yield return new WaitForSeconds(0.5f);
-        
-        puzzle1.SetActive(false);
-        
-        TabletManager.Instance.puzzlePanel.SetActive(false);
-        TabletManager.Instance.clueBox.SetActive(false);
-        feedbackText.text = " ";
 
-        if (puzzle2 != null) puzzle2.SetActive(true);
-        if(puzzle3 != null) puzzle3.SetActive(true);
-
-        Debug.Log("Puzzle 2 & 3 unlocked.");
-        isPuzzleCompleted = true;
+        onClose?.Invoke();
     }
 
     private void EnablingObjects()

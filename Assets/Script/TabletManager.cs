@@ -15,6 +15,7 @@ public class TabletManager : MonoBehaviour
     public float visibleY = 50f;
 
     private bool isOpen = false;
+    public bool canOpenTablet = false;
 
     public GameObject puzzlePanel;
     public Transform sentenceContainer;
@@ -50,9 +51,14 @@ public class TabletManager : MonoBehaviour
     }
     private void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.Tab) && playerInteract.isPointAndMovementEnabled == false)
         {
+            if (!canOpenTablet)
+            {
+                Debug.Log("Tablet is locked. Interact with the object first!");
+                return;
+            }
+
             isOpen = !isOpen;
             StopAllCoroutines();
             StartCoroutine(SlideTablet(isOpen));

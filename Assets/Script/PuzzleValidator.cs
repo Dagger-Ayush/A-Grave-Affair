@@ -137,10 +137,44 @@ public class PuzzleValidator : MonoBehaviour
             ClueManager.Instance.RemoveUsedClues(usedClues);
 
             var progression = FindAnyObjectByType<PuzzleProgression>();
-            if(progression != null && currentPuzzle.puzzleID == 1)
+            //if(progression != null && currentPuzzle.puzzleID == 1)
+            //{
+            //    progression.OnPuzzle1Solved();
+            //    Debug.LogWarning("working");
+            //}
+
+            if(progression != null)
             {
-                progression.OnPuzzle1Solved();
-                Debug.LogWarning("working");
+                if (currentPuzzle.puzzleID == 1)
+                {
+                    progression.OnPuzzle1Solved();
+                    Debug.Log("Puzzle 1 completed, progression triggered.");
+                }
+                else if (currentPuzzle.puzzleID == 2)
+                {
+                    progression.OnPuzzle2Solved();
+                    Debug.Log("Puzzle 2 completed, progression triggered.");
+                }
+                else if (currentPuzzle.puzzleID == 3)
+                {
+                    progression.OnPuzzle3Solved();
+                    Debug.Log("Puzzle 3 completed, progression triggered.");
+                }
+                //switch(currentPuzzle.puzzleID)
+                //{
+                //    case 1:
+                //        progression.OnPuzzle1Solved();
+                //        Debug.Log("Puzzle 1 solved – progression updated.");
+                //        break;
+                //    case 2:
+                //        progression.OnPuzzle2Solved();
+                //        Debug.Log("Puzzle 2 solved – progression updated.");
+                //        break;
+                //    case 3:
+                //        progression.OnPuzzle3Solved();
+                //        Debug.Log("Puzzle 3 solved – progression updated.");
+                //        break;
+                //}
             }
 
         }

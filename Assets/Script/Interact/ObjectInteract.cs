@@ -227,6 +227,7 @@ public class ObjectInteract : MonoBehaviour
 
             if (type == InteractType.Tablet)
             {
+                TabletUnlocker.instance.UnlockTablet();
                 if (pickReferences.ObjectInteractBadge.type == InteractType.Badge)
                 {
                     pickReferences.ObjectInteractBadge.shouldWork = true;
