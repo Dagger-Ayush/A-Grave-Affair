@@ -37,7 +37,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     public static bool isMouseLocked;
     [HideInInspector] public bool isPicked;
-    [HideInInspector] public static bool isCollected;
+     public static bool isCollected;
 
     private bool isVision = false;
     private bool isbusy = false;
@@ -354,5 +354,10 @@ public class ObjectPickHandler : MonoBehaviour
             inRange.alpha = 0;
             outRange.alpha = 1;
         }
+    }
+    public bool InteractionCheck()
+    {
+        if (!isCollected) return false;
+        else return true;
     }
 }

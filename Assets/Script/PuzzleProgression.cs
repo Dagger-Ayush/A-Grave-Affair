@@ -14,7 +14,8 @@ public class PuzzleProgression : MonoBehaviour
     private bool puzzle1Solved = false;
 
     [SerializeField] private GameObject dummyObjectDialog;
-    [SerializeField] private DialogAudio dialogAudio;
+    [SerializeField] private AudioManager audioManager;
+    [SerializeField] private DialogAudio dummyDialogAudio;
     [SerializeField] private PlayerInteract playerInteract;
 
     private bool isDialogEnabled = false;
@@ -110,13 +111,13 @@ public class PuzzleProgression : MonoBehaviour
             if (!isDialogStarted)
             {
                 dummyObjectDialog.SetActive(true);
-                dialogAudio.sorce.Play();
+                audioManager.PlayDialogBigLine(dummyDialogAudio);
                 isDialogStarted = true;
             }
             else if (isDialogStarted && Input.GetKeyDown(KeyCode.E))
             {
                 dummyObjectDialog.SetActive(false);
-                dialogAudio.sorce.Stop();
+                audioManager.Stop();
                 isDialogEnabled = true;
 
 

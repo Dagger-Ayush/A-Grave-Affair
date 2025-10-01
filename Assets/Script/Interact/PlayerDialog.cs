@@ -1,19 +1,31 @@
 using System.Collections;
+using TMPro;
 using Unity.Cinemachine.Samples;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class PlayerDialog : MonoBehaviour
 {
     private PointAndMovement pointAndMovement;
-    [SerializeField] private GameObject[] dialogueImages;
-    [SerializeField] private DialogAudio[] dialogAudio;
+    
     private int currentImageIndex = 0;
     [HideInInspector] public bool isInteraction;
     private bool isEndDialogRunning;
     private PlayerInteract playerInteract;
     [SerializeField] private Collider bedCollider;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+     [Header("Dialog System")]
+    public DialogManager dialogManager;
+    public AudioManager audioManager;
+    public TextMeshProUGUI dialogText;
+    public GameObject dialogContainer;
+    public GameObject LastDialog;
+    public GameObject movementTutorial;
+    private bool HasRun = false;
+
+    [SerializeField] private DialogAudio lastDialogAudio;
     void Start()
     {
         playerInteract = GetComponent<PlayerInteract>();
@@ -46,10 +58,12 @@ public class PlayerDialog : MonoBehaviour
             dialogueImages[currentImageIndex].transform.position = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
             */
         }
-        if (pointAndMovement.isMoving)
+        if (pointAndMovement.isMoving && !HasRun)
         {
-            dialogueImages[currentImageIndex].SetActive(false);
             isInteraction = false;
+            movementTutorial.SetActive(false);
+            isInteraction = false;
+            HasRun = true;
         }
 
         
@@ -67,51 +81,44 @@ public class PlayerDialog : MonoBehaviour
         isInteraction = true;
         currentImageIndex = 0;
 
-        if (dialogueImages.Length > 0)
+        if (dialogManager.dialogLines.Length > 0)
         {
-            dialogAudio[currentImageIndex].sorce.Play();
-            dialogueImages[currentImageIndex].SetActive(true);
+            TypeLine(dialogContainer,currentImageIndex, currentImageIndex);
         }
     }
 
     private void NextDialogueImage()
     {
-        if (dialogueImages.Length == 0)
+        if (dialogManager.dialogLines.Length == 0)
             return;
         if (currentImageIndex < 2)
         {
-            dialogAudio[currentImageIndex].sorce.Stop();
+            audioManager.Stop();
         }
-
-        dialogueImages[currentImageIndex].SetActive(false);
+       
+        dialogContainer.SetActive(false);
         currentImageIndex++;
-
-        if (currentImageIndex < dialogueImages.Length)
+        if (currentImageIndex == 2)
         {
-            if (currentImageIndex < 2)
-            {
-                dialogAudio[currentImageIndex].sorce.Play();
-            }
-            dialogueImages[currentImageIndex].SetActive(true);
+            movementTutorial.SetActive(true);
+            pointAndMovement.enabled = true;
+            return;
+        }
+        if (currentImageIndex < dialogManager.dialogLines.Length)
+        {
+           
+            TypeLine(dialogContainer,currentImageIndex, currentImageIndex);
         }
         else
         {
             isInteraction = false;
         }
-        if (currentImageIndex > 1)
-        {
-            pointAndMovement.enabled = true;
-
-        }
-
-
+        
     }
 
     public void EndDialog()
     {
         if (TabletManager.isTabletOpen ) return;
-
-       
 
         if (!isInteraction && !isEndDialogRunning)
         {
@@ -120,22 +127,34 @@ public class PlayerDialog : MonoBehaviour
             playerInteract.enabled = false;
             pointAndMovement.enabled = false;
 
-            dialogAudio[2].sorce.Play();
-            dialogueImages[3].SetActive(true);
-
+            LastDialog.SetActive(true);
+            audioManager.PlayDialogBigLine(lastDialogAudio);
         }
         else if (isInteraction && Input.GetKeyDown(KeyCode.E))
         {
-            
-               
-                dialogueImages[3].SetActive(false);
-                dialogAudio[2].sorce.Stop();
-
+            LastDialog.SetActive(false);
+            audioManager.Stop();
                 pointAndMovement.enabled = true;
             playerInteract.enabled = true;
 
 
             isInteraction = false;
+        }
+    }
+    void TypeLine(GameObject gameObject,int currentImageIndex, int audioIndex)
+    {
+        gameObject.SetActive(true);
+        dialogText.SetText(dialogManager.dialogLines[currentImageIndex]);
+
+        if (dialogManager.dialogAudio.Length > currentImageIndex
+                && dialogManager.dialogAudio[currentImageIndex] != null
+                && dialogManager.dialogAudio[currentImageIndex].sorce != null)
+        {
+            if (currentImageIndex < 2)
+            {
+                audioManager.PlayDialogLine(dialogManager, audioIndex);
+            }
+            
         }
     }
 }

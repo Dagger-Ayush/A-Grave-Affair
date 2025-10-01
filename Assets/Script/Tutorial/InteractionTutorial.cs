@@ -62,6 +62,7 @@ public class InteractionTutorial : MonoBehaviour
         }
         if (!interactHandler.isRunning)
         {
+            blurImage[0].SetActive(false);
             foreach (var page in interactionPages)
                 page.SetActive(false);
             blurImage[1].SetActive(false);
@@ -72,6 +73,8 @@ public class InteractionTutorial : MonoBehaviour
         {
             if (interactionPages[3].activeSelf)
             {
+                blurImage[0].SetActive(false);
+                blurImage[1].SetActive(false);
                 interactionPages[3].SetActive(false);
             }
             isRunning = false;

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
+  m_Name: Badge
+  m_EditorClassIdentifier: 
+  characterName: Badge
+  dialogLines:
+  - "<link=\"Detective\">Detective</color></link>\u2026 it sounds hollow now, like
+    an echo from a past life I can\u2019t return to."
+  dialogAudio: []
+  changeFontSize: 0
+  frontSize: []
+  typingSpeed: 0.02

@@ -24,7 +24,7 @@ public class TabletTutorial : MonoBehaviour
     private bool FirstPageComplete;
     private bool endDialog;
 
-    public SortingGroup canvas;
+    public Canvas canvas;
     private Coroutine typingCoroutine;
 
     private void Awake()

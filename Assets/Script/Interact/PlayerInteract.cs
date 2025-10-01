@@ -34,7 +34,7 @@ public class PlayerInteract : MonoBehaviour
 
         if (backGroundAudio != null)
         {
-            backGroundAudio.sorce.Play();
+           // backGroundAudio.sorce.Play();
         }
     }
 
@@ -44,9 +44,9 @@ public class PlayerInteract : MonoBehaviour
         GetObjectPickHandler();
 
         // Interaction / Pickup / Movement checks
-        bool canInteract = (ObjectInteract.Instance != null && ObjectInteract.Instance.InteractionCheck())
-                           || (ObjectPickHandler.isCollected)
-                           || (ObjectMoving.canInteract);
+        bool canInteract =  (ObjectPickHandler.Instance.InteractionCheck())
+                           || (ObjectMoving.canInteract)
+                           || (ObjectInteract.Instance.InteractionCheck());
 
         bool isPlayerInteracting = playerDialog != null && playerDialog.isInteraction;
 

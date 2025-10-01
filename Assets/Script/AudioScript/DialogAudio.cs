@@ -2,11 +2,12 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class DialogAudio : MonoBehaviour
+[CreateAssetMenu(fileName = "NewAudioSystem", menuName = "NewAudio")]
+public class DialogAudio : ScriptableObject
 {
     
-    [HideInInspector] public AudioSource sorce;
-    [SerializeField] private AudioClip clip;
+    [HideInInspector] public AudioSource[] sorce;
+    public AudioClip clip;
     [Range(0, 3)]
     public float volume = 1;
     [Range(0, 3)]
@@ -16,20 +17,5 @@ public class DialogAudio : MonoBehaviour
     public bool isMute;
 
 
-    private void Awake()
-    {
-        if (sorce == null)
-        {
-            sorce = gameObject.AddComponent<AudioSource>();
-        }
-
-        sorce.clip = clip;
-        sorce.volume = volume;
-        sorce.pitch = pitch;
-        sorce.mute = isMute;
-        sorce.loop = loop;
-    }
-    
-
-  
+   
 }

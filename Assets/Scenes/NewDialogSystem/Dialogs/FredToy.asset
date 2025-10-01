@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
+  m_Name: FredToy
+  m_EditorClassIdentifier: 
+  characterName: JhonM
+  dialogLines:
+  - <link="Fred">Fred</color></link> got another new <link="Toy">toy</color></link>,
+    he breaks his toys quite often these days.
+  - Good to see, this one is still Intact.
+  dialogAudio:
+  - {fileID: 11400000, guid: 8ac01b1085fe2fb4e8f76ee4b70b2639, type: 2}
+  - {fileID: 11400000, guid: 1ad9c4c02b9e95343ab79480a16938a0, type: 2}
+  changeFontSize: 0
+  frontSize: []
+  typingSpeed: 0.02

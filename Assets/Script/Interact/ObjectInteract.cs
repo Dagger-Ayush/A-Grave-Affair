@@ -1,5 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 using static ObjectPickHandler;
 
@@ -8,6 +11,13 @@ public class ObjectInteract : MonoBehaviour
     public static ObjectInteract Instance;
     public enum InteractType { Tablet, DogBed, Badge, Lighter,InteractiveAutomatic, NonInteractiveAutomatic, None }
     public InteractType type = InteractType.None;
+
+    [Header("Dialog System")]
+    public DialogManager dialogManager;
+    public AudioManager audioManager;
+    public TextMeshProUGUI dialogText;
+    public GameObject dialogContainer;
+    
 
     public static bool isInteracted;
 
@@ -18,14 +28,14 @@ public class ObjectInteract : MonoBehaviour
     [SerializeField] private ObjectPickReferences pickReferences;
 
     [Header("Dialogue references")]
-    [SerializeField] private GameObject[] dialogueImages;
+    //[SerializeField] private GameObject[] dialogueImages;
     private int currentImageIndex = 0;
 
    
     [HideInInspector] public bool isRunning;
     private Vector2 turn;
 
-    [SerializeField] private DialogAudio[] dialogAudio;
+    //[SerializeField] private DialogAudio[] dialogAudio;
 
     public bool shouldWork = false;
     private bool InteractedWithDogBed = false;
@@ -52,20 +62,8 @@ public class ObjectInteract : MonoBehaviour
 
     private void Update()
     {
-        
-        if (type == InteractType.NonInteractiveAutomatic && !isAutoComplete)
-        {
-            if (!isInteracted)
-            {
-                StartInteraction();
-            }
-            else if (isInteracted && Input.GetKeyDown(KeyCode.E))
-            {
-                NextDialogueImage();
-            }
-            return;
-        }
-        if (type == InteractType.DogBed && !InteractedWithDogBed)
+       
+        if ((type == InteractType.DogBed && !InteractedWithDogBed) || (type == InteractType.NonInteractiveAutomatic && !isAutoComplete))
         {
             if (!isInteracted)
             {
@@ -80,7 +78,7 @@ public class ObjectInteract : MonoBehaviour
 
         if (inRange != null)
         {
-            if (isInteracted || ObjectPickHandler.isCollected)
+            if (isInteracted || ObjectPickHandler.Instance.InteractionCheck())
             {
                 inRange.alpha = 0;
             }
@@ -108,7 +106,7 @@ public class ObjectInteract : MonoBehaviour
             }
             if (inRange != null)
             {
-                if (!isInteracted && !ObjectPickHandler.isCollected)
+                if (!isInteracted && !ObjectPickHandler.Instance.InteractionCheck())
                 {
                     inRange.alpha = 1;
                 }
@@ -117,8 +115,8 @@ public class ObjectInteract : MonoBehaviour
                     inRange.alpha = 0;
                 }
             }
-
-            ObjectHandler();
+           
+                ObjectHandler();
         }
         else if (playerInteract.GetObjectInteract() == null)
         {
@@ -135,7 +133,7 @@ public class ObjectInteract : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (!isInteracted && !ObjectPickHandler.isCollected)
+            if (!isInteracted && !ObjectPickHandler.Instance.InteractionCheck())
             {
                 StartInteraction();
             }
@@ -147,7 +145,7 @@ public class ObjectInteract : MonoBehaviour
 
         if (type == InteractType.Tablet)
         {
-            if (!isInteracted && currentImageIndex < dialogueImages.Length)
+            if (!isInteracted && currentImageIndex < dialogManager.dialogLines.Length)
             {
                 StartInteraction();
                 gameObject.GetComponent<Renderer>().enabled = false;
@@ -161,76 +159,66 @@ public class ObjectInteract : MonoBehaviour
         isInteracted = true;
         currentImageIndex = 0;
 
-        if (dialogueImages.Length > 0)
+        if (dialogManager.dialogLines.Length > 0)
         {
-            if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
-                && dialogAudio.Length > currentImageIndex
-                && dialogAudio[currentImageIndex] != null
-                && dialogAudio[currentImageIndex].sorce != null)
-            {
-                dialogAudio[currentImageIndex].sorce.Play();
-            }
-
+            TypeLine();
+            
+            /*
             if (pickReferences != null)
             {
-                if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
+                if (dialogManager.dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
                 {
                     pickReferences.currentClue.SetActive(false);
                 }
                 else
                 {
-                    dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
+                    dialogManager.dialogLines[currentImageIndex].GetComponent<GettingClueCount>().Checking();
                 }
             }
-
-            dialogueImages[currentImageIndex].SetActive(true);
+            */
         }
     }
 
     public void NextDialogueImage()
     {
-        if (dialogueImages.Length == 0) return;
-
-        if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>())
+        if (dialogManager.dialogLines.Length == 0) return;
+        /*
+        if (dialogManager.dialogueImages[currentImageIndex].GetComponent<GettingClueCount>())
         {
             dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().storingData();
         }
+        */
+        dialogContainer.SetActive(false);
 
-        dialogueImages[currentImageIndex].SetActive(false);
-
-        if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
-            && dialogAudio.Length > currentImageIndex
-            && dialogAudio[currentImageIndex] != null
-            && dialogAudio[currentImageIndex].sorce != null)
+        if (//(dialogManager.dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
+             dialogManager.dialogAudio.Length > currentImageIndex
+            && dialogManager.dialogAudio[currentImageIndex] != null
+            && dialogManager.dialogAudio[currentImageIndex].sorce != null)
         {
-            dialogAudio[currentImageIndex].sorce.Stop();
+            audioManager.Stop();
         }
 
         currentImageIndex++;
 
-        if (currentImageIndex < dialogueImages.Length)
+        if (currentImageIndex < dialogManager.dialogLines.Length)
         {
-            if ((dialogueImages[currentImageIndex].CompareTag("Screen") || dialogueImages[currentImageIndex].CompareTag("Sound"))
-                && dialogAudio.Length > currentImageIndex
-                && dialogAudio[currentImageIndex] != null
-                && dialogAudio[currentImageIndex].sorce != null)
-            {
-                dialogAudio[currentImageIndex].sorce.Play();
-            }
-
+            
+            TypeLine();
+            /*
             if (pickReferences != null)
             {
-                if (dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
+                if (dialogManager.dialogueImages[currentImageIndex].GetComponent<GettingClueCount>() == null)
                 {
                     pickReferences.currentClue.SetActive(false);
                 }
                 else
                 {
-                    dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
+                    dialogManager.dialogueImages[currentImageIndex].GetComponent<GettingClueCount>().Checking();
                 }
             }
+            */
 
-            dialogueImages[currentImageIndex].SetActive(true);
+            
         }
         else
         {
@@ -283,7 +271,7 @@ public class ObjectInteract : MonoBehaviour
 
     private void Avoid()
     {
-        if (currentImageIndex < dialogueImages.Length)
+        if (currentImageIndex < dialogManager.dialogLines.Length)
         {
             currentImageIndex = 0;
         }
@@ -302,4 +290,26 @@ public class ObjectInteract : MonoBehaviour
         if (!isInteracted) return false;
         else return true;
     }
+    void TypeLine()
+    {
+        dialogContainer.SetActive(true);
+        if (dialogManager.changeFontSize)
+        {
+            dialogText.fontSize = dialogManager.frontSize[currentImageIndex];
+        }
+        else
+        {
+            dialogText.fontSize = 45;
+        }
+        dialogText.SetText(dialogManager.dialogLines[currentImageIndex]);
+
+        if (dialogManager.dialogAudio.Length > currentImageIndex
+                && dialogManager.dialogAudio[currentImageIndex] != null
+                && dialogManager.dialogAudio[currentImageIndex].sorce != null)
+        {
+            audioManager.PlayDialogLine(dialogManager, currentImageIndex);
+        }
+    }
+   
+
 }

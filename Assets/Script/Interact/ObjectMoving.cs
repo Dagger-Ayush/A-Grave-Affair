@@ -14,14 +14,15 @@ public class ObjectMoving : MonoBehaviour
     private ObjectInteract objectInteract;
 
     [SerializeField] private GameObject foodBowlEmpty, foodBowlFilled;
-    [SerializeField] private GameObject dialogueImages;
+    public DialogManager dialogManager;
+    public AudioManager audioManager;
+    public TextMeshProUGUI dialogText;
+    public GameObject dialogContainer;
 
     private bool isCompleted = false;
     [HideInInspector]public static bool canInteract = false;
     private static bool canInteractWithBed = false;
 
-   
-    [SerializeField] private DialogAudio dialogAudio;
 
     [HideInInspector] public bool shouldWork = false;
 
@@ -62,7 +63,7 @@ public class ObjectMoving : MonoBehaviour
                         else
                         {
                             StartCoroutine(TextEnabler(infoText));
-                            dogBark.sorce.Play();
+                            //dogBark.sorce.Play();
                             infoText.text = "Can't Interact, if only I could get Fred to move";
                         }
                         break;
@@ -70,13 +71,12 @@ public class ObjectMoving : MonoBehaviour
                      case ObjectType.DogBowl:
                         if (!canInteract)
                         {
-                            dialogAudio.sorce.Play();
-                            dialogueImages.SetActive(true); 
-                            canInteract = true;
+                            TypeLine(0);
+                             canInteract = true;
                         }
                         else
                         {
-                            dialogueImages.SetActive(false);
+                            dialogContainer.SetActive(false);
                             DogBowlFilling();
                         }
                        
@@ -178,5 +178,17 @@ public class ObjectMoving : MonoBehaviour
         text.gameObject.SetActive(true);
         yield return new WaitForSeconds(2);
         text.gameObject.SetActive(false);
+    }
+    void TypeLine(int currentImageIndex)
+    {
+        dialogContainer.SetActive(true);
+        dialogText.SetText(dialogManager.dialogLines[currentImageIndex]);
+
+        if (dialogManager.dialogAudio.Length > currentImageIndex
+                && dialogManager.dialogAudio[currentImageIndex] != null
+                && dialogManager.dialogAudio[currentImageIndex].sorce != null)
+        {
+            audioManager.PlayDialogLine(dialogManager, currentImageIndex);
+        }
     }
 }

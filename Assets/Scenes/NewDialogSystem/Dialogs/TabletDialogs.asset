@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
+  m_Name: TabletDialogs
+  m_EditorClassIdentifier: 
+  characterName: JhonM
+  dialogLines:
+  - Well nothing out of the ordinary
+  - "Let\u2019s start the day with a smoke"
+  dialogAudio:
+  - {fileID: 11400000, guid: 7cb92df324d6ce045a6904db5059b6ca, type: 2}
+  - {fileID: 11400000, guid: ba4790e5c1c7c7b4ab9087d9d012a12a, type: 2}
+  frontSize:
+  - 45
+  - 45
+  typingSpeed: 0.02

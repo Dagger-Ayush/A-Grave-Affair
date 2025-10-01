@@ -1,9 +1,15 @@
+using TMPro;
 using UnityEngine;
 
 public class DialogSystem : MonoBehaviour
 {
     [Header("dialogue references")]
-    [SerializeField] private GameObject[] dialogueImages;
+    [Header("Dialog System")]
+    public DialogManager dialogManager;
+    public AudioManager audioManager;
+    public TextMeshProUGUI dialogText;
+    public GameObject dialogContainer;
+
     private int currentImageIndex = 0;
 
     [HideInInspector] public bool interacting;
@@ -11,7 +17,6 @@ public class DialogSystem : MonoBehaviour
     [SerializeField] private ObjectPickHandler objectPickHandler;
     [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private Transform player;
-    [SerializeField] private DialogAudio[] dialogAudio;
     private ObjectInteract objectInteract;
    
     private void Start()
@@ -47,27 +52,24 @@ public class DialogSystem : MonoBehaviour
         currentImageIndex = 0;
        
 
-        if (dialogueImages.Length > 0)
+        if (dialogManager.dialogLines.Length > 0)
         {
-            
-            dialogueImages[currentImageIndex].SetActive(true);
-            dialogAudio[currentImageIndex].sorce.Play();
+            TypeLine(currentImageIndex);
         }
     }
 
     public void NextDialogueImage()
     {
-        if (dialogueImages.Length == 0)
+        if (dialogManager.dialogLines.Length == 0)
             return;
 
-        dialogueImages[currentImageIndex].SetActive(false);
-        dialogAudio[currentImageIndex].sorce.Stop();
+        dialogContainer.SetActive(false);
+        //dialogAudio[currentImageIndex].sorce.Stop();
         currentImageIndex++;
 
-        if (currentImageIndex < dialogueImages.Length)
+        if (currentImageIndex < dialogManager.dialogLines.Length)
         {
-            dialogAudio[currentImageIndex].sorce.Play();
-            dialogueImages[currentImageIndex].SetActive(true);
+            TypeLine(currentImageIndex);
         }
         else
         {
@@ -81,6 +83,19 @@ public class DialogSystem : MonoBehaviour
                 enabled = false;
               
             }
+        }
+    }
+    void TypeLine(int currentImageIndex)
+    {
+        dialogContainer.SetActive(true);
+        dialogText.fontSize = dialogManager.frontSize[currentImageIndex];
+        dialogText.SetText(dialogManager.dialogLines[currentImageIndex]);
+
+        if (dialogManager.dialogAudio.Length > currentImageIndex
+                && dialogManager.dialogAudio[currentImageIndex] != null
+                && dialogManager.dialogAudio[currentImageIndex].sorce != null)
+        {
+            audioManager.PlayDialogLine(dialogManager, currentImageIndex);
         }
     }
 }
