@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
+  m_Name: Gregory Vertebrae and Jhon dialogs
+  m_EditorClassIdentifier: 
+  characterName: Gregory Vertebrae and Jhon dialogs
+  dialogLines:
+  - Is that you, Greg???
+  - Johny!? What are you doing so far out of town? I thought you decided to take
+    an exile in your apartment.
+  - Yeah, I decided to go out for a stroll. Jessica would have given me an earful
+    if I started to become a couch potato
+  - " I\u2019m sorry to hear about your wife, but this is considerably far for a
+    stroll, you practicing for a walkathon or something?"
+  - " I got an anonymous letter calling me here to solve a mystery. At first, I thought
+    someone was pranking me, but seeing that you are here, I don\u2019t think it
+    was a prank."
+  - Apparently, there was an accidental death at the Bloomingdale motel, so I had
+    been sent to figure out the mess.
+  - THE ACCIDENTAL DEATH! That has to be the one!
+  - "ohny\u2026. I can\u2019t let you interfere with police business. I\u2019ll get
+    chewed out by my superiors if they find out."
+  - "Come on, Greg, I know something is up here, and I can prove it. Please, for
+    old times' sake\u2026"
+  - "Okay okay don\u2019t get all mushy on me, but only because something might actually
+    be wrong, and I\u2019ll be the one making the arrest."
+  - "Okay okay don\u2019t get all mushy on me, but only because something might actually
+    be wrong, and I\u2019ll be the one making the arrest."
+  - "You got yourself a deal, now let\u2019s go!"
+  dialogAudio: []
+  changeFontSize: 0
+  frontSize:
+  - 45
+  - 35
+  - 35
+  - 35
+  - 35
+  typingSpeed: 0.02
+  currentClueCount: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  totalCount: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

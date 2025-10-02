@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
-  m_Name: Cigarette
+  m_Name: ProtoStartDialogs
   m_EditorClassIdentifier: 
   characterName: JhonM
   dialogLines:
-  - 'Did I smoke a whole pack in the last week?? '
-  - Eh might as well finish it and have the last one
+  - What time is it?!
+  - Hmm, let me check if I have any e-mails.
   dialogAudio:
-  - {fileID: 11400000, guid: c1b726ea410187e4ba7b5fc5e4de12cb, type: 2}
-  - {fileID: 11400000, guid: 303264ad1f4deb846b71a3eb2e94ee57, type: 2}
+  - {fileID: 11400000, guid: baf050b12da885c49b964fc825118a6b, type: 2}
+  - {fileID: 11400000, guid: f41906ca84271fd45bea2ffcd7873836, type: 2}
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
+  currentClueCount: 0000000000000000
+  totalCount: 0000000000000000

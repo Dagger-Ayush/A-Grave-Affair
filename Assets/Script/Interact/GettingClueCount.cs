@@ -1,73 +1,60 @@
+﻿using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class GettingClueCount : MonoBehaviour
 {
-    public static GettingClueCount instance;
-    private int clue;
-    public bool isClue;
-    public bool canTik;
+    public List<GameObject> clueBackgrounds = new(); // background objects (notes)
+    public List<GameObject> clueTicks = new();       // tick objects
 
-
-    public static int clueCount;
-    public int totalClues;
-    [HideInInspector] public bool WillClueCountStop = false;
-
-    public ObjectPickReferences pickReferences;
-
-    public GameObject[] pickPrefab;
-
-    private void Awake()
+    public void ShowLineBackgrounds(int totalCluesThisLine)
     {
-        instance = this;
+        totalCluesThisLine = Mathf.Clamp(totalCluesThisLine, 0, clueBackgrounds.Count);
+
+        for (int i = 0; i < clueBackgrounds.Count; i++)
+            clueBackgrounds[i].SetActive(i < totalCluesThisLine);
     }
- 
-    private void Update()
+
+    public void AddTick(int currentTickCount, int totalCluesThisLine)
     {
-        if (canTik)
+        currentTickCount = Mathf.Clamp(currentTickCount, 0, clueTicks.Count);
+        totalCluesThisLine = Mathf.Clamp(totalCluesThisLine, 0, clueBackgrounds.Count);
+
+        if (totalCluesThisLine <= 0)
         {
-            if (clueCount > 0)
-            {
-                if (pickPrefab != null)
-                {
-                    pickPrefab[clueCount - 1].SetActive(true);
-                }
-            }
+            DisableAll();
+            return;
         }
-        
-        /*
-        if (clueCount < totalClues)
-            {
-            pickReferences.currentClueCount.text = "Clues Found (" + clueCount.ToString() + "/" + totalClues.ToString() + ")";
-        }
-        else
-            {
-                pickReferences.currentClueCount.text = "Clue's Picked";
-            }
-        */
-        
+
+        // Always show correct backgrounds
+        ShowLineBackgrounds(totalCluesThisLine);
+
+        // Enable ticks up to current count
+        for (int i = 0; i < clueTicks.Count; i++)
+            clueTicks[i].SetActive(i < currentTickCount);
     }
-    public void Checking()
+
+    public void UpdateTick(int currentTickCount)
     {
-        if (isClue)
-        {
-            if (!WillClueCountStop)
-            {
-                clueCount = clue; // Count of numbers
-            }
-        }
-       
+        for (int i = 0; i < clueTicks.Count; i++)
+            clueTicks[i].SetActive(i < currentTickCount);
     }
-    public void storingData()
+
+    public void ResetTicks(int totalCluesThisLine)
     {
-        if (clueCount <= 0)
-        {
-            WillClueCountStop = true;
-        }
-        else
-        {
-            clue = clueCount;
-        }
-       
+        // Keep backgrounds for current clue line
+        ShowLineBackgrounds(totalCluesThisLine);
+
+        // Clear all ticks
+        foreach (var tick in clueTicks)
+            tick.SetActive(false);
+    }
+
+    public void DisableAll()
+    {
+        foreach (var bg in clueBackgrounds)
+            bg.SetActive(false);
+
+        foreach (var tick in clueTicks)
+            tick.SetActive(false);
     }
 }

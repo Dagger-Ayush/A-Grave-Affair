@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
-  m_Name: Bulletin_Board
+  m_Name: Frame
   m_EditorClassIdentifier: 
   characterName: JhonM
   dialogLines:
-  - "It\u2019s been a while since I took a  <link=\"Case\">case </color></link>.
-    After she passed away, it\u2019s difficult."
-  - I doubt if I even have it in me anymore.
+  - Jessica..  you really did know me the best
+  - That lighter was the best gift I could have gotten on our 5th Anniversary
   dialogAudio:
-  - {fileID: 11400000, guid: 7acc7dcb369c6bc49be294395fd420a4, type: 2}
-  - {fileID: 11400000, guid: d1a1c6d8bfc85a044976784518630a65, type: 2}
+  - {fileID: 11400000, guid: c46745593f5cff441ad98461f8faeb9c, type: 2}
+  - {fileID: 11400000, guid: a492c1e465b86ae4798990b6fdfb9821, type: 2}
+  changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
+  currentClueCount: 0000000000000000
+  totalCount: 0000000000000000

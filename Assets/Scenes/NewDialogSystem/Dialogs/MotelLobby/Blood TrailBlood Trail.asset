@@ -10,16 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
-  m_Name: TabletDialogs
+  m_Name: Blood TrailBlood Trail
   m_EditorClassIdentifier: 
-  characterName: JhonM
+  characterName: Badge
   dialogLines:
-  - Well nothing out of the ordinary
-  - "Let\u2019s start the day with a smoke"
-  dialogAudio:
-  - {fileID: 11400000, guid: 7cb92df324d6ce045a6904db5059b6ca, type: 2}
-  - {fileID: 11400000, guid: ba4790e5c1c7c7b4ab9087d9d012a12a, type: 2}
-  frontSize:
-  - 45
-  - 45
+  - The broken heel looks very precise, like it has been cut cleanly instead of breaking
+    by tripping.
+  dialogAudio: []
+  changeFontSize: 0
+  frontSize: []
   typingSpeed: 0.02
+  currentClueCount: 00000000
+  totalCount: 01000000

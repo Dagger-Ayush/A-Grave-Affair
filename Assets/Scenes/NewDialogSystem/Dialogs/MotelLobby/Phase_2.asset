@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
+  m_Name: Phase_2
+  m_EditorClassIdentifier: 
+  characterName: Phase_2
+  dialogLines:
+  - Eh might as well finish it and have the last one
+  - "Hey y\u2019all, we received a call about an accidental death. I\u2019m Detective
+    John Marrow. This is my colleague Gregory Vertebrae. We had a few questions before
+    we conducted the investigation."
+  - "I\u2019m Martin Femur, the manager of this motel. I\u2019m the one who made
+    the call. The lady you can see lying on the floor was a guest named Nancy Cranium. "
+  - I had gone out to the back for a smoke break and found her lying in a pool of
+    blood at the base of the stairs.
+  - "Ahh.. right, the call. Well, no need to worry, now that we are here, we\u2019ll
+    get to the bottom of this. "
+  dialogAudio: []
+  changeFontSize: 1
+  frontSize:
+  - 45
+  - 35
+  - 35
+  - 35
+  - 35
+  typingSpeed: 0.02
+  currentClueCount: 0000000000000000000000000000000000000000
+  totalCount: 0000000000000000000000000000000000000000

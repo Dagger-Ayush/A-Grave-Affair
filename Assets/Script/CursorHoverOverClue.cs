@@ -79,6 +79,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
                     if (Input.GetMouseButtonDown(0))
                     {
                         ClueManager.Instance.AddClue(currentClueId);
+
                         FloatingTextSpawner.Instance.SpawnFloatingText(currentClueId, Input.mousePosition);
                     }
                 }

@@ -43,11 +43,12 @@ public class PlayerInteract : MonoBehaviour
         GetObjectInteract();
         GetObjectPickHandler();
 
-        // Interaction / Pickup / Movement checks
-        bool canInteract =  (ObjectPickHandler.Instance.InteractionCheck())
-                           || (ObjectMoving.canInteract)
-                           || (ObjectInteract.Instance.InteractionCheck());
+        // Null-safe interaction checks
+        bool pickHandlerInteract = ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck();
+        bool movingInteract = ObjectMoving.canInteract; // assuming static bool, already safe
+        bool interactObject = ObjectInteract.Instance != null && ObjectInteract.Instance.InteractionCheck();
 
+        bool canInteract = pickHandlerInteract || movingInteract || interactObject;
         bool isPlayerInteracting = playerDialog != null && playerDialog.isInteraction;
 
         if (canInteract)
@@ -68,7 +69,9 @@ public class PlayerInteract : MonoBehaviour
         }
         else if (!canInteract && !isPlayerInteracting)
         {
-            player.GetComponent<Rigidbody>().isKinematic = false;
+            if (player != null)
+                player.GetComponent<Rigidbody>().isKinematic = false;
+
             isPointAndMovementEnabled = false;
 
             if (shouldTabletWork && tabletImage != null)
@@ -77,12 +80,9 @@ public class PlayerInteract : MonoBehaviour
             if (pointAndMovement != null)
                 pointAndMovement.enabled = true;
         }
-
     }
 
-    // -------------------
-    // Interaction Handlers
-    // -------------------
+
     public ObjectInteract GetObjectInteract()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);

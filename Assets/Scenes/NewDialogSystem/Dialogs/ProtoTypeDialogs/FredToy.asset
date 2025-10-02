@@ -10,14 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
-  m_Name: Frame
+  m_Name: FredToy
   m_EditorClassIdentifier: 
   characterName: JhonM
   dialogLines:
-  - Jessica..  you really did know me the best
-  - That lighter was the best gift I could have gotten on our 5th Anniversary
+  - <link="Fred">Fred</color></link> got another new <link="Toy">toy</color></link>,
+    he breaks his toys quite often these days.
+  - Good to see, this one is still Intact.
   dialogAudio:
-  - {fileID: 11400000, guid: c46745593f5cff441ad98461f8faeb9c, type: 2}
-  - {fileID: 11400000, guid: a492c1e465b86ae4798990b6fdfb9821, type: 2}
+  - {fileID: 11400000, guid: 8ac01b1085fe2fb4e8f76ee4b70b2639, type: 2}
+  - {fileID: 11400000, guid: 1ad9c4c02b9e95343ab79480a16938a0, type: 2}
+  changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
+  currentClueCount: 0200000000000000
+  totalCount: 0200000000000000
+  clueStoring: 

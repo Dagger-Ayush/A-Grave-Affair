@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
-  m_Name: FredToy
+  m_Name: Cigarette
   m_EditorClassIdentifier: 
   characterName: JhonM
   dialogLines:
-  - <link="Fred">Fred</color></link> got another new <link="Toy">toy</color></link>,
-    he breaks his toys quite often these days.
-  - Good to see, this one is still Intact.
+  - 'Did I smoke a whole pack in the last week?? '
+  - Eh might as well finish it and have the last one
   dialogAudio:
-  - {fileID: 11400000, guid: 8ac01b1085fe2fb4e8f76ee4b70b2639, type: 2}
-  - {fileID: 11400000, guid: 1ad9c4c02b9e95343ab79480a16938a0, type: 2}
+  - {fileID: 11400000, guid: c1b726ea410187e4ba7b5fc5e4de12cb, type: 2}
+  - {fileID: 11400000, guid: 303264ad1f4deb846b71a3eb2e94ee57, type: 2}
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
+  currentClueCount: 0000000000000000
+  totalCount: 0000000000000000

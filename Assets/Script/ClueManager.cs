@@ -29,7 +29,7 @@ public class ClueManager : MonoBehaviour
         if (collectedClues.Contains(clueText)) return;
 
         ObjectPickHandler.clueCount++;
-        GettingClueCount.clueCount++;
+        ObjectInteract.clueCount++;
 
         collectedClues.Add(clueText);
 
@@ -87,4 +87,5 @@ public class ClueManager : MonoBehaviour
             collectedClues.RemoveAll(c => c.Trim().ToLower() == normalized);
         }
     }
+   
 }

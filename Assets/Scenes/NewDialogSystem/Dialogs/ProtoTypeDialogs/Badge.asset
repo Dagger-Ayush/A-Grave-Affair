@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
-  m_Name: ProtoStartDialogs
+  m_Name: Badge
   m_EditorClassIdentifier: 
-  characterName: JhonM
+  characterName: Badge
   dialogLines:
-  - What time is it?!
-  - Hmm, let me check if I have any e-mails.
-  dialogAudio:
-  - {fileID: 11400000, guid: baf050b12da885c49b964fc825118a6b, type: 2}
-  - {fileID: 11400000, guid: f41906ca84271fd45bea2ffcd7873836, type: 2}
+  - "<link=\"Detective\">Detective</color></link>\u2026 it sounds hollow now, like
+    an echo from a past life I can\u2019t return to."
+  dialogAudio: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
+  currentClueCount: 00000000
+  totalCount: 01000000
+  clueStoring: 
