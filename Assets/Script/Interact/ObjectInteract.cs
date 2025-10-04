@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using static ObjectPickHandler;
 
 public class ObjectInteract : MonoBehaviour
@@ -40,10 +41,20 @@ public class ObjectInteract : MonoBehaviour
     private int totalClues;              // max clues this line  
     public static int clueCountMain;    // global count for UI
 
-    private void Awake() => Instance = this;
+
+    //private Sprite jhonSprite;
+    public Sprite jhonSpriteStore;
+    private Image jhon;
+    private void Awake()
+    {
+        Instance = this;
+        jhon = dialogContainer.GetComponent<Image>();
+        
+    }
 
     private void Start()
     {
+        //jhonSpriteStore = jhon.sprite;
         // Ensure currentClueCount array is initialized
         if (dialogManager != null)
         {
@@ -150,7 +161,9 @@ public class ObjectInteract : MonoBehaviour
         if (dialogManager.currentClueCount != null && currentImageIndex < dialogManager.currentClueCount.Length)
             dialogManager.currentClueCount[currentImageIndex] = clueCount;
 
-        dialogContainer.SetActive(false);
+
+            dialogContainer.SetActive(false);
+
 
         if (dialogManager.dialogAudio.Length > currentImageIndex &&
             dialogManager.dialogAudio[currentImageIndex]?.sorce != null)
@@ -192,7 +205,10 @@ public class ObjectInteract : MonoBehaviour
         }
 
         if (type == InteractType.DogBed && pickReferences.lighterObjectPickHandler != null)
+        {
             pickReferences.lighterObjectPickHandler.enabled = true;
+            InteractedWithDogBed = true;
+        }
 
         if (type == InteractType.InteractiveAutomatic)
         {
@@ -224,8 +240,17 @@ public class ObjectInteract : MonoBehaviour
 
     private void TypeLine()
     {
+        if (dialogManager.backgroundImages != null &&
+         currentImageIndex < dialogManager.backgroundImages.Length && dialogManager.doBackgroundChange)
+        {
+            jhon.sprite = dialogManager.backgroundImages[currentImageIndex];
+        }
+        else
+        {
+            jhon.sprite = jhonSpriteStore;
+        }
+       
         dialogContainer.SetActive(true);
-
         // Font size
         dialogText.fontSize = (dialogManager.changeFontSize && dialogManager.frontSize != null && currentImageIndex < dialogManager.frontSize.Length)
             ? dialogManager.frontSize[currentImageIndex] : 45;

@@ -32,6 +32,7 @@ public class InspectionTutorial : MonoBehaviour
 
     public GameObject[] interactionPages;
 
+    public GameObject mouseImage;
     private void Awake()
     {
         Instance = this;

@@ -33,17 +33,34 @@ MonoBehaviour:
     old times' sake\u2026"
   - "Okay okay don\u2019t get all mushy on me, but only because something might actually
     be wrong, and I\u2019ll be the one making the arrest."
-  - "Okay okay don\u2019t get all mushy on me, but only because something might actually
-    be wrong, and I\u2019ll be the one making the arrest."
   - "You got yourself a deal, now let\u2019s go!"
   dialogAudio: []
-  changeFontSize: 0
+  doBackgroundChange: 1
+  backgroundImages:
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 80e54aad4bf22e041b5bc42719ef4b7d, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 80e54aad4bf22e041b5bc42719ef4b7d, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 80e54aad4bf22e041b5bc42719ef4b7d, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 80e54aad4bf22e041b5bc42719ef4b7d, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 80e54aad4bf22e041b5bc42719ef4b7d, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  changeFontSize: 1
   frontSize:
   - 45
   - 35
   - 35
   - 35
   - 35
+  - 35
+  - 45
+  - 35
+  - 45
+  - 35
+  - 45
   typingSpeed: 0.02
-  currentClueCount: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  totalCount: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  currentClueCount: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  totalCount: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

@@ -35,6 +35,7 @@ public class ObjectMoving : MonoBehaviour
     [SerializeField] private TextMeshProUGUI infoText;
     [SerializeField] private DialogAudio dogBark;
 
+
     private void Start()
     {
          objectInteract = GetComponent<ObjectInteract>();
@@ -63,7 +64,7 @@ public class ObjectMoving : MonoBehaviour
                         else
                         {
                             StartCoroutine(TextEnabler(infoText));
-                            //dogBark.sorce.Play();
+                            audioManager.PlayDialogBigLine(dogBark);
                             infoText.text = "Can't Interact, if only I could get Fred to move";
                         }
                         break;

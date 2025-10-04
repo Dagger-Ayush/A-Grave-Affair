@@ -7,6 +7,9 @@ public class DialogManager : ScriptableObject
     public string[] dialogLines;
     public DialogAudio[] dialogAudio;
 
+    public bool doBackgroundChange;
+    public Sprite[] backgroundImages;
+
     public bool changeFontSize;
     public float[] frontSize;
     public float typingSpeed = 0.02f;

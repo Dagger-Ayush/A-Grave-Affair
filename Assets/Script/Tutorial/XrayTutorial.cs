@@ -25,6 +25,8 @@ public class XrayTutorial : MonoBehaviour
     [Header("Sort Canvas")]
     [SerializeField] private Canvas mainCanvas;
     [SerializeField] private Canvas TutorialCanvas;
+
+    public GameObject mouseImage;
     private void Awake()
     {
         Instance = this;

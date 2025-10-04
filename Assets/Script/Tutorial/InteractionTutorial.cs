@@ -30,6 +30,7 @@ public class InteractionTutorial : MonoBehaviour
     public bool canHover = false;
     public bool isHovered = false;
 
+    public GameObject mouseImage;
     private void Awake()
     {
         Instance = this;

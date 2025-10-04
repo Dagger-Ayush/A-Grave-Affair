@@ -25,6 +25,13 @@ MonoBehaviour:
   - "Ahh.. right, the call. Well, no need to worry, now that we are here, we\u2019ll
     get to the bottom of this. "
   dialogAudio: []
+  doBackgroundChange: 0
+  backgroundImages:
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}
+  - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
   changeFontSize: 1
   frontSize:
   - 45

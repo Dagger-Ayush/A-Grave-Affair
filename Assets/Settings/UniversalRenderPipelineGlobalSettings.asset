@@ -55,13 +55,15 @@ MonoBehaviour:
       - rid: 8712630790384254976
       - rid: 2312993696674217984
       - rid: 2312993697841545216
-      - rid: 6783840594557140992
+      - rid: -2
       - rid: 6783840594557140993
       - rid: 6783840594557140994
-      - rid: 6783840594557140995
+      - rid: -2
       - rid: 6783840594557140996
       - rid: 6783840594557140997
       - rid: 6783840594557140998
+      - rid: 4237134185212411904
+      - rid: 4237134185212411905
     m_RuntimeSettings:
       m_List: []
   m_AssetVersion: 8
@@ -94,6 +96,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2312993696674217984
       type: {class: UniversalRenderPipelineRuntimeXRResources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
@@ -104,7 +108,7 @@ MonoBehaviour:
       type: {class: UniversalRenderPipelineEditorAssets, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
         m_DefaultSettingsVolumeProfile: {fileID: 11400000, guid: eda47df5b85f4f249abf7abd73db2cb2, type: 2}
-    - rid: 6783840594557140992
+    - rid: 4237134185212411904
       type: {class: PostProcessData/ShaderResources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
         stopNanPS: {fileID: 4800000, guid: 1121bb4e615ca3c48b214e79e841e823, type: 3}
@@ -124,24 +128,7 @@ MonoBehaviour:
         uberPostPS: {fileID: 4800000, guid: e7857e9d0c934dc4f83f270f8447b006, type: 3}
         finalPostPassPS: {fileID: 4800000, guid: c49e63ed1bbcb334780a3bd19dfed403, type: 3}
         m_ShaderResourcesVersion: 0
-    - rid: 6783840594557140993
-      type: {class: ScreenSpaceAmbientOcclusionPersistentResources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
-      data:
-        m_Shader: {fileID: 4800000, guid: 0849e84e3d62649e8882e9d6f056a017, type: 3}
-        m_Version: 0
-    - rid: 6783840594557140994
-      type: {class: ScreenSpaceAmbientOcclusionDynamicResources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
-      data:
-        m_BlueNoise256Textures:
-        - {fileID: 2800000, guid: 36f118343fc974119bee3d09e2111500, type: 3}
-        - {fileID: 2800000, guid: 4b7b083e6b6734e8bb2838b0b50a0bc8, type: 3}
-        - {fileID: 2800000, guid: c06cc21c692f94f5fb5206247191eeee, type: 3}
-        - {fileID: 2800000, guid: cb76dd40fa7654f9587f6a344f125c9a, type: 3}
-        - {fileID: 2800000, guid: e32226222ff144b24bf3a5a451de54bc, type: 3}
-        - {fileID: 2800000, guid: 3302065f671a8450b82c9ddf07426f3a, type: 3}
-        - {fileID: 2800000, guid: 56a77a3e8d64f47b6afe9e3c95cb57d5, type: 3}
-        m_Version: 0
-    - rid: 6783840594557140995
+    - rid: 4237134185212411905
       type: {class: PostProcessData/TextureResources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
         blueNoise16LTex:
@@ -191,6 +178,23 @@ MonoBehaviour:
         smaaAreaTex: {fileID: 2800000, guid: d1f1048909d55cd4fa1126ab998f617e, type: 3}
         smaaSearchTex: {fileID: 2800000, guid: 51eee22c2a633ef4aada830eed57c3fd, type: 3}
         m_TexturesResourcesVersion: 0
+    - rid: 6783840594557140993
+      type: {class: ScreenSpaceAmbientOcclusionPersistentResources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
+      data:
+        m_Shader: {fileID: 4800000, guid: 0849e84e3d62649e8882e9d6f056a017, type: 3}
+        m_Version: 0
+    - rid: 6783840594557140994
+      type: {class: ScreenSpaceAmbientOcclusionDynamicResources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
+      data:
+        m_BlueNoise256Textures:
+        - {fileID: 2800000, guid: 36f118343fc974119bee3d09e2111500, type: 3}
+        - {fileID: 2800000, guid: 4b7b083e6b6734e8bb2838b0b50a0bc8, type: 3}
+        - {fileID: 2800000, guid: c06cc21c692f94f5fb5206247191eeee, type: 3}
+        - {fileID: 2800000, guid: cb76dd40fa7654f9587f6a344f125c9a, type: 3}
+        - {fileID: 2800000, guid: e32226222ff144b24bf3a5a451de54bc, type: 3}
+        - {fileID: 2800000, guid: 3302065f671a8450b82c9ddf07426f3a, type: 3}
+        - {fileID: 2800000, guid: 56a77a3e8d64f47b6afe9e3c95cb57d5, type: 3}
+        m_Version: 0
     - rid: 6783840594557140996
       type: {class: RenderingDebuggerRuntimeResources, ns: UnityEngine.Rendering, asm: Unity.RenderPipelines.Core.Runtime}
       data:
