@@ -160,21 +160,12 @@ public class PuzzleValidator : MonoBehaviour
                     progression.OnPuzzle3Solved();
                     Debug.Log("Puzzle 3 completed, progression triggered.");
                 }
-                //switch(currentPuzzle.puzzleID)
-                //{
-                //    case 1:
-                //        progression.OnPuzzle1Solved();
-                //        Debug.Log("Puzzle 1 solved – progression updated.");
-                //        break;
-                //    case 2:
-                //        progression.OnPuzzle2Solved();
-                //        Debug.Log("Puzzle 2 solved – progression updated.");
-                //        break;
-                //    case 3:
-                //        progression.OnPuzzle3Solved();
-                //        Debug.Log("Puzzle 3 solved – progression updated.");
-                //        break;
-                //}
+                else if (currentPuzzle.puzzleID == 5)
+                {
+                    progression.OnPuzzle5Solved();
+                    Debug.Log("Puzzle 5 completed, progression triggered.");
+                }
+                
             }
 
         }

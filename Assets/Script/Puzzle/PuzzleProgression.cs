@@ -10,11 +10,16 @@ public class PuzzleProgression : MonoBehaviour
     public GameObject puzzle2;
     public GameObject puzzle3;
     public GameObject puzzle4;
+    public GameObject puzzle5;
+    public GameObject puzzle6;
+    public GameObject puzzle7;
     public TMP_Text feedbackText;
 
     private bool puzzle1Solved = false;
     private bool puzzle2Solved = false;
     private bool puzzle3Solved = false;
+
+    private bool puzzle5Solved = false;
 
     [SerializeField] private GameObject dummyObjectDialog;
     [SerializeField] private AudioManager audioManager;
@@ -27,10 +32,13 @@ public class PuzzleProgression : MonoBehaviour
 
     void Start()
     {
-        puzzle1.SetActive(true);
-        puzzle2.SetActive(false); 
-        puzzle3.SetActive(false);
+        if (puzzle1 != null) puzzle1.SetActive(true);
+        if (puzzle2 != null) puzzle2.SetActive(false);
+        if (puzzle3 != null) puzzle3.SetActive(false);
         if (puzzle4 != null) puzzle4.SetActive(false);
+        if (puzzle5 != null) puzzle5.SetActive(false);
+        if (puzzle6 != null) puzzle6.SetActive(false);
+        if (puzzle7 != null) puzzle7.SetActive(false);
     }
     private void Update()
     {
@@ -93,6 +101,26 @@ public class PuzzleProgression : MonoBehaviour
         }
     }
 
+    public void OnPuzzle5Solved()
+    {
+
+        if (puzzle5Solved) return;
+        puzzle5Solved = true;
+        StartCoroutine(CloseTabletAfterDelay(() =>
+        {
+            puzzle5.SetActive(false);
+
+            TabletManager.Instance.puzzlePanel.SetActive(false);
+            TabletManager.Instance.clueBox.SetActive(false);
+            feedbackText.text = " ";
+
+            if (puzzle6 != null) puzzle6.SetActive(true);
+            if (puzzle7 != null) puzzle7.SetActive(true);
+
+            Debug.Log("Puzzle 6 & 7 unlocked.");
+            //isPuzzleCompleted = true;
+        }));
+    }
     private IEnumerator CloseTabletAfterDelay(System.Action onClose)
     {
         Time.timeScale = 1f;

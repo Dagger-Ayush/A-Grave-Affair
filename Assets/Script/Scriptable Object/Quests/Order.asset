@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f38292b03a8bae48b6dddaa349b61bf, type: 3}
+  m_Name: Order
+  m_EditorClassIdentifier: Assembly-CSharp::PuzzleData
+  sentenceTemplate: The last person who visited _ room was carrying a _ with her
+    milkshake _ .
+  correctAnswers:
+  - Nancy's
+  - Tray
+  - Order
+  requiredClues:
+  - Nancy's
+  - Tray
+  - Order
+  puzzleID: 7
+  isCompleted: 0

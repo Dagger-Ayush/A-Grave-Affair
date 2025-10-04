@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Badge
   dialogLines:
-  - The broken heel looks very precise, like it has been cut cleanly instead of breaking
-    by tripping.
+  - That looks odd. If Nancy had a fall, why is there a <link="Blood-Trail">Blood-Trail</color></link>
+    on the top of the stairs?
   dialogAudio: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
-  currentClueCount: 00000000
+  currentClueCount: 01000000
   totalCount: 01000000
