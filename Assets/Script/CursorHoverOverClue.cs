@@ -8,8 +8,8 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 {
     [Header("Hover Settings")]
     public Color outlineColor = Color.red;
-    public float ovalPadding = 9f;
-    public int outlineThickness = 3;
+    public float ovalPadding = 15f;
+    public int outlineThickness = 20;
     public float animationDuration = 0.5f;
     public AnimationCurve animationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
@@ -199,27 +199,19 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             if (angle > angleMax) break;
 
             float rad = angle * Mathf.Deg2Rad;
+            int x = Mathf.RoundToInt(center.x + Mathf.Cos(rad) * rx);
+            int y = Mathf.RoundToInt(center.y + Mathf.Sin(rad) * ry);
 
-            // Calculate the point on the ellipse
-            int baseX = Mathf.RoundToInt(center.x + Mathf.Cos(rad) * rx);
-            int baseY = Mathf.RoundToInt(center.y + Mathf.Sin(rad) * ry);
-
-            // Draw thicker outline with a 5x5 pattern
-            for (int dx = -2; dx <= 2; dx++)
+            if (x >= 0 && y >= 0 && x < tex.width && y < tex.height)
             {
-                for (int dy = -2; dy <= 2; dy++)
+                tex.SetPixel(x, y, col);
+                // thickness
+                for (int j = 1; j < outlineThickness; j++)
                 {
-                    // Use a diamond pattern for nice smooth thickness
-                    if (Mathf.Abs(dx) + Mathf.Abs(dy) <= 3)
-                    {
-                        int x = baseX + dx;
-                        int y = baseY + dy;
-
-                        if (x >= 0 && y >= 0 && x < tex.width && y < tex.height)
-                        {
-                            tex.SetPixel(x, y, col);
-                        }
-                    }
+                    if (x + j < tex.width) tex.SetPixel(x + j, y, col);
+                    if (x - j >= 0) tex.SetPixel(x - j, y, col);
+                    if (y + j < tex.height) tex.SetPixel(x, y + j, col);
+                    if (y - j >= 0) tex.SetPixel(x, y - j, col);
                 }
             }
         }
