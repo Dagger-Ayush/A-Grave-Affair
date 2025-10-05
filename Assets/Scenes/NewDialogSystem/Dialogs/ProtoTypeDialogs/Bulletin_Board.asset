@@ -20,9 +20,10 @@ MonoBehaviour:
   dialogAudio:
   - {fileID: 11400000, guid: 7acc7dcb369c6bc49be294395fd420a4, type: 2}
   - {fileID: 11400000, guid: d1a1c6d8bfc85a044976784518630a65, type: 2}
+  doBackgroundChange: 0
+  backgroundImages: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
-  currentClueCount: 00000000
-  totalCount: 01000000
-  clueStoring: 
+  currentClueCount: 0100000000000000
+  totalCount: 0100000000000000

@@ -233,7 +233,7 @@ public class PuzzleValidator : MonoBehaviour
                     {
                         objectPickHandler.shouldWork = true;
                     }
-                    if (objectPickHandler.type == InspectType.Letter_2)
+                    if (objectPickHandler.type == InspectType.TutorialLetter)
                     {
                      
                         objectPickHandler.shouldWork = true;

@@ -133,7 +133,7 @@ public class InspectionTutorial : MonoBehaviour
         packanimator.enabled = true;
         yield return new WaitForSeconds(0.2f);
         packanimator.SetBool("CluePicking", false);
-        StartCoroutine(EndPage(1.5f));
+        StartCoroutine(EndPage(2f));
       
         yield return new WaitForSeconds(0.2f);
         packanimator.enabled = false;

@@ -9,7 +9,7 @@ public class ObjectPickHandler : MonoBehaviour
 {
     public static ObjectPickHandler Instance;
 
-    public enum InspectType { Cigarette, Lighter, Letter_1, Letter_2, TutorialLetter, None }
+    public enum InspectType { Cigarette, Lighter, Letter_1, TutorialLetter, None }
     public InspectType type = InspectType.None;
 
     public enum MoveType { Movable, Static }
@@ -28,7 +28,10 @@ public class ObjectPickHandler : MonoBehaviour
     [SerializeField] private PlayerInteract playerInteract;
     [SerializeField] private CanvasGroup inRange;
     [SerializeField] private CanvasGroup outRange;
+
     [SerializeField] private GameObject XrayObject;
+    [SerializeField] private GameObject XrayLetterMain;
+
     [SerializeField] private string[] clue;
 
     public float rotationSensitivity = 4f;
@@ -83,6 +86,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void Update()
     {
+        imageDrag();
         ObjectHandler();
 
         if (clueCount < clueCountMain)
@@ -189,6 +193,9 @@ public class ObjectPickHandler : MonoBehaviour
         time = 0;
         isPicked = true;
 
+        if (XrayLetterMain != null) XrayLetterMain.SetActive(false);
+        if (XrayObject != null) XrayObject.SetActive(true);
+
         pickReferences.SwitchCam();
         pickReferences.inspectionBackroundimage.SetActive(true);
 
@@ -205,11 +212,10 @@ public class ObjectPickHandler : MonoBehaviour
         }
 
         transform.localPosition = Vector3.zero;
-
         yield return new WaitForSeconds(0.3f);
         isbusy = false;
 
-        if (type == InspectType.Letter_2 && isPicked && isCollected && isVision)
+        if (type == InspectType.Letter_1 && isPicked && isCollected && isVision)
         {
             pickReferences.gameOverTrigger.SetActive(true);
         }
@@ -217,6 +223,8 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectDrop()
     {
+        if (XrayLetterMain != null) XrayLetterMain.SetActive(true);
+        if (XrayObject != null) XrayObject.SetActive(false);
         clueCountStoring = clueCount;
         pickReferences.currentClue.SetActive(false);
 
@@ -276,11 +284,10 @@ public class ObjectPickHandler : MonoBehaviour
     private void XrayVisionEnable()
     {
         isVision = true;
-        if (XrayObject != null) XrayObject.SetActive(true);
-
+     
         pickReferences.XrayCamara.SetActive(true);
 
-        if (type == InspectType.Letter_2 && isCollected)
+        if (type == InspectType.Letter_1 && isCollected)
         {
             pickReferences.gameOverTrigger.SetActive(true);
         }
@@ -289,8 +296,7 @@ public class ObjectPickHandler : MonoBehaviour
     private void XrayVisionDisable()
     {
         isVision = false;
-        if (XrayObject != null) XrayObject.SetActive(false);
-
+    
         pickReferences.XrayCamara.SetActive(false);
         pickReferences.XrayOfImage.SetActive(false);
         pickReferences.XrayOnImage.SetActive(false);
@@ -308,11 +314,51 @@ public class ObjectPickHandler : MonoBehaviour
             offset = transform.position - ray.GetPoint(enter);
         }
     }
-
-    private void OnMouseDrag()
+    private bool isDragging = false;
+    private void imageDrag()
     {
         if (!isPicked || isMouseLocked || isVision) return;
+        if (Input.GetMouseButtonDown(0) && isPicked && !isVision)
+        {
+            isDragging = true;
+            dragPlane = new Plane(-mainCam.transform.forward, transform.position);
 
+            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            if (dragPlane.Raycast(ray, out float enter))
+            {
+                offset = transform.position - ray.GetPoint(enter);
+            }
+        }
+
+        if (Input.GetMouseButton(0) && isDragging)
+        {
+            if (moveType == MoveType.Movable)
+            {
+                Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+                if (dragPlane.Raycast(ray, out float enter))
+                {
+                    Vector3 hitPoint = ray.GetPoint(enter);
+                    transform.position = hitPoint + offset;
+                }
+            }
+            else
+            {
+                turn.x = Input.GetAxis("Mouse X") * rotationSensitivity;
+                turn.y = Input.GetAxis("Mouse Y") * rotationSensitivity;
+
+                Vector3 right = Vector3.Cross(mainCam.transform.up, transform.position - mainCam.transform.position);
+                Vector3 up = Vector3.Cross(transform.position - mainCam.transform.position, right);
+
+                transform.rotation = Quaternion.AngleAxis(-turn.x, up) * transform.rotation;
+                transform.rotation = Quaternion.AngleAxis(turn.y, right) * transform.rotation;
+            }
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            isDragging = false;
+        }
+        /*
         if (moveType == MoveType.Movable)
         {
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
@@ -338,6 +384,7 @@ public class ObjectPickHandler : MonoBehaviour
             transform.rotation = Quaternion.AngleAxis(-turn.x, up) * transform.rotation;
             transform.rotation = Quaternion.AngleAxis(turn.y, right) * transform.rotation;
         }
+        */
     }
 
     private Vector3 GetMouseWorldPosition()

@@ -1,16 +1,18 @@
+using System;
 using System.Collections;
 using TMPro;
+using UnityEditor.Rendering.PostProcessing;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class InteractClueManager : MonoBehaviour
 {
  
    public static InteractClueManager instance;
 
+    [SerializeField] private string subClues;
     [SerializeField] private string clueName;
     
-    [SerializeField] private Animator animator;
-
    [HideInInspector] public bool isFinished = false;
    public static bool isClueShowing = false;
 
@@ -21,16 +23,18 @@ public class InteractClueManager : MonoBehaviour
 
     [SerializeField] private ParticleSystem repelEffect;
     private Coroutine repelCoroutine;
-     private bool isRepelBusy;
+    private bool isRepelBusy;
 
+   
     private void Awake()
     {
         instance = this;
     }
     public void ClueIndication()
     {
+
+        StartCoroutine(InspectionClueFeedBack.Instance.clueSet(subClues, clueName));
         StartCoroutine(Delay(2));
-        animator.SetTrigger("ClueEnabled");
         ClueManager.Instance.AddClue(clueName);
         
     }
@@ -74,5 +78,5 @@ public class InteractClueManager : MonoBehaviour
 
         isRepelBusy = false;
     }
-
+   
 }

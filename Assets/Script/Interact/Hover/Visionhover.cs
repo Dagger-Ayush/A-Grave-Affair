@@ -55,6 +55,12 @@ public class VisionHover : MonoBehaviour
                 {
                     HoverEffect();
                     SetColor(collider.gameObject, hoverColor, visionClue);
+
+                    if(collider.GetComponent<GetClue>() != null)
+                    {
+                        
+                        GettingClues(collider.GetComponent<GetClue>());
+                    }
                     found = true;
                     break;
                 }
@@ -116,6 +122,14 @@ public class VisionHover : MonoBehaviour
             visionCamera.orthographicSize = Mathf.Lerp(startOrthoSize, targetOrthoSize, t);
 
             yield return null;
+        }
+    }
+    void GettingClues(GetClue getClue)
+    {
+        if (!ClueManager.Instance.ClueCheck(getClue.clue))
+        {
+            ClueManager.Instance.AddClue(getClue.clue);
+            Debug.Log(getClue.clue);
         }
     }
 }

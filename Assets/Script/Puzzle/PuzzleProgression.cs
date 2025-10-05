@@ -161,7 +161,7 @@ public class PuzzleProgression : MonoBehaviour
 
 
 
-                if (objectPickHandler.type == InspectType.Letter_1 || objectPickHandler.type == InspectType.Letter_2)
+                if (objectPickHandler.type == InspectType.Letter_1 || objectPickHandler.type == InspectType.TutorialLetter)
                 {
                     objectPickHandler.shouldWork = false;
 

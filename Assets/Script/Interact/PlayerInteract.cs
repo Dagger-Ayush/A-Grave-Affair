@@ -10,7 +10,6 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private float interactRange = 1f;
 
     [Header("References")]
-    [SerializeField] private DialogAudio backGroundAudio;
     [SerializeField] private Animator animator;
     public Transform player;
     public Image tabletImage;
@@ -32,10 +31,7 @@ public class PlayerInteract : MonoBehaviour
         pointAndMovement = GetComponent<PointAndMovement>();
         playerDialog = GetComponent<PlayerDialog>();
 
-        if (backGroundAudio != null)
-        {
-           // backGroundAudio.sorce.Play();
-        }
+
     }
 
     private void Update()
