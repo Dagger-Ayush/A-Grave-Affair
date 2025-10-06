@@ -10,12 +10,20 @@ public class MotelLobby : MonoBehaviour
     public Transform player;      // Start point of the camera
     public float lerpSpeed = 2f;  // Speed of the initial pan
 
-    [Header("Gameplay")]
+    [Header("Gameplay Phase_1")]
     public ObjectInteract motelStartDialogs;
     public ObjectInteract DialogsPhase_2;
     public ObjectInteract enablingInteract;
     public ObjectPickHandler[] enablingInspect;
+    public ObjectInteract enablingInteractafterPhase_1;
+    public ObjectInteract enablingInteractafterPhase_2;
+    bool isObjectEnabled_Phase_1 = false;
 
+    [Header("Gameplay Phase_1")]
+    public PuzzleProgression puzzleProgression;
+    public ObjectInteract motelGatherDialogs;
+
+    bool isObjectEnabled_Phase_2 = false;
     // --- private fields ---
     Vector3 targetPos;
     Quaternion targetRot;
@@ -72,13 +80,25 @@ public class MotelLobby : MonoBehaviour
             motelStartDialogs.enabled = false;
         }
 
-        if (DialogsPhase_2 && DialogsPhase_2.isAutoCompleteNearObject)
+        
+        if (puzzleProgression.isDialogEnabled && !isObjectEnabled_Phase_2)
         {
-            ImageFade.instance.FadeInOut();
-            StartCoroutine(ObjectsEnable());
+                ImageFade.instance.FadeInOut();
+
+                StartCoroutine(ObjectsEnablePhase_2());
+        }
+
+        if (!isObjectEnabled_Phase_1)
+        {
+            if (DialogsPhase_2 && DialogsPhase_2.isAutoCompleteNearObject)
+            {
+                ImageFade.instance.FadeInOut();
+
+                StartCoroutine(ObjectsEnablePhase_1());
+            }
         }
     }
-    IEnumerator ObjectsEnable()
+    IEnumerator ObjectsEnablePhase_1()
     {
         yield return new WaitForSeconds(1.5f);
         enablingInteract.enabled = true;
@@ -90,6 +110,25 @@ public class MotelLobby : MonoBehaviour
         enablingInspect[1].shouldWork = true;
 
         DialogsPhase_2.enabled = false;
+        isObjectEnabled_Phase_1 = true;
+    }
+    IEnumerator ObjectsEnablePhase_2()
+    {
+        yield return new WaitForSeconds(1.5f);
+        motelGatherDialogs.enabled = true;
+        motelGatherDialogs.shouldWork = true;
+
+        isObjectEnabled_Phase_2 = false;
+
+        enablingInteract.enabled = false;
+        DialogsPhase_2.enabled = false;
+        enablingInteractafterPhase_1.enabled = false;
+        enablingInteractafterPhase_2.enabled = false;
+
+        enablingInspect[0].enabled = false;
+        enablingInspect[1].enabled = false;
+
+        enabled = false;
     }
 
-    }
+}

@@ -15,6 +15,8 @@ public class ObjectPickHandler : MonoBehaviour
     public enum MoveType { Movable, Static }
     public MoveType moveType = MoveType.Static;
 
+    public enum XrayType { Xray, None }
+    public XrayType xrayType = XrayType.None;
     private float time;
     private Vector3 offset;
     private Plane dragPlane;
@@ -151,24 +153,24 @@ public class ObjectPickHandler : MonoBehaviour
             Avoid();
         }
 
-        if (isCollected)
+        if (isCollected && xrayType == XrayType.Xray)
         {
             if (Input.GetKeyDown(pickReferences.XrayToggle))
             {
                 if (!isVision) XrayVisionEnable();
                 else XrayVisionDisable();
             }
-
-            if (!isVision)
-            {
-                pickReferences.XrayOnImage.SetActive(false);
-                pickReferences.XrayOfImage.SetActive(true);
-            }
-            else
-            {
-                pickReferences.XrayOfImage.SetActive(false);
-                pickReferences.XrayOnImage.SetActive(true);
-            }
+            
+                if (!isVision)
+                {
+                    pickReferences.XrayOnImage.SetActive(false);
+                    pickReferences.XrayOfImage.SetActive(true);
+                }
+                else
+                {
+                    pickReferences.XrayOfImage.SetActive(false);
+                    pickReferences.XrayOnImage.SetActive(true);
+                }
         }
         else
         {
@@ -244,6 +246,7 @@ public class ObjectPickHandler : MonoBehaviour
             objectInteractCigarette.shouldWork = true;
             enabled = false;
         }
+         
 
         while (time < 1f)
         {

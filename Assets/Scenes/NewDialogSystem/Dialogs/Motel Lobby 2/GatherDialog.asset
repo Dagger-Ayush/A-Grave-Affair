@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
+  m_Name: GatherDialog
+  m_EditorClassIdentifier: 
+  characterName: Gather Dialogs
+  dialogLines:
+  - I have some bad news. There has been foul play detected at the crime scene. This
+    has just turned into a murder investigation, and no one is allowed to leave the
+    motel premises
+  - Oh my god, there is a killer amongst us ??
+  - I bet it was Vincent; he was the only one trying to swoon Ms. Nancy with his
+    obnoxious flirting tactics. It seems rather suspicious.
+  - OH YEAH, and what about you gathering intel on everyone like a damn spy! Is that
+    not suspicious??
+  - "Quit bickering, all of you! Detective, please continue your investigation. We\u2019d
+    be happy to help."
+  - "Great! There\u2019s at least one of you who has kept their wits. Greg, please
+    see that no one leaves the motel. I have a lot of questions."
+  - You got it, Johny!  Now carry on and let me know what you find.
+  dialogAudio: []
+  doBackgroundChange: 1
+  backgroundImages:
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: ad166dec978b3504c9ce83dbf0cb4235, type: 3}
+  - {fileID: 21300000, guid: abb8620d0fb691e4dbc6e1d4e2677d77, type: 3}
+  - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}
+  - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 80e54aad4bf22e041b5bc42719ef4b7d, type: 3}
+  changeFontSize: 1
+  frontSize:
+  - 35
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  typingSpeed: 0.02
+  currentClueCount: 00000000000000000000000000000000000000000000000000000000
+  totalCount: 00000000000000000000000000000000000000000000000000000000

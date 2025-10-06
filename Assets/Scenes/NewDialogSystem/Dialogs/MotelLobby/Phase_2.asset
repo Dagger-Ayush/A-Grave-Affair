@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Phase_2
   dialogLines:
-  - Eh might as well finish it and have the last one
   - "Hey y\u2019all, we received a call about an accidental death. I\u2019m Detective
-    John Marrow. This is my colleague Gregory Vertebrae. We had a few questions before
-    we conducted the investigation."
+    John Marrow. "
+  - This is my colleague Gregory Vertebrae. We had a few questions before we conducted
+    the investigation.
   - "I\u2019m Martin Femur, the manager of this motel. I\u2019m the one who made
-    the call. The lady you can see lying on the floor was a guest named Nancy Cranium. "
+    the call. The lady you can see lying on the floor was a guest named Nancy Cranium.  "
   - I had gone out to the back for a smoke break and found her lying in a pool of
     blood at the base of the stairs.
   - "Ahh.. right, the call. Well, no need to worry, now that we are here, we\u2019ll
-    get to the bottom of this. "
+    get to the bottom of this"
   dialogAudio: []
-  doBackgroundChange: 0
+  doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
   - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
@@ -35,10 +35,10 @@ MonoBehaviour:
   changeFontSize: 1
   frontSize:
   - 45
+  - 45
   - 35
-  - 35
-  - 35
-  - 35
+  - 45
+  - 45
   typingSpeed: 0.02
   currentClueCount: 0000000000000000000000000000000000000000
   totalCount: 0000000000000000000000000000000000000000

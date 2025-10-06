@@ -116,7 +116,7 @@ public class ObjectHovering : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         ObjectPickHandler.isMouseLocked = true;
 
-        interactClueManager.ClueIndication();
+        if(interactClueManager != null) interactClueManager.ClueIndication();
 
         yield return new WaitForSeconds(1.8f);
 

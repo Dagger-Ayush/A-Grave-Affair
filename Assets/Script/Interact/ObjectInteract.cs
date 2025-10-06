@@ -54,7 +54,6 @@ public class ObjectInteract : MonoBehaviour
 
     private void Start()
     {
-        //jhonSpriteStore = jhon.sprite;
         // Ensure currentClueCount array is initialized
         if (dialogManager != null)
         {
@@ -76,6 +75,8 @@ public class ObjectInteract : MonoBehaviour
 
     private void Update()
     {
+        
+
         if ((type == InteractType.DogBed && !InteractedWithDogBed) ||
             (type == InteractType.NonInteractiveAutomatic && !isAutoComplete))
         {

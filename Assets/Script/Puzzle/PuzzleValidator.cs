@@ -192,11 +192,11 @@ public class PuzzleValidator : MonoBehaviour
 
         if(audioSource != null)
         {
-            audioSource.PlayOneShot(clip);
+            //audioSource.PlayOneShot(clip);
         }
         else
         {
-            Debug.LogError("No audio Source");
+           // Debug.LogError("No audio Source");
         }
     }
    

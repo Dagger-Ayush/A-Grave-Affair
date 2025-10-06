@@ -26,7 +26,7 @@ public class PuzzleProgression : MonoBehaviour
     [SerializeField] private DialogAudio dummyDialogAudio;
     [SerializeField] private PlayerInteract playerInteract;
 
-    private bool isDialogEnabled = false;
+    [HideInInspector] public bool isDialogEnabled = false;
     private bool isDialogStarted = false;
     private bool isPuzzleCompleted = false;
 
@@ -118,7 +118,7 @@ public class PuzzleProgression : MonoBehaviour
             if (puzzle7 != null) puzzle7.SetActive(true);
 
             Debug.Log("Puzzle 6 & 7 unlocked.");
-            //isPuzzleCompleted = true;
+            isPuzzleCompleted = true;
         }));
     }
     private IEnumerator CloseTabletAfterDelay(System.Action onClose)
@@ -181,13 +181,13 @@ public class PuzzleProgression : MonoBehaviour
             if (!isDialogStarted)
             {
                 dummyObjectDialog.SetActive(true);
-                audioManager.PlayDialogBigLine(dummyDialogAudio);
+                //audioManager.PlayDialogBigLine(dummyDialogAudio);
                 isDialogStarted = true;
             }
             else if (isDialogStarted && Input.GetKeyDown(KeyCode.E))
             {
                 dummyObjectDialog.SetActive(false);
-                audioManager.Stop();
+                //audioManager.Stop();
                 isDialogEnabled = true;
 
 
