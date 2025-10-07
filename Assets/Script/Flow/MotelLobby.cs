@@ -29,6 +29,10 @@ public class MotelLobby : MonoBehaviour
     Quaternion targetRot;
     bool introPanDone = false;
 
+    private void OnDisable()
+    {
+        isoCam.Follow = player;
+    }
     void Start()
     {
         // Save the real body position & rotation (final camera spot)
@@ -101,6 +105,7 @@ public class MotelLobby : MonoBehaviour
     IEnumerator ObjectsEnablePhase_1()
     {
         yield return new WaitForSeconds(1.5f);
+        PosandAnimationUpdate.Instance.UpdatePhase_1();
         enablingInteract.enabled = true;
         enablingInteract.shouldWork = true;
 
@@ -115,6 +120,7 @@ public class MotelLobby : MonoBehaviour
     IEnumerator ObjectsEnablePhase_2()
     {
         yield return new WaitForSeconds(1.5f);
+        PosandAnimationUpdate.Instance.UpdatePhase_2();
         motelGatherDialogs.enabled = true;
         motelGatherDialogs.shouldWork = true;
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
 public class PointAndMovement : MonoBehaviour
@@ -211,18 +211,28 @@ public class PointAndMovement : MonoBehaviour
     }
     void MovementRotation(float z)
     {
-        // Look where mouse is pointing
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-        float rayDistance;
-        if (groundPlane.Raycast(ray, out rayDistance))
+        // 1️⃣ Mouse look (isometric)
+        Plane playerPlane = new Plane(Vector3.up, transform.position);
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        if (playerPlane.Raycast(ray, out float distance))
         {
-            Vector3 point = ray.GetPoint(rayDistance);
-            LookAt(point);
+            Vector3 lookPoint = ray.GetPoint(distance);
+
+            Vector3 direction = lookPoint - transform.position;
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+            }
         }
 
-        Vector3 dir = transform.forward * z;
-        dir.y = rb.linearVelocity.y;
-        rb.linearVelocity = dir;
+        // 2️⃣ Move forward only along XZ
+        Vector3 moveDir = transform.forward * z;
+        moveDir.y = rb.linearVelocity.y; // preserve gravity-driven vertical motion
+        rb.linearVelocity = moveDir;
     }
+
 }

@@ -51,7 +51,7 @@ public class PlayerInteract : MonoBehaviour
         {
             isPointAndMovementEnabled = true;
 
-            if (pointAndMovement != null && pointAndMovement.agent != null && player != null)
+            if (pointAndMovement != null  && player != null)
                 player.GetComponent<Rigidbody>().isKinematic = true;
 
             if (tabletImage != null)
