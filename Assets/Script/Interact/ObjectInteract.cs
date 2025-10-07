@@ -29,6 +29,7 @@ public class ObjectInteract : MonoBehaviour
     [Header("Dialogue State")]
     private int currentImageIndex = 0;
     [HideInInspector] public bool isRunning;
+    [HideInInspector] public bool isSecondDialog = false;
 
     public bool shouldWork = false;
     private bool InteractedWithDogBed = false;
@@ -45,6 +46,12 @@ public class ObjectInteract : MonoBehaviour
     //private Sprite jhonSprite;
     public Sprite jhonSpriteStore;
     private Image jhon;
+
+    private void OnDisable()
+    {
+        if (outRange != null) outRange.alpha = 0;
+        if (inRange != null) inRange.alpha = 0;
+    }
     private void Awake()
     {
         Instance = this;
@@ -75,7 +82,7 @@ public class ObjectInteract : MonoBehaviour
 
     private void Update()
     {
-        
+        //if (PlayerDialog.instance != null && PlayerDialog.instance.isInteraction) return;
 
         if ((type == InteractType.DogBed && !InteractedWithDogBed) ||
             (type == InteractType.NonInteractiveAutomatic && !isAutoComplete))
@@ -158,6 +165,7 @@ public class ObjectInteract : MonoBehaviour
 
     public void NextDialogueImage()
     {
+        isSecondDialog = true;
         // Save the clue count before hiding
         if (dialogManager.currentClueCount != null && currentImageIndex < dialogManager.currentClueCount.Length)
             dialogManager.currentClueCount[currentImageIndex] = clueCount;
@@ -174,6 +182,7 @@ public class ObjectInteract : MonoBehaviour
 
         if (currentImageIndex < dialogManager.dialogLines.Length)
         {
+           
             clueCount = dialogManager.currentClueCount[currentImageIndex];
 
             totalClues = dialogManager.totalCount[currentImageIndex];

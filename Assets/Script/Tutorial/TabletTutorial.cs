@@ -17,7 +17,8 @@ public class TabletTutorial : MonoBehaviour
     private bool[] hasTyped;
     private bool isTyping = false;
 
-    [HideInInspector] public bool isTabletTutorialComplete = false;
+     
+     public bool isTabletTutorialComplete = false;
 
     public int currentPage = 0;
     private bool isTableOpen;
@@ -52,9 +53,9 @@ public class TabletTutorial : MonoBehaviour
                 return;
             }
         }
-        if (!FirstPageComplete && !isTyping)
+        if (!FirstPageComplete)
         {
-            if (!isTableOpen)
+            if (!isTableOpen && !isTyping)
             {
                 FirstPage();
                 return;
@@ -97,10 +98,12 @@ public class TabletTutorial : MonoBehaviour
             PlayerInteract.Instance.enabled = true;
             PointAndMovement.instance.enabled = true;
         }
+        
     }
 
     public void FirstPage()
     {
+       
         if (!TabletManager.isTabletOpen)
         {
             if (PlayerInteract.Instance != null && PointAndMovement.instance != null)

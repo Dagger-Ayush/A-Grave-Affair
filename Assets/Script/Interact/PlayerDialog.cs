@@ -7,6 +7,7 @@ using UnityEngine.AI;
 
 public class PlayerDialog : MonoBehaviour
 {
+    public static PlayerDialog instance;
     private PointAndMovement pointAndMovement;
     
     private int currentImageIndex = 0;
@@ -26,6 +27,11 @@ public class PlayerDialog : MonoBehaviour
     private bool HasRun = false;
 
     [SerializeField] private DialogAudio lastDialogAudio;
+
+    private void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
         playerInteract = GetComponent<PlayerInteract>();
@@ -118,7 +124,7 @@ public class PlayerDialog : MonoBehaviour
 
     public void EndDialog()
     {
-        if (TabletManager.isTabletOpen ) return;
+        if (TabletManager.isTabletOpen) return;
 
         if (!isInteraction && !isEndDialogRunning)
         {
@@ -132,6 +138,7 @@ public class PlayerDialog : MonoBehaviour
         }
         else if (isInteraction && Input.GetKeyDown(KeyCode.E))
         {
+            
             LastDialog.SetActive(false);
             audioManager.Stop();
                 pointAndMovement.enabled = true;
