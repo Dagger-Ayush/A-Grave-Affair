@@ -111,7 +111,7 @@ public class ObjectPickHandler : MonoBehaviour
 
         if (inRange != null)
         {
-            if (isCollected || ObjectInteract.isInteracted)
+            if (isCollected || ObjectInteract.Instance.InteractionCheck())
             {
                 inRange.alpha = 0;
             }
@@ -130,7 +130,7 @@ public class ObjectPickHandler : MonoBehaviour
         {
             if (inRange != null)
             {
-                if (!isCollected && !ObjectInteract.isInteracted)
+                if (!isCollected && !ObjectInteract.Instance.InteractionCheck())
                 {
                     inRange.alpha = 1;
                 }
@@ -144,7 +144,7 @@ public class ObjectPickHandler : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E) && !isPicked)
             {
-                if (isCollected || ObjectInteract.isInteracted) return;
+                if (isCollected || ObjectInteract.Instance.InteractionCheck()) return;
                 StartCoroutine(ObjectPickUp());
             }
         }

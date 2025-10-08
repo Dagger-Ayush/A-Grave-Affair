@@ -17,7 +17,7 @@ public class ObjectInteract : MonoBehaviour
     public TextMeshProUGUI dialogText;
     public GameObject dialogContainer;
 
-    public static bool isInteracted;
+    private bool isInteracted;
     public bool DoAutoRun = false;
 
     [Header("Dialogue Interaction References")]

@@ -32,6 +32,8 @@ public class MotelLobby : MonoBehaviour
    
     bool isFinalDialogStarted = false;
     bool isFinalDialogComplete = false;
+    public ObjectPickHandler orderBookPickHandler;
+    public ObjectInteract[] FinalInteractionObjects;
     private void OnDisable()
     {
         isoCam.Follow = player;
@@ -156,6 +158,14 @@ public class MotelLobby : MonoBehaviour
     {
         
         yield return new WaitForSeconds(1.5f);
+        orderBookPickHandler.enabled = true;
+        orderBookPickHandler.shouldWork = true;
+        
+        foreach(ObjectInteract objInt in FinalInteractionObjects)
+        {
+            objInt.enabled = true;
+            objInt.shouldWork = true;
+        }
         PosandAnimationUpdate.Instance.UpdatePhase_3();
 
         motelGatherDialogs.enabled = false;
