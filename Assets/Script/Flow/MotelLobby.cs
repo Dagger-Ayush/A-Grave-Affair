@@ -29,93 +29,114 @@ public class MotelLobby : MonoBehaviour
     Quaternion targetRot;
     bool introPanDone = false;
 
-   
+    [Header(" Final Page ")]
     bool isFinalDialogStarted = false;
     bool isFinalDialogComplete = false;
+    
     public ObjectPickHandler orderBookPickHandler;
-    public ObjectInteract[] FinalInteractionObjects;
+    public ObjectInteract[] LastInteractionObjects;
+
+    [Header(" ONsentenceComplete ")]
+    public ObjectInteract ONsentenceCompleteTrigger;
+    public ObjectInteract ONsentenceCompleteInteract;
+    public bool isSentenceDialogEnded;
     private void OnDisable()
     {
         isoCam.Follow = player;
     }
     void Start()
     {
-        // Save the real body position & rotation (final camera spot)
-        targetPos = body.position;
-        targetRot = body.rotation;
+            // Save the real body position & rotation (final camera spot)
+            targetPos = body.position;
+            targetRot = body.rotation;
 
-        // Start the dummy at the player’s location so camera starts there
-        body.position = player.position;
-        body.rotation = player.rotation;
+            // Start the dummy at the player’s location so camera starts there
+            body.position = player.position;
+            body.rotation = player.rotation;
 
-        // Camera follows the dummy
-        isoCam.Follow = body;
+            // Camera follows the dummy
+            isoCam.Follow = body;
 
-        motelStartDialogs.enabled = true;
+            motelStartDialogs.enabled = true;
     }
 
     void Update()
     {
-        if (motelGatherDialogs.isSecondDialog)
+        /*
+        if (ONsentenceCompleteTrigger.isAutoComplete && isFinalDialogComplete && !isSentenceDialogEnded)
         {
-            isFinalDialogStarted = true;
+            ObjectsEnablePhase_4();
         }
-        if (motelGatherDialogs.isAutoComplete  && !isFinalDialogComplete)
+        */
+
+        if (!isFinalDialogComplete)
         {
-            ImageFade.instance.FadeInOut();
-
-            StartCoroutine(ObjectsEnablePhase_3());
-        }
-        if (!isFinalDialogStarted)
-        {
-            // ------------------- Initial camera pan -------------------
-            if (!introPanDone)
+           
+            if (motelGatherDialogs.isSecondDialog)
             {
-                // Smoothly move dummy from player to body
-                body.position = Vector3.Lerp(
-                    body.position,
-                    targetPos,
-                    Time.deltaTime * lerpSpeed
-                );
-
-                body.rotation = Quaternion.Lerp(
-                    body.rotation,
-                    targetRot,
-                    Time.deltaTime * lerpSpeed
-                );
-
-                if (Vector3.Distance(body.position, targetPos) < 0.05f)
-                {
-                    body.position = targetPos;
-                    body.rotation = targetRot;
-                    introPanDone = true;
-                }
+                isFinalDialogStarted = true;
             }
-            if (introPanDone && motelStartDialogs && motelStartDialogs.isAutoComplete)
-            {
-                // After phase 1, smoothly move camera dummy to follow player
-                body.position = Vector3.Lerp(body.position, player.position, Time.deltaTime * lerpSpeed);
-                body.rotation = Quaternion.Lerp(body.rotation, player.rotation, Time.deltaTime * lerpSpeed);
-
-                DialogsPhase_2.enabled = true;
-                motelStartDialogs.enabled = false;
-            }
-
-
-            if (puzzleProgression.isDialogEnabled && !isObjectEnabled_Phase_2)
+            if (motelGatherDialogs.isAutoComplete)
             {
                 ImageFade.instance.FadeInOut();
 
-                StartCoroutine(ObjectsEnablePhase_2());
+                StartCoroutine(ObjectsEnablePhase_3());
             }
-
-            if (!isObjectEnabled_Phase_1)
+            if (!isFinalDialogStarted)
             {
-                if (DialogsPhase_2 && DialogsPhase_2.isAutoCompleteNearObject)
+                
+                if (!introPanDone)
+                {
+                    // Smoothly move dummy from player to body
+                    body.position = Vector3.Lerp(
+                        body.position,
+                        targetPos,
+                        Time.deltaTime * lerpSpeed
+                    );
+
+                    body.rotation = Quaternion.Lerp(
+                        body.rotation,
+                        targetRot,
+                        Time.deltaTime * lerpSpeed
+                    );
+
+                    if (Vector3.Distance(body.position, targetPos) < 0.05f)
+                    {
+                        body.position = targetPos;
+                        body.rotation = targetRot;
+                        introPanDone = true;
+                    }
+                }
+                if (introPanDone && motelStartDialogs && motelStartDialogs.isAutoComplete)
+                {
+                    // After phase 1, smoothly move camera dummy to follow player
+                    body.position = Vector3.Lerp(body.position, player.position, Time.deltaTime * lerpSpeed);
+                    body.rotation = Quaternion.Lerp(body.rotation, player.rotation, Time.deltaTime * lerpSpeed);
+
+                    DialogsPhase_2.enabled = true;
+                    motelStartDialogs.enabled = false;
+                }
+
+
+                if (puzzleProgression.isDialogEnabled && !isObjectEnabled_Phase_2)
                 {
                     ImageFade.instance.FadeInOut();
-                    StartCoroutine(ObjectsEnablePhase_1());
+
+                    StartCoroutine(ObjectsEnablePhase_2());
                 }
+
+                if (!isObjectEnabled_Phase_1)
+                {
+                    if (DialogsPhase_2 && DialogsPhase_2.isAutoCompleteNearObject)
+                    {
+                        ImageFade.instance.FadeInOut();
+                        StartCoroutine(ObjectsEnablePhase_1());
+                    }
+                }
+            }
+            else
+            {
+                isoCam.Follow = player;
             }
         }
     }
@@ -158,10 +179,12 @@ public class MotelLobby : MonoBehaviour
     {
         
         yield return new WaitForSeconds(1.5f);
+
+
         orderBookPickHandler.enabled = true;
         orderBookPickHandler.shouldWork = true;
         
-        foreach(ObjectInteract objInt in FinalInteractionObjects)
+        foreach(ObjectInteract objInt in LastInteractionObjects)
         {
             objInt.enabled = true;
             objInt.shouldWork = true;
@@ -171,6 +194,18 @@ public class MotelLobby : MonoBehaviour
         motelGatherDialogs.enabled = false;
        
         isFinalDialogComplete = true;
-        enabled = false;
+    }
+    IEnumerator ObjectsEnablePhase_4()
+    {
+
+        yield return new WaitForSeconds(1.5f);
+
+        ONsentenceCompleteInteract.enabled = true;
+        ONsentenceCompleteInteract.shouldWork = true;
+
+        PosandAnimationUpdate.Instance.UpdatePhase_2();
+
+        isSentenceDialogEnded = true;
+
     }
 }

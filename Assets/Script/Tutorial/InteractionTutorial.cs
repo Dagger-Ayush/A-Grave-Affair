@@ -61,7 +61,7 @@ public class InteractionTutorial : MonoBehaviour
             }
             return;   
         }
-        if (!interactHandler.isRunning)
+        if (!interactHandler.isInteracted)
         {
             blurImage[0].SetActive(false);
             foreach (var page in interactionPages)
@@ -80,7 +80,7 @@ public class InteractionTutorial : MonoBehaviour
             }
             isRunning = false;
         }
-        if (!isInteractionComplete && interactHandler.isRunning) 
+        if (!isInteractionComplete && interactHandler.isInteracted) 
         {
 
             if (canHover)

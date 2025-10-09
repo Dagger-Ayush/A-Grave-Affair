@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
+  m_Name: GatherDialogs_2_2
+  m_EditorClassIdentifier: 
+  characterName: GatherDialogs_2_2
+  dialogLines:
+  - Oh my god! I also had one of those milkshakes. Am I going to die???
+  - "But\u2026I didn\u2019t \u2026.. Milkshakes are my passion; I would never poison
+    them"
+  - Are you certain, Detective? Alex has maintained a spotless record since she arrived.
+  - "If John says it\u2019s murder, I believe him. He\u2019s got an eye for detail
+    sharper than anyone I\u2019ve worked with."
+  - The detective is always right. Arrest her before she poisons the other guests!
+  - "I swear I didn\u2019t do it! You have to believe me !!"
+  - "t\u2019s not looking good for you, Alex. You are the only one who delivered
+    milkshakes to the guests, and Martin had an Alibi as he was with Ms. Regina."
+  - "But it\u2019s also true that there\u2019s no motive for her to do this, so until
+    I investigate further, Gregory will have to keep an eye on her and everyone else."
+  - Oh, great, just when I thought all this was over.
+  - "I\u2019m not ready to go to jail\u2026 I haven\u2019t even gotten my career
+    out of this dump.  "
+  - WE'RE ALL GOING TO DIE!!!
+  - "Calm down, you idiot! Detective, there has to be some misunderstanding. Please
+    get to the bottom of this! Our Motel\u2019s spotless record can\u2019t be tainted
+    because of this."
+  dialogAudio: []
+  doBackgroundChange: 1
+  backgroundImages:
+  - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}
+  - {fileID: 21300000, guid: ad166dec978b3504c9ce83dbf0cb4235, type: 3}
+  - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}
+  - {fileID: 21300000, guid: ad166dec978b3504c9ce83dbf0cb4235, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: abb8620d0fb691e4dbc6e1d4e2677d77, type: 3}
+  - {fileID: 21300000, guid: ad166dec978b3504c9ce83dbf0cb4235, type: 3}
+  - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}
+  - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}
+  changeFontSize: 0
+  frontSize: []
+  typingSpeed: 0.02
+  currentClueCount: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  totalCount: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

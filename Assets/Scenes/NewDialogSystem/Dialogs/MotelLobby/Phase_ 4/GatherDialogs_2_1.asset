@@ -10,21 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
-  m_Name: Regina Phalange
+  m_Name: GatherDialogs_2_1
   m_EditorClassIdentifier: 
-  characterName: Regina Phalange
+  characterName: GatherDialogs_2_1
   dialogLines:
-  - " Oh, detective! I heard someone knocking at Nancy\u2019s door. I thought it
-    was Alex, but her voice sounded so manly. Strange, isn\u2019t it !?"
-  - "Umm.. yeah\u2026 strange indeed (even more strange that you were eavesdropping
-    on strangers)."
+  - So what did you find out, detective?
+  - We have found out how Nancy was actually killed.
+  - "What do you mean? Didn\u2019t she die by falling down the stairs? "
+  - "No, I\u2019m afraid Nancy was murdered by poisoning. There were traces of poison
+    on her milkshake."
   dialogAudio: []
   doBackgroundChange: 1
   backgroundImages:
+  - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}
+  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
   - {fileID: 21300000, guid: abb8620d0fb691e4dbc6e1d4e2677d77, type: 3}
   - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
-  currentClueCount: 0000000000000000
-  totalCount: 0000000000000000
+  currentClueCount: 00000000000000000000000000000000
+  totalCount: 00000000000000000000000000000000

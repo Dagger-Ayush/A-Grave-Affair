@@ -17,7 +17,8 @@ public class ObjectInteract : MonoBehaviour
     public TextMeshProUGUI dialogText;
     public GameObject dialogContainer;
 
-    private bool isInteracted;
+    public static bool isInteracting;
+    [HideInInspector] public bool isInteracted;
     public bool DoAutoRun = false;
 
     [Header("Dialogue Interaction References")]
@@ -28,7 +29,6 @@ public class ObjectInteract : MonoBehaviour
 
     [Header("Dialogue State")]
     private int currentImageIndex = 0;
-    [HideInInspector] public bool isRunning;
     [HideInInspector] public bool isSecondDialog = false;
 
     public bool shouldWork = false;
@@ -144,7 +144,7 @@ public class ObjectInteract : MonoBehaviour
     }
     public void StartInteraction()
     {
-        isRunning = true;
+        isInteracting = true;
         isInteracted = true;
 
         if (currentImageIndex >= dialogManager.dialogLines.Length)
@@ -191,7 +191,7 @@ public class ObjectInteract : MonoBehaviour
         }
         else
         {
-            isRunning = false;
+            isInteracting = false;
             isInteracted = false;
             gettingClueCount?.DisableAll();
             HandlePostDialogueActions();
@@ -238,7 +238,7 @@ public class ObjectInteract : MonoBehaviour
 
     private void Avoid()
     {
-        isRunning = false;
+        isInteracting = false;
         isInteracted = false;
 
         if (inRange != null && shouldWork && !isInteracted)
@@ -291,5 +291,6 @@ public class ObjectInteract : MonoBehaviour
             gettingClueCount?.AddTick(clueCount, totalClues);
         }
     }
-    public bool InteractionCheck() => isInteracted;
+    public static bool InteractionCheck() => isInteracting;
+
 }

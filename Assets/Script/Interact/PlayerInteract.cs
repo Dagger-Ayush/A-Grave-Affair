@@ -42,7 +42,7 @@ public class PlayerInteract : MonoBehaviour
         // Null-safe interaction checks
         bool pickHandlerInteract = ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck();
         bool movingInteract = ObjectMoving.canInteract; // assuming static bool, already safe
-        bool interactObject = ObjectInteract.Instance != null && ObjectInteract.Instance.InteractionCheck();
+        bool interactObject = ObjectInteract.Instance != null && ObjectInteract.isInteracting;
 
         bool canInteract = pickHandlerInteract || movingInteract || interactObject;
         bool isPlayerInteracting = playerDialog != null && playerDialog.isInteraction;

@@ -15,7 +15,7 @@ MonoBehaviour:
   characterName: Alex Tibia
   dialogLines:
   - "I tried to give her a milkshake, but when she didn\u2019t answer, I left the
-    <link=\"tray\">tray</color></link> outside."
+    <link=\"Tray\">tray</color></link> outside."
   - "Hmm, I didn\u2019t see any tray outside her room though (Her story isn\u2019t
     adding up, something is missing)"
   dialogAudio: []
@@ -26,5 +26,5 @@ MonoBehaviour:
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
-  currentClueCount: 0000000000000000
+  currentClueCount: 0100000000000000
   totalCount: 0100000000000000
