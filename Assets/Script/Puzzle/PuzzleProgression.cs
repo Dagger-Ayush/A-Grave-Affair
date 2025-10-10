@@ -39,6 +39,15 @@ public class PuzzleProgression : MonoBehaviour
         if (puzzle5 != null) puzzle5.SetActive(false);
         if (puzzle6 != null) puzzle6.SetActive(false);
         if (puzzle7 != null) puzzle7.SetActive(false);
+
+        // Automatically unlock puzzle 6 & 7 if puzzle 5 is missing
+        if (puzzle5 == null)
+        {
+            if (puzzle6 != null) puzzle6.SetActive(true);
+            if (puzzle7 != null) puzzle7.SetActive(true);
+
+            Debug.Log("Puzzle 5 missing — unlocked Puzzle 6 & 7 directly at start.");
+        }
     }
     private void Update()
     {
@@ -103,7 +112,7 @@ public class PuzzleProgression : MonoBehaviour
 
     public void OnPuzzle5Solved()
     {
-
+        // If puzzle5 exists, proceed as usual
         if (puzzle5Solved) return;
         puzzle5Solved = true;
         StartCoroutine(CloseTabletAfterDelay(() =>

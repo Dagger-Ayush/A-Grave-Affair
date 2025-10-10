@@ -15,12 +15,12 @@ MonoBehaviour:
   sentenceTemplate: The last person who visited _ room was carrying a _ with her
     milkshake _ .
   correctAnswers:
-  - Nancy's
+  - "Nancy\u2019s"
   - Tray
   - Order
   requiredClues:
-  - Nancy's
+  - "Nancy\u2019s"
   - Tray
   - Order
-  puzzleID: 7
+  puzzleID: 6
   isCompleted: 0

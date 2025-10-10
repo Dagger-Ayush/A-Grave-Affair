@@ -22,15 +22,20 @@ public class ClueManager : MonoBehaviour
         else Destroy(gameObject);
 
         audioSource = GetComponent<AudioSource>();
+
+        collectedClues = GlobalClueInventory.GetAllClues().ToList();
     }
 
     public void AddClue(string clueText)
     {
-        if (collectedClues.Contains(clueText)) return;
+        //if (collectedClues.Contains(clueText)) return;
+        if (GlobalClueInventory.HasClue(clueText))
+            return;
 
         ObjectPickHandler.clueCount++;
         ObjectInteract.clueCount++;
 
+        GlobalClueInventory.AddClue(clueText);
         collectedClues.Add(clueText);
 
         if (clueAddSound != null && audioSource != null)
@@ -38,14 +43,15 @@ public class ClueManager : MonoBehaviour
     }
     public bool ClueCheck(string clueText)
     {
-        if (collectedClues.Contains(clueText))
-        {
-        return true ;
-        }
-        else
-        {
-            return false;
-        }
+        return GlobalClueInventory.HasClue(clueText);
+        //if (collectedClues.Contains(clueText))
+        //{
+        //return true ;
+        //}
+        //else
+        //{
+        //    return false;
+        //}
     }
     public void ShowRelevantClue(PuzzleData currentPuzzle)
     {
@@ -55,15 +61,27 @@ public class ClueManager : MonoBehaviour
         
         for (int i = clueBoxContainer.childCount - 1; i >= 0; i--)  // Clear old clues safely
         {
-            Transform child = clueBoxContainer.GetChild(i);
-            if (child != null)
-                Destroy(child.gameObject);
+            Destroy(clueBoxContainer.GetChild(i).gameObject);
+            //Transform child = clueBoxContainer.GetChild(i);
+            //if (child != null)
+            //    Destroy(child.gameObject);
         }
 
         
         foreach (string clue in currentPuzzle.requiredClues) // Show only clues relevant to the current puzzle
         {
-            if (collectedClues.Contains(clue))
+            //if (collectedClues.Contains(clue))
+            //{
+            //    GameObject clueGO = Instantiate(clueTextPrefab, clueBoxContainer);
+            //    TMP_Text clueText = clueGO.GetComponentInChildren<TMP_Text>();
+            //    if (clueText != null)
+            //        clueText.text = clue;
+
+            //    DraggableClue draggable = clueGO.GetComponent<DraggableClue>();
+            //    if (draggable != null)
+            //        draggable.clueText = clue;
+            //}
+            if (GlobalClueInventory.HasClue(clue))
             {
                 GameObject clueGO = Instantiate(clueTextPrefab, clueBoxContainer);
                 TMP_Text clueText = clueGO.GetComponentInChildren<TMP_Text>();
@@ -81,11 +99,15 @@ public class ClueManager : MonoBehaviour
     }
     public void RemoveUsedClues(List<string> clues)
     {
-        foreach (string clue in clues)
-        {
-            string normalized = clue.Trim().ToLower();
-            collectedClues.RemoveAll(c => c.Trim().ToLower() == normalized);
-        }
+        GlobalClueInventory.RemoveClues(clues);
+
+        // Also update the local list so UI stays accurate
+        collectedClues = GlobalClueInventory.GetAllClues().ToList();
+        //foreach (string clue in clues)
+        //{
+        //    string normalized = clue.Trim().ToLower();
+        //    collectedClues.RemoveAll(c => c.Trim().ToLower() == normalized);
+        //}
     }
    
 }

@@ -40,6 +40,11 @@ public class MotelLobby : MonoBehaviour
     public ObjectInteract ONsentenceCompleteTrigger;
     public ObjectInteract ONsentenceCompleteInteract;
     public bool isSentenceDialogEnded;
+
+    [Header("Doors to activate")]
+    public GameObject doorToNancyRoom;
+    public GameObject doorToOutsideMotel;
+
     private void OnDisable()
     {
         isoCam.Follow = player;
@@ -57,7 +62,41 @@ public class MotelLobby : MonoBehaviour
             // Camera follows the dummy
             isoCam.Follow = body;
 
+        // Check if phase 3 is completed
+        bool phase3Complete = PlayerPrefs.GetInt("MotelLobby_Phase3Complete", 0) == 1;
+
+        if(phase3Complete)
+        {
+            introPanDone = true;
+            isFinalDialogComplete = true;
+            isoCam.Follow = player;
+
+            orderBookPickHandler.enabled = true;
+            orderBookPickHandler.shouldWork = true;
+
+            foreach (ObjectInteract obtInt in LastInteractionObjects)
+            {
+                obtInt.enabled = true;
+                obtInt.shouldWork = true;
+            }
+
+            if(doorToNancyRoom != null) doorToNancyRoom.SetActive(true);
+            //if(doorToOutsideMotel != null) doorToOutsideMotel.SetActive(true);
+
+            PosandAnimationUpdate.Instance.UpdatePhase_3();
+
+            puzzleProgression.puzzle6.SetActive(true);
+            puzzleProgression.puzzle7.SetActive(true);
+        }
+        else
+        {
             motelStartDialogs.enabled = true;
+
+            if (doorToNancyRoom != null) doorToNancyRoom.SetActive(false);
+            if (doorToOutsideMotel != null) doorToOutsideMotel.SetActive(false);
+        }
+
+            //motelStartDialogs.enabled = true;
     }
 
     void Update()
@@ -194,6 +233,13 @@ public class MotelLobby : MonoBehaviour
         motelGatherDialogs.enabled = false;
        
         isFinalDialogComplete = true;
+
+        // Save Phase completion
+        PlayerPrefs.SetInt("MotelLobby_Phase3Complete", 1);
+        PlayerPrefs.Save();
+
+        if(doorToNancyRoom != null) doorToNancyRoom.SetActive(true);
+        //if(doorToOutsideMotel != null) doorToOutsideMotel.SetActive(true);
     }
     IEnumerator ObjectsEnablePhase_4()
     {
