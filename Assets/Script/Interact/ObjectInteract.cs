@@ -33,7 +33,7 @@ public class ObjectInteract : MonoBehaviour
 
     public bool shouldWork = false;
     private bool InteractedWithDogBed = false;
-    [HideInInspector] public bool isAutoComplete = false;
+     public bool isAutoComplete = false;
     [HideInInspector] public bool isAutoCompleteNearObject = false;
 
     [Header("Clues")]

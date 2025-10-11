@@ -21,8 +21,10 @@ MonoBehaviour:
   dialogAudio: []
   doBackgroundChange: 0
   backgroundImages: []
-  changeFontSize: 0
-  frontSize: []
+  changeFontSize: 1
+  frontSize:
+  - 21
+  - 21
   typingSpeed: 0.02
   currentClueCount: 0000000000000000
   totalCount: 0100000000000000
