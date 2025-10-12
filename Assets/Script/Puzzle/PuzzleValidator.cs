@@ -165,7 +165,16 @@ public class PuzzleValidator : MonoBehaviour
                     progression.OnPuzzle5Solved();
                     Debug.Log("Puzzle 5 completed, progression triggered.");
                 }
-                
+                else if (currentPuzzle.puzzleID == 6)
+                {
+                    progression.OnPuzzle6Solved();
+                    Debug.Log("Puzzle 6 completed, progression triggered.");
+                }
+                else if (currentPuzzle.puzzleID == 7)
+                {
+                    progression.OnPuzzle7Solved();
+                    Debug.Log("Puzzle 7 completed, progression triggered.");
+                }
             }
 
         }

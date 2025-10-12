@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -18,8 +19,10 @@ public class PuzzleProgression : MonoBehaviour
     private bool puzzle1Solved = false;
     private bool puzzle2Solved = false;
     private bool puzzle3Solved = false;
-
+    
     private bool puzzle5Solved = false;
+    private bool puzzle6Solved = false;
+    private bool puzzle7Solved = false;
 
     [SerializeField] private GameObject dummyObjectDialog;
     [SerializeField] private AudioManager audioManager;
@@ -29,6 +32,10 @@ public class PuzzleProgression : MonoBehaviour
     [HideInInspector] public bool isDialogEnabled = false;
     private bool isDialogStarted = false;
     private bool isPuzzleCompleted = false;
+
+    public event Action OnPuzzle6And7Completed;
+
+    //bool trackPuzzle6and7 = false;
 
     void Start()
     {
@@ -47,11 +54,13 @@ public class PuzzleProgression : MonoBehaviour
             if (puzzle7 != null) puzzle7.SetActive(true);
 
             Debug.Log("Puzzle 5 missing — unlocked Puzzle 6 & 7 directly at start.");
+            //trackPuzzle6and7 = true;
         }
     }
     private void Update()
     {
         PuzzleCompleteDialog();
+        
     }
     public void OnPuzzle1Solved()
     {
@@ -130,6 +139,43 @@ public class PuzzleProgression : MonoBehaviour
             isPuzzleCompleted = true;
         }));
     }
+    public void OnPuzzle6Solved()
+    {
+        if (puzzle6Solved) return;
+        puzzle6Solved = true;
+        Debug.Log("Puzzle 6 solved");
+        CheckPuzzle6And7Completion();
+    }
+
+    public void OnPuzzle7Solved()
+    {
+        if (puzzle7Solved) return;
+        puzzle7Solved = true;
+        Debug.Log("Puzzle 7 solved");
+        CheckPuzzle6And7Completion();
+    }
+
+    public void CheckPuzzle6And7Completion()
+    {
+        if (puzzle6Solved && puzzle7Solved)
+        {
+            StartCoroutine(CloseTabletAfterDelay(() =>
+            {
+                if (puzzle6 != null) puzzle6.SetActive(false);
+                if (puzzle7 != null) puzzle7.SetActive(false);
+                
+                TabletManager.Instance.puzzlePanel.SetActive(false);
+                TabletManager.Instance.clueBox.SetActive(false);
+                feedbackText.text = " ";
+
+                Debug.Log("Puzzle 6 & 7 completed!");
+            }));
+            
+            OnPuzzle6And7Completed?.Invoke();
+            Debug.LogWarning("Works");
+        }
+    }
+    
     private IEnumerator CloseTabletAfterDelay(System.Action onClose)
     {
         Time.timeScale = 1f;

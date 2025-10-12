@@ -50,6 +50,13 @@ public class MotelLobby : MonoBehaviour
     public ObjectInteract[] suspectDialogs;
     void Start()
     {
+        // Check if phase 3 was completed before
+        if (PlayerPrefs.GetInt("MotelLobby_Phase3Complete", 0) == 1)
+        {
+            SkipToPostPhase3();
+            return;
+        }
+
         // Camera setup
         targetPos = body.position;
         targetRot = body.rotation;
@@ -58,11 +65,24 @@ public class MotelLobby : MonoBehaviour
         isoCam.Follow = body;
 
         motelStartDialogs.enabled = true;
+
+        if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
+        if (doorToOutsideMotel) doorToOutsideMotel.SetActive(false);
+
+        if(puzzleProgression != null)
+        {
+            puzzleProgression.OnPuzzle6And7Completed += EnableOnSentenceCompleteDialogs;
+        }
     }
 
     private void OnDisable()
     {
         isoCam.Follow = player;
+
+        if(puzzleProgression != null)
+        {
+            puzzleProgression.OnPuzzle6And7Completed -= EnableOnSentenceCompleteDialogs;
+        }
     }
 
     void Update()
@@ -216,6 +236,7 @@ public class MotelLobby : MonoBehaviour
         Debug.Log("Phase_2 Started");
         ImageFade.instance.FadeInOut();
 
+        puzzleProgression.puzzle5.SetActive(true);
        
         yield return new WaitForSeconds(1.5f);
         PosandAnimationUpdate.Instance.UpdatePhase_2();
@@ -243,6 +264,8 @@ public class MotelLobby : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
+        PuzzleUnlock();
+
         orderBookPickHandler.enabled = true;
         orderBookPickHandler.shouldWork = true;
 
@@ -259,9 +282,54 @@ public class MotelLobby : MonoBehaviour
         PosandAnimationUpdate.Instance.UpdatePhase_3();
         motelGatherDialogs.enabled = false;
 
+        // Activate doors
+        if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
+        if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+
+        // Save progress
+        PlayerPrefs.SetInt("MotelLobby_Phase3Complete", 1);
+        PlayerPrefs.Save();
+
         isFinalDialogComplete = true;
     }
-  
+
+    void SkipToPostPhase3()
+    {
+        Debug.Log("Skipping directly to post-Phase-3 state.");
+
+        PuzzleUnlock();
+
+        // Disable early-phase stuff
+        motelStartDialogs.enabled = false;
+        DialogsPhase_2.enabled = false;
+        motelGatherDialogs.enabled = false;
+
+        // Activate the doors
+        if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
+        if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+
+        PosandAnimationUpdate.Instance.UpdatePhase_3();
+
+        // Disable early interactions
+        orderBookPickHandler.enabled = true;
+        orderBookPickHandler.shouldWork = true;
+
+        foreach (ObjectInteract objInt in LastInteractionObjects)
+        {
+            objInt.enabled = true;
+            objInt.shouldWork = true;
+        }
+        foreach (var inspect in enablingInspect)
+        {
+            inspect.enabled = false;
+            inspect.shouldWork = false;
+        }
+
+        // Set the current phase
+        currentPhase = 4;
+        isFinalDialogComplete = true;
+    }
+
     IEnumerator ObjectsEnablePhase_4()
     {
         Debug.Log("Phase_4 Started");
@@ -333,5 +401,12 @@ public class MotelLobby : MonoBehaviour
     {
         ONsentenceCompleteTrigger.enabled = true;
         ONsentenceCompleteTrigger.shouldWork = true;
+    }
+
+    public void PuzzleUnlock()
+    {
+        puzzleProgression.puzzle5.SetActive(false);
+        puzzleProgression.puzzle6.SetActive(true);
+        puzzleProgression.puzzle7.SetActive(true);
     }
 }

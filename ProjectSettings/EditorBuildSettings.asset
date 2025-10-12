@@ -8,24 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/NewDialogSystem/Proto Scene.unity
     guid: f00c7dcb5af44c0499cecae6c608cb24
-  - enabled: 0
-    path: Assets/Scenes/Main Scene.unity
-    guid: 96b1ea7e69e5f594ca1395bfdf12bdf9
-  - enabled: 0
-    path: Assets/Scenes/Nishwanth Test scenes/Room_1/Room_1.unity
-    guid: 680aa56021c6c3a4da4d8f078444f572
-  - enabled: 0
-    path: Assets/Scenes/Nishwanth Test scenes/Room_2/Room_2.unity
-    guid: cf3a90029f89bec4492a108b2a2c4406
   - enabled: 1
-    path: Assets/SaveSystem/Scenes/SaveLoadTest_MainMenu.unity
-    guid: a0a2f485e3e3bc945b6831d003d1de76
+    path: Assets/Scenes/Outside_Motel.unity
+    guid: dcfd51d93fe4b8e4294077b3ea7fc821
   - enabled: 1
-    path: Assets/Scenes/SaveSystem.unity
-    guid: 7bec353adb0c7984ea50fa16b39395d6
+    path: Assets/Scenes/Flow/Motel_Lobby 3.unity
+    guid: b72550f651621144e85aa0cf7473abf8
   - enabled: 1
-    path: Assets/SaveSystem/Scenes/SaveLoadPersistentLevel.unity
-    guid: 24a959abf4656044bbcb5b6fac6274fb
+    path: Assets/Scenes/Nancy Room.unity
+    guid: 70c90b04fd8d5124392e92ea426df1ae
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
