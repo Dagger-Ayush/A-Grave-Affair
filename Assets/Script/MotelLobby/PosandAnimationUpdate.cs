@@ -18,15 +18,18 @@ public class PosandAnimationUpdate : MonoBehaviour
     public GameObject player;
     public GameObject playerTarget_2;
 
-    [Header("Phase_2")]
+    [Header("Phase_3")]
     public GameObject[] targetposition_3;
     public AnimationClip[] newAnimationClips_3;
 
-    [Header("Phase_3")]
+    [Header("Phase_4")]
     public AnimationClip[] newAnimationClips_4;
 
-    [Header("Phase_4")]
+    [Header("Phase_5")]
     public AnimationClip[] newAnimationClips_5;
+    [Header("Phase_6")]
+    public GameObject[] targetposition_6;
+    public AnimationClip[] newAnimationClips_6;
     private void Awake()
     {
         Instance = this;
@@ -54,17 +57,23 @@ public class PosandAnimationUpdate : MonoBehaviour
 
 
     }
-    public void UpdatePhase_4()
+    public void UpdatePhase_5()
     {
         // Update characters
         UpdatePhase(charObjects, targetposition_2, charAnimators, newAnimationClips_4);
 
-
+        UpdatePlayerPhase_2();
     }
-    public void UpdatePhase_5()
+    public void UpdatePhase_6()
     {
         // Update characters
         UpdatePhase(charObjects, targetposition_2, charAnimators, newAnimationClips_5);
+
+    }
+    public void UpdatePhase_7()
+    {
+        // Update characters
+        UpdatePhase(charObjects, targetposition_6, charAnimators, newAnimationClips_6);
 
     }
     // --- Shared Logic for Characters ---

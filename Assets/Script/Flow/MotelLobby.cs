@@ -30,6 +30,7 @@ public class MotelLobby : MonoBehaviour
 
     [Header("ON Sentence Complete")]
     public ObjectInteract ONsentenceCompleteTrigger;
+    public ObjectInteract ONsentenceCompleteGreg;
     public ObjectInteract ONsentenceCompleteInteract_1;
     public ObjectInteract ONsentenceCompleteInteract_2;
     
@@ -44,8 +45,9 @@ public class MotelLobby : MonoBehaviour
     private bool isFinalDialogComplete = false;
 
     // --- Track currently active phase ---
-    private int currentPhase = 0; // 0 = none, 1 = phase1, 2 = phase2, 3 = phase3, 4 = phase4
+    private int currentPhase = 0;
 
+    public ObjectInteract[] suspectDialogs;
     void Start()
     {
         // Camera setup
@@ -98,9 +100,12 @@ public class MotelLobby : MonoBehaviour
             // After phase 1, smoothly move camera dummy to follow player
             body.position = Vector3.Lerp(body.position, player.position, Time.deltaTime * lerpSpeed);
             body.rotation = Quaternion.Lerp(body.rotation, player.rotation, Time.deltaTime * lerpSpeed);
-
-            DialogsPhase_2.enabled = true;
-            motelStartDialogs.enabled = false;
+            
+            if (currentPhase == 0)
+            {
+                DialogsPhase_2.enabled = true;
+                motelStartDialogs.enabled = false;
+            }
         }
 
         // === Phase progression logic ===
@@ -128,9 +133,25 @@ public class MotelLobby : MonoBehaviour
         {
             StartCoroutine(ObjectsEnablePhase_4());
         }
-        if (currentPhase == 5 && ONsentenceCompleteInteract_1.isAutoComplete)
+        if (currentPhase == 5 && ONsentenceCompleteGreg.isInteractionComplete)
         {
-            ObjectsEnablePhase_5();
+            StartCoroutine(ObjectsEnablePhase_5());
+        }
+        if (currentPhase == 6 && ONsentenceCompleteInteract_1.isAutoComplete)
+        {
+            ObjectsEnablePhase_6();
+        }
+        if (currentPhase == 7 && ONsentenceCompleteInteract_2.isAutoComplete)
+        {
+           StartCoroutine(ObjectsEnablePhase_7_R_1());
+        }
+        if (currentPhase == 8 && suspectDialogs[0].isInteractionComplete)
+        {
+            ObjectsEnablePhase_8_R_2();
+        }
+        if (currentPhase == 9 && suspectDialogs[1].isInteractionComplete)
+        {
+            ObjectsEnablePhase_9_M_1();
         }
     }
 
@@ -184,6 +205,8 @@ public class MotelLobby : MonoBehaviour
         }
 
         DialogsPhase_2.enabled = false;
+        DialogsPhase_2.gameObject.SetActive(false);
+
         isObjectEnabled_Phase_1 = true;
     }
 
@@ -193,6 +216,7 @@ public class MotelLobby : MonoBehaviour
         Debug.Log("Phase_2 Started");
         ImageFade.instance.FadeInOut();
 
+       
         yield return new WaitForSeconds(1.5f);
         PosandAnimationUpdate.Instance.UpdatePhase_2();
 
@@ -227,36 +251,87 @@ public class MotelLobby : MonoBehaviour
             objInt.enabled = true;
             objInt.shouldWork = true;
         }
-
+        foreach (var inspect in enablingInspect)
+        {
+            inspect.enabled = false;
+            inspect.shouldWork = false;
+        }
         PosandAnimationUpdate.Instance.UpdatePhase_3();
         motelGatherDialogs.enabled = false;
 
         isFinalDialogComplete = true;
     }
-
+  
     IEnumerator ObjectsEnablePhase_4()
     {
-        currentPhase = 5; // End phase
         Debug.Log("Phase_4 Started");
+        currentPhase = 5; // End phase
         ImageFade.instance.FadeInOut();
 
+        yield return new WaitForSeconds(1.5f);
+        foreach (ObjectInteract objInt in LastInteractionObjects)
+        {
+            objInt.enabled = false;
+            objInt.shouldWork = false;
+        }
+
+        ONsentenceCompleteGreg.enabled = true;
+        ONsentenceCompleteGreg.shouldWork = true;
+
+    }
+    IEnumerator ObjectsEnablePhase_5()
+    {
+        currentPhase = 6; // End phase
+        Debug.Log("Phase_5 Started");
+        ImageFade.instance.FadeInOut();
+
+      
         yield return new WaitForSeconds(1.5f);
 
         ONsentenceCompleteInteract_1.enabled = true;
         ONsentenceCompleteInteract_1.shouldWork = true;
 
-        PosandAnimationUpdate.Instance.UpdatePhase_4();
-    }
-     void ObjectsEnablePhase_5()
-    {
-        currentPhase = 6;
-        ONsentenceCompleteInteract_2.enabled = true;
-        ONsentenceCompleteInteract_2.shouldWork = true;
         PosandAnimationUpdate.Instance.UpdatePhase_5();
     }
+    
+    void ObjectsEnablePhase_6()
+    {
+        Debug.Log("Phase_6 Started");
+        currentPhase = 7;
+        ONsentenceCompleteInteract_2.enabled = true;
+        ONsentenceCompleteInteract_2.shouldWork = true;
+        PosandAnimationUpdate.Instance.UpdatePhase_6();
+    }
+    IEnumerator ObjectsEnablePhase_7_R_1()
+    {
+        Debug.Log("Phase_7 Started");
+        currentPhase = 8; // End phase
+        ImageFade.instance.FadeInOut();
 
+        yield return new WaitForSeconds(1.5f);
+
+        suspectDialogs[0].enabled = true;
+        suspectDialogs[0].shouldWork = true;
+        PosandAnimationUpdate.Instance.UpdatePhase_7();
+    }
+   
+    void ObjectsEnablePhase_8_R_2()
+    {
+        Debug.Log("Phase_8 Started");
+        currentPhase = 9;
+        suspectDialogs[1].enabled = true;
+        suspectDialogs[1].shouldWork = true;
+    }
+    void ObjectsEnablePhase_9_M_1()
+    {
+        Debug.Log("Phase_9 Started");
+        currentPhase = 10;
+        suspectDialogs[2].enabled = true;
+        suspectDialogs[2].shouldWork = true;
+    }
     public void EnableOnSentenceCompleteDialogs()
     {
         ONsentenceCompleteTrigger.enabled = true;
+        ONsentenceCompleteTrigger.shouldWork = true;
     }
 }

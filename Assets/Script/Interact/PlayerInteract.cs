@@ -19,7 +19,7 @@ public class PlayerInteract : MonoBehaviour
     private PointAndMovement pointAndMovement;
     private PlayerDialog playerDialog;
 
-    private bool shouldTabletWork;
+    public bool shouldTabletWork;
 
     private void Awake()
     {

@@ -33,8 +33,9 @@ public class ObjectInteract : MonoBehaviour
 
     public bool shouldWork = false;
     private bool InteractedWithDogBed = false;
-     public bool isAutoComplete = false;
+    [HideInInspector] public bool isAutoComplete = false;
     [HideInInspector] public bool isAutoCompleteNearObject = false;
+    [HideInInspector] public bool isInteractionComplete = false;
 
     [Header("Clues")]
     public GettingClueCount gettingClueCount;
@@ -201,6 +202,7 @@ public class ObjectInteract : MonoBehaviour
    
     private void HandlePostDialogueActions()
     {
+        isInteractionComplete = true;
         if (type == InteractType.Tablet)
         {
             TabletUnlocker.instance.UnlockTablet();
