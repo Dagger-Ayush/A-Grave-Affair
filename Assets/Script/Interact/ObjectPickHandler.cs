@@ -64,6 +64,10 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void Start()
     {
+        pickReferences.XrayCamara.SetActive(false);
+        pickReferences.XrayOnImage.SetActive(false);
+        pickReferences.XrayOfImage.SetActive(false);
+
         if (type == InspectType.Cigarette)
         {
             objectInteractCigarette = GetComponent<ObjectInteract>();
@@ -153,14 +157,16 @@ public class ObjectPickHandler : MonoBehaviour
             Avoid();
         }
 
-        if (isCollected && xrayType == XrayType.Xray)
+        if (isCollected)
         {
-            if (Input.GetKeyDown(pickReferences.XrayToggle))
+            if (xrayType == XrayType.Xray)
             {
-                if (!isVision) XrayVisionEnable();
-                else XrayVisionDisable();
-            }
-            
+                if (Input.GetKeyDown(pickReferences.XrayToggle))
+                {
+                    if (!isVision) XrayVisionEnable();
+                    else XrayVisionDisable();
+                }
+
                 if (!isVision)
                 {
                     pickReferences.XrayOnImage.SetActive(false);
@@ -171,12 +177,26 @@ public class ObjectPickHandler : MonoBehaviour
                     pickReferences.XrayOfImage.SetActive(false);
                     pickReferences.XrayOnImage.SetActive(true);
                 }
+            }
+            else
+            {
+                // 🔒 Non-Xray items (like Cigarette) — turn everything off safely
+                if (pickReferences.XrayCamara.activeSelf)
+                    pickReferences.XrayCamara.SetActive(false);
+
+                pickReferences.XrayOnImage.SetActive(false);
+                pickReferences.XrayOfImage.SetActive(false);
+            }
         }
         else
         {
-            XrayVisionDisable();
+            // 🧹 No item collected at all — ensure all Xray visuals are off
+            pickReferences.XrayCamara.SetActive(false);
+            pickReferences.XrayOnImage.SetActive(false);
+            pickReferences.XrayOfImage.SetActive(false);
         }
     }
+
 
     public IEnumerator ObjectPickUp()
     {
@@ -205,26 +225,37 @@ public class ObjectPickHandler : MonoBehaviour
         objectRotation = transform.rotation;
         transform.parent = pickReferences.objectContainer.transform;
         transform.rotation = PickUpRotation;
-
+        if (pickReferences.inspectionTutorial != null && pickReferences.inspectionTutorial.isRunning)
+        {
+            pickReferences.eToExitimage.SetActive(false);
+        }
+        else
+        {
+            pickReferences.eToExitimage.SetActive(true);
+        }
         while (time < 1f)
         {
             time += Time.deltaTime;
             transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, time * 2);
             yield return null;
         }
-
+        
         transform.localPosition = Vector3.zero;
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.2f);
         isbusy = false;
 
         if (type == InspectType.Letter_1 && isPicked && isCollected && isVision)
         {
             pickReferences.gameOverTrigger.SetActive(true);
         }
+
     }
 
     public IEnumerator ObjectDrop()
     {
+        if (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) yield return null;
+
+        pickReferences.eToExitimage.SetActive(false);
         if (XrayLetterMain != null) XrayLetterMain.SetActive(true);
         if (XrayObject != null) XrayObject.SetActive(false);
         clueCountStoring = clueCount;
@@ -287,7 +318,7 @@ public class ObjectPickHandler : MonoBehaviour
     private void XrayVisionEnable()
     {
         isVision = true;
-     
+
         pickReferences.XrayCamara.SetActive(true);
 
         if (type == InspectType.Letter_1 && isCollected)

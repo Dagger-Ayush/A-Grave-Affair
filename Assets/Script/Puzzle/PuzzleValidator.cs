@@ -240,11 +240,12 @@ public class PuzzleValidator : MonoBehaviour
 
                     if (objectPickHandler.type == InspectType.Letter_1)
                     {
+                        objectPickHandler.enabled = true;
                         objectPickHandler.shouldWork = true;
                     }
                     if (objectPickHandler.type == InspectType.TutorialLetter)
                     {
-                     
+                        objectPickHandler.enabled = true;
                         objectPickHandler.shouldWork = true;
                     }
 

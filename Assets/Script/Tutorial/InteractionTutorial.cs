@@ -57,12 +57,18 @@ public class InteractionTutorial : MonoBehaviour
             ShowPanel(3);
             if (hasTyped[3] == true)
             {
+                mouseImage.SetActive(true);
                 isInteractionComplete = true;
+            }
+            else
+            {
+                mouseImage.SetActive(false);
             }
             return;   
         }
         if (!interactHandler.isInteracted)
         {
+            mouseImage.SetActive(false);
             blurImage[0].SetActive(false);
             foreach (var page in interactionPages)
                 page.SetActive(false);
@@ -74,6 +80,7 @@ public class InteractionTutorial : MonoBehaviour
         {
             if (interactionPages[3].activeSelf)
             {
+                mouseImage.SetActive(false);
                 blurImage[0].SetActive(false);
                 blurImage[1].SetActive(false);
                 interactionPages[3].SetActive(false);
@@ -87,13 +94,17 @@ public class InteractionTutorial : MonoBehaviour
             {
                 if (cursor.isHovered() == true)
                 {
+                    mouseImage.SetActive(true);
                     ShowPanel(2);
                     isHovered = true;
                 }
                 else if (cursor.isHovered() == false)
                 {
+                    mouseImage.SetActive(false);
                     ShowPanel(1);
                 }
+
+                blurImage[0].SetActive(false);
             }
             else
             {
@@ -120,13 +131,14 @@ public class InteractionTutorial : MonoBehaviour
         switch (count)
         {
             case 0:
+                mouseImage.SetActive(true);
                 blurImage[0].SetActive(true);
                 isRunning = true;
                 ShowPanel(count);
                 break;
             case 1:
-               
-                    blurImage[0].SetActive(false);
+                mouseImage.SetActive(false);
+                blurImage[0].SetActive(false);
                 blurImage[1].SetActive(true);
                 ShowPanel(count);
                 if (hasTyped[count] == true && cursor.isHovered() == true)

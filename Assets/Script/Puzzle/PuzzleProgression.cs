@@ -24,12 +24,10 @@ public class PuzzleProgression : MonoBehaviour
     private bool puzzle6Solved = false;
     private bool puzzle7Solved = false;
 
-    [SerializeField] private GameObject dummyObjectDialog;
-    [SerializeField] private AudioManager audioManager;
-    [SerializeField] private DialogAudio dummyDialogAudio;
+    [SerializeField] private ObjectInteract dummyObjectDialog;
+
     [SerializeField] private PlayerInteract playerInteract;
 
-    [HideInInspector] public bool isDialogEnabled = false;
     private bool isDialogStarted = false;
     private bool isPuzzleCompleted = false;
 
@@ -218,6 +216,7 @@ public class PuzzleProgression : MonoBehaviour
 
                 if (objectPickHandler.type == InspectType.Letter_1 || objectPickHandler.type == InspectType.TutorialLetter)
                 {
+                    objectPickHandler.enabled = false;
                     objectPickHandler.shouldWork = false;
 
                 }
@@ -230,25 +229,12 @@ public class PuzzleProgression : MonoBehaviour
         }
     }
     void PuzzleCompleteDialog()
-    {
-        if (!isDialogEnabled && isPuzzleCompleted)
-        {
-            if (!isDialogStarted)
+    {  
+        if (!isDialogStarted && isPuzzleCompleted)
             {
-                dummyObjectDialog.SetActive(true);
-                //audioManager.PlayDialogBigLine(dummyDialogAudio);
+                dummyObjectDialog.enabled = true;
                 isDialogStarted = true;
             }
-            else if (isDialogStarted && Input.GetKeyDown(KeyCode.E))
-            {
-                dummyObjectDialog.SetActive(false);
-                //audioManager.Stop();
-                isDialogEnabled = true;
-
-
-            }
-
-        }
-
+      
     }
 }

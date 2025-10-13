@@ -31,6 +31,8 @@ public class ObjectPickReferences : MonoBehaviour
     public InteractionTutorial interactionTutorial;
 
     public XRaySync XRaySync;
+
+    public GameObject eToExitimage;
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)

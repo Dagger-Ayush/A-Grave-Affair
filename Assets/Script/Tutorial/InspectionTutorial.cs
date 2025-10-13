@@ -33,6 +33,8 @@ public class InspectionTutorial : MonoBehaviour
     public GameObject[] interactionPages;
 
     public GameObject mouseImage;
+    public Canvas pointerCanvas;
+    public ObjectPickReferences pickReferences;
     private void Awake()
     {
         Instance = this;
@@ -50,6 +52,7 @@ public class InspectionTutorial : MonoBehaviour
 
     void Update()
     {
+       
         if (!pickHandler.isPicked)
         {
             interactionPages[0].SetActive(false);
@@ -60,7 +63,10 @@ public class InspectionTutorial : MonoBehaviour
             StartCoroutine(CluePickHandler());
         }
         if (interactionPages[0].activeSelf && Input.GetMouseButton(0) && !isTyping)
-        { 
+        {
+            pickReferences.eToExitimage.SetActive(true);
+            mouseImage.SetActive(false);
+
             interactionPages[0].SetActive(false);
 
             isRunning = false;
@@ -80,14 +86,22 @@ public class InspectionTutorial : MonoBehaviour
             {
                 case 0:
                     isRunning = true;
+                   
                     if (!hasTyped[0])
                     {
                         StartCoroutine(TypeText(textMeshPro[0], fullText[0], 0));
                     }
                     clueanimator.enabled = true;
+                    if (hasTyped[0] == true)
+                    {
+                        pointerCanvas.sortingOrder = 1;
+                        mouseImage.SetActive(true);
+                    }
                     break;
 
                 case 1:
+                   
+                    mouseImage.SetActive(false);
                     packanimator.enabled = true;
                     if (!hasTyped[1])
                     {
@@ -110,7 +124,7 @@ public class InspectionTutorial : MonoBehaviour
         yield return new WaitForSeconds(time);
         interactionPages[0].SetActive(true);
         StartCoroutine(TypeText(textMeshPro[3], fullText[3], 3));
-        
+        mouseImage.SetActive(true);
     }
     IEnumerator TypeText(TMP_Text text, string message, int index)
     {
@@ -130,6 +144,7 @@ public class InspectionTutorial : MonoBehaviour
   
     IEnumerator CluePickHandler()
     {
+        mouseImage.SetActive(false);
         packanimator.enabled = true;
         yield return new WaitForSeconds(0.2f);
         packanimator.SetBool("CluePicking", false);
@@ -155,6 +170,7 @@ public class InspectionTutorial : MonoBehaviour
             {
                 if (Input.GetMouseButtonUp(0))
                 {
+                    
                     RotationNextPage();
                 }
 
@@ -165,12 +181,13 @@ public class InspectionTutorial : MonoBehaviour
 
     private void RotationNextPage()
     {
-
+        count = 2;
         packanimator.enabled = true;
         if (!hasTyped[2])
         {
             StartCoroutine(TypeText(textMeshPro[2], fullText[2], 2));
         }
+
         packanimator.SetBool("CluePicking", true);
         hasRotated = true;
         StartCoroutine(Delay());
@@ -184,7 +201,7 @@ public class InspectionTutorial : MonoBehaviour
 
         packanimator.enabled = false;
         isInspectionComplete = true;
-
+        mouseImage.SetActive(true);
     }
 
 }

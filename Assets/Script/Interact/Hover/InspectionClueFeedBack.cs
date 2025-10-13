@@ -16,6 +16,8 @@ public class InspectionClueFeedBack : MonoBehaviour
 
     public GameObject arrow;
     public GameObject background;
+    [HideInInspector] public bool isClueBusy = false;
+    public ObjectPickReferences pickReferences;
 
     private void Awake()
     {
@@ -24,6 +26,8 @@ public class InspectionClueFeedBack : MonoBehaviour
 
     public IEnumerator clueSet(string clues_1, string clues_2)
     {
+        isClueBusy = true;
+        pickReferences.eToExitimage.SetActive(false);
         background.SetActive(true);
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(TypeText(textMeshPro[0], clues_1));
@@ -39,6 +43,16 @@ public class InspectionClueFeedBack : MonoBehaviour
         {
             if (txt != null)
                 txt.gameObject.SetActive(false);
+        }
+        isClueBusy = false;
+        yield return new WaitForSeconds(0.1f);
+        if (pickReferences.inspectionTutorial != null && pickReferences.inspectionTutorial.isRunning)
+        {
+            pickReferences.eToExitimage.SetActive(false);
+        }
+        else
+        {
+            pickReferences.eToExitimage.SetActive(true);
         }
     }
     private IEnumerator TypeText(TMP_Text text, string message)

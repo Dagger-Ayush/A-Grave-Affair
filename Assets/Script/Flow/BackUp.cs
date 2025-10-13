@@ -2,7 +2,7 @@
 using Unity.Cinemachine;
 using UnityEngine;
 
-public class MotelLobby : MonoBehaviour
+public class BackUpMotelLobby : MonoBehaviour
 {
     [Header("Camera")]
     public CinemachineCamera isoCam;
@@ -21,9 +21,7 @@ public class MotelLobby : MonoBehaviour
 
     [Header("Gameplay Phase_2")]
     public PuzzleProgression puzzleProgression;
-    public ObjectInteract puzzleProgressionInteract;
     public ObjectInteract motelGatherDialogs;
-    private bool isObjectEnabled_Phase_2 = false;
 
     [Header("Final Page")]
     public ObjectPickHandler orderBookPickHandler;
@@ -51,12 +49,10 @@ public class MotelLobby : MonoBehaviour
 
     public ObjectInteract[] suspectDialogs;
     public Collider[] suspectColliders;
-
-    public bool DontsavePhase_3;
     void Start()
     {
         // Check if phase 3 was completed before
-        if (PlayerPrefs.GetInt("MotelLobby_Phase3Complete", 0) == 1 && !DontsavePhase_3)
+        if (PlayerPrefs.GetInt("MotelLobby_Phase3Complete", 0) == 1)
         {
             SkipToPostPhase3();
             return;
@@ -144,7 +140,7 @@ public class MotelLobby : MonoBehaviour
             StartCoroutine(ObjectsEnablePhase_1());
         }
 
-        if (currentPhase == 2 && puzzleProgressionInteract.isAutoComplete && !isObjectEnabled_Phase_2)
+        //if (currentPhase == 2 && puzzleProgression.isDialogEnabled && !isObjectEnabled_Phase_2)
         {
             StartCoroutine(ObjectsEnablePhase_2());
         }
@@ -258,7 +254,6 @@ public class MotelLobby : MonoBehaviour
         foreach (var inspect in enablingInspect)
             inspect.enabled = false;
 
-        isObjectEnabled_Phase_2 = true;
     }
 
     IEnumerator ObjectsEnablePhase_3()
@@ -287,22 +282,20 @@ public class MotelLobby : MonoBehaviour
         PosandAnimationUpdate.Instance.UpdatePhase_3();
         motelGatherDialogs.enabled = false;
 
-        if (!DontsavePhase_3)
-        {
-            // Activate doors
-            if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
-            if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+        // Activate doors
+        if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
+        if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
 
-            // Save progress
-            PlayerPrefs.SetInt("MotelLobby_Phase3Complete", 1);
-            PlayerPrefs.Save();
-        }
+        // Save progress
+        PlayerPrefs.SetInt("MotelLobby_Phase3Complete", 1);
+        PlayerPrefs.Save();
 
         isFinalDialogComplete = true;
     }
 
     void SkipToPostPhase3()
-    {currentPhase = 4;
+    {
+        currentPhase = 4;
         Debug.Log("Skipping directly to post-Phase-3 state.");
 
         PuzzleUnlock();
