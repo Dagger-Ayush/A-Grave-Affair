@@ -22,12 +22,13 @@ public class PlayerDialog : MonoBehaviour
     public AudioManager audioManager;
     public TextMeshProUGUI dialogText;
     public GameObject dialogContainer;
-    public GameObject LastDialog;
+    public ObjectInteract LastDialog;
     public GameObject movementTutorial;
     private bool HasRun = false;
 
     [SerializeField] private DialogAudio lastDialogAudio;
 
+    public PuzzleProgression progression;
     private void Awake()
     {
         instance = this;
@@ -42,7 +43,7 @@ public class PlayerDialog : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (PuzzleValidator.CorrectFilledCount >= 2)
+        if (progression.puzzle1and2Check())
         {
             EndDialog();
         }
@@ -68,7 +69,6 @@ public class PlayerDialog : MonoBehaviour
         {
             isInteraction = false;
             movementTutorial.SetActive(false);
-            isInteraction = false;
             HasRun = true;
         }
 
@@ -128,25 +128,12 @@ public class PlayerDialog : MonoBehaviour
 
         if (!isInteraction && !isEndDialogRunning)
         {
-            isInteraction = true;
             isEndDialogRunning = true;
-            playerInteract.enabled = false;
-            pointAndMovement.enabled = false;
-
-            LastDialog.SetActive(true);
+          
+            LastDialog.enabled = true;
             audioManager.PlayDialogBigLine(lastDialogAudio);
         }
-        else if (isInteraction && Input.GetKeyDown(KeyCode.E))
-        {
-            
-            LastDialog.SetActive(false);
-            audioManager.Stop();
-                pointAndMovement.enabled = true;
-            playerInteract.enabled = true;
-
-
-            isInteraction = false;
-        }
+       
     }
     void TypeLine(GameObject gameObject,int currentImageIndex, int audioIndex)
     {

@@ -47,7 +47,6 @@ public class DialogSystem : MonoBehaviour
     }
     public void StartInteraction()
     {
-        playerInteract.isPointAndMovementEnabled = true;
         interacting = true;
         currentImageIndex = 0;
        

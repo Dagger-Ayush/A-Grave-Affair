@@ -30,8 +30,7 @@ public class ObjectPickReferences : MonoBehaviour
     public InspectionTutorial inspectionTutorial;
     public InteractionTutorial interactionTutorial;
 
-    public XRaySync XRaySync;
-
+  
     public GameObject eToExitimage;
     public void SwitchCam()
     {/*

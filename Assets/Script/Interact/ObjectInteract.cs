@@ -236,6 +236,7 @@ public class ObjectInteract : MonoBehaviour
 
         if (type == InteractType.Lighter)
             Destroy(gameObject, 0.1f);
+
     }
 
     private void Avoid()

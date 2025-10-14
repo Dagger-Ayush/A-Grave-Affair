@@ -9,6 +9,7 @@ public class XrayTutorial : MonoBehaviour
     public GameObject[] interactionPages;
     private int count = 0;
     [HideInInspector] public bool isRunning;
+    [HideInInspector] public bool shouldShowIcon = false;
     //public GameObject[] blurImage;
 
     public TMP_Text[] textMeshPro;
@@ -43,11 +44,20 @@ public class XrayTutorial : MonoBehaviour
 
     void Update()
     {
+       
         if (ObjectPickHandler != null && ObjectPickHandler.isPicked)
         {
-            if(count == 1)
+            if (count < 1 && !isTyping)
             {
-                    if (!isTyping && hasTyped[1] &&Input.GetKeyDown(KeyCode.Q))
+                mouseImage.SetActive(true);
+            }
+            else
+            {
+                mouseImage.SetActive(false);
+            }
+            if (count == 1)
+            {
+                    if (!isTyping && hasTyped[1] && Input.GetKeyDown(KeyCode.Q))
                     {
                         count = 2;
                         mainCanvas.sortingOrder = 0;
@@ -66,11 +76,15 @@ public class XrayTutorial : MonoBehaviour
             switch (count)
             {
                 case 0:
+                    isRunning = true;
+                    shouldShowIcon = false;
+
                     mainCanvas.sortingOrder = 0;
                     TutorialCanvas.sortingOrder = 1;
                     ShowPanel(count);
                     break;
                 case 1:
+                    shouldShowIcon = true;
                     mainCanvas.sortingOrder = 1;
                     TutorialCanvas.sortingOrder = 1;
                     ShowPanel(count);
@@ -80,6 +94,7 @@ public class XrayTutorial : MonoBehaviour
                     foreach (var page in interactionPages)
                         page.SetActive(false);
                     IsXrayTutorialCompleted = true;
+                    isRunning = false;
                     break;
             }
         }

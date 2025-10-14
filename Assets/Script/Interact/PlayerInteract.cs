@@ -14,7 +14,7 @@ public class PlayerInteract : MonoBehaviour
     public Transform player;
     public Image tabletImage;
 
-    [HideInInspector] public bool isPointAndMovementEnabled;
+     public bool isPointAndMovementEnabled;
 
     private PointAndMovement pointAndMovement;
     private PlayerDialog playerDialog;
@@ -40,17 +40,16 @@ public class PlayerInteract : MonoBehaviour
         GetObjectPickHandler();
 
         // Null-safe interaction checks
-        bool pickHandlerInteract = ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck();
+        bool pickHandlerInteract = ObjectPickHandler.isCollected;
         bool movingInteract = ObjectMoving.canInteract; // assuming static bool, already safe
         bool interactObject = ObjectInteract.Instance != null && ObjectInteract.isInteracting;
 
-        bool canInteract = pickHandlerInteract || movingInteract || interactObject;
+        bool canInteract = pickHandlerInteract || movingInteract || interactObject ;
         bool isPlayerInteracting = playerDialog != null && playerDialog.isInteraction;
 
         if (canInteract)
         {
             isPointAndMovementEnabled = true;
-
             if (pointAndMovement != null  && player != null)
                 player.GetComponent<Rigidbody>().isKinematic = true;
 
@@ -65,10 +64,9 @@ public class PlayerInteract : MonoBehaviour
         }
         else if (!canInteract && !isPlayerInteracting)
         {
+            isPointAndMovementEnabled = false;
             if (player != null)
                 player.GetComponent<Rigidbody>().isKinematic = false;
-
-            isPointAndMovementEnabled = false;
 
             if (shouldTabletWork && tabletImage != null)
                 tabletImage.enabled = true;

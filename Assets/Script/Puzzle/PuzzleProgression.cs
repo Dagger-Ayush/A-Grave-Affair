@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static ObjectPickHandler;
 
 public class PuzzleProgression : MonoBehaviour
@@ -25,6 +26,7 @@ public class PuzzleProgression : MonoBehaviour
     private bool puzzle7Solved = false;
 
     [SerializeField] private ObjectInteract dummyObjectDialog;
+    [SerializeField] private ObjectInteract nancyRoomDialog;
 
     [SerializeField] private PlayerInteract playerInteract;
 
@@ -153,28 +155,46 @@ public class PuzzleProgression : MonoBehaviour
         CheckPuzzle6And7Completion();
     }
 
+    private bool nancyDialogTriggered = false;
+
     public void CheckPuzzle6And7Completion()
     {
         if (puzzle6Solved && puzzle7Solved)
         {
             StartCoroutine(CloseTabletAfterDelay(() =>
             {
+                TriggerNancyRoomDialog();
+
                 if (puzzle6 != null) puzzle6.SetActive(false);
                 if (puzzle7 != null) puzzle7.SetActive(false);
-                
+
                 TabletManager.Instance.puzzlePanel.SetActive(false);
                 TabletManager.Instance.clueBox.SetActive(false);
                 feedbackText.text = " ";
 
                 Debug.Log("Puzzle 6 & 7 completed!");
             }));
-            
+
             OnPuzzle6And7Completed?.Invoke();
-            Debug.LogWarning("Works");
             isPuzzleCompleted = true;
         }
     }
-    
+
+    private void TriggerNancyRoomDialog()
+    {
+        if (nancyDialogTriggered) return; // Prevent multiple triggers
+        nancyDialogTriggered = true;
+
+        int sceneNumber = SceneManager.GetActiveScene().buildIndex;
+
+        // Check if player is in Nancy's scene (scene 3 in this example)
+        if (sceneNumber == 3 && nancyRoomDialog != null)
+        {
+            nancyRoomDialog.enabled = true;
+            Debug.Log("Nancy Room Dialog triggered.");
+        }
+    }
+
     private IEnumerator CloseTabletAfterDelay(System.Action onClose)
     {
         Time.timeScale = 1f;
@@ -238,4 +258,10 @@ public class PuzzleProgression : MonoBehaviour
             }
       
     }
+    public bool puzzle1and2Check()
+    {
+        if(puzzle1Solved && puzzle2Solved) return true;
+        else return false;
+    }
+   
 }
