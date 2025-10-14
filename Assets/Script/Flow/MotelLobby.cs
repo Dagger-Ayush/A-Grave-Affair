@@ -46,21 +46,23 @@ public class MotelLobby : MonoBehaviour
     private bool introPanDone = false;
     private bool isFinalDialogComplete = false;
 
-    // --- Track currently active phase ---
-    private int currentPhase = 0;
+    //// --- Track currently active phase ---
+    //private int currentPhase = 0;
+
+    // Current phase now stored globally
+    private int currentPhase
+    {
+        get => GamePhaseManager.MotelLobbyPhase;
+        set => GamePhaseManager.MotelLobbyPhase = value;
+    }
 
     public ObjectInteract[] suspectDialogs;
     public Collider[] suspectColliders;
 
-    public bool DontsavePhase_3;
+    //public bool DontsavePhase_3;
     void Start()
     {
-        // Check if phase 3 was completed before
-        if (PlayerPrefs.GetInt("MotelLobby_Phase3Complete", 0) == 1 && !DontsavePhase_3)
-        {
-            SkipToPostPhase3();
-            return;
-        }
+        
 
         // Camera setup
         targetPos = body.position;
@@ -69,7 +71,7 @@ public class MotelLobby : MonoBehaviour
         body.rotation = player.rotation;
         isoCam.Follow = body;
 
-        motelStartDialogs.enabled = true;
+        //motelStartDialogs.enabled = true;
 
         if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(false);
@@ -77,6 +79,85 @@ public class MotelLobby : MonoBehaviour
         if(puzzleProgression != null)
         {
             puzzleProgression.OnPuzzle6And7Completed += EnableOnSentenceCompleteDialogs;
+        }
+
+        //// Start only initial dialog if at phase 0
+        //if (currentPhase == 0)
+        //{
+        //    motelStartDialogs.enabled = true;
+        //}
+
+        //  Restore state based on saved phase
+        switch (currentPhase)
+        {
+            case 0:
+                motelStartDialogs.enabled = true;
+                break;
+
+            case 1:
+                DialogsPhase_2.enabled = true;
+                PosandAnimationUpdate.Instance.UpdatePhase_1();
+                break;
+
+            case 2:
+                // Simulate Phase 1 completion setup
+                StartCoroutine(ObjectsEnablePhase_1());
+                PosandAnimationUpdate.Instance.UpdatePhase_2();
+                break;
+
+            case 3:
+                // Simulate Phase 2 completion setup
+                StartCoroutine(ObjectsEnablePhase_2());
+                PosandAnimationUpdate.Instance.UpdatePhase_3();
+                break;
+
+            case 4:
+                StartCoroutine(ObjectsEnablePhase_3());
+                PosandAnimationUpdate.Instance.UpdatePhase_3();
+                break;
+
+            case 5:
+                StartCoroutine(ObjectsEnablePhase_4());
+                PosandAnimationUpdate.Instance.UpdatePhase_5();
+                break;
+
+            case 6:
+                StartCoroutine(ObjectsEnablePhase_5());
+                PosandAnimationUpdate.Instance.UpdatePhase_5();
+                break;
+
+            case 7:
+                ObjectsEnablePhase_6();
+                PosandAnimationUpdate.Instance.UpdatePhase_6();
+                break;
+
+            case 8:
+                StartCoroutine(ObjectsEnablePhase_7_R_1());
+                PosandAnimationUpdate.Instance.UpdatePhase_7();
+                break;
+
+            case 9:
+                ObjectsEnablePhase_8_M_1();
+                break;
+
+            case 10:
+                ObjectsEnablePhase_9_R_2();
+                break;
+        }
+
+        // Disable intro pan & dialogs for higher phases
+        if (currentPhase > 0)
+        {
+            introPanDone = true;
+            isoCam.Follow = player;
+            body.position = player.position;
+            body.rotation = player.rotation;
+
+            if (motelStartDialogs != null)
+            {
+                motelStartDialogs.enabled = false;
+                motelStartDialogs.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -134,7 +215,7 @@ public class MotelLobby : MonoBehaviour
         }
 
         // === Phase progression logic ===
-        if (introPanDone && motelStartDialogs && motelStartDialogs.isAutoComplete && currentPhase == 0)
+        if (currentPhase == 0 && introPanDone && motelStartDialogs && motelStartDialogs.isAutoComplete)
         {
             StartPhase(1);
         }
@@ -287,60 +368,15 @@ public class MotelLobby : MonoBehaviour
         PosandAnimationUpdate.Instance.UpdatePhase_3();
         motelGatherDialogs.enabled = false;
 
-        if (!DontsavePhase_3)
-        {
-            // Activate doors
-            if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
-            if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
-
-            // Save progress
-            PlayerPrefs.SetInt("MotelLobby_Phase3Complete", 1);
-            PlayerPrefs.Save();
-        }
-
-        isFinalDialogComplete = true;
-    }
-
-    void SkipToPostPhase3()
-    {currentPhase = 4;
-        Debug.Log("Skipping directly to post-Phase-3 state.");
-
-        PuzzleUnlock();
-
-        // Disable early-phase stuff
-        motelStartDialogs.enabled = false;
-        DialogsPhase_2.enabled = false;
-        motelGatherDialogs.enabled = false;
-
         // Activate the doors
         if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
-
-        PosandAnimationUpdate.Instance.UpdatePhase_3();
-
-        // Disable early interactions
-        orderBookPickHandler.enabled = true;
-        orderBookPickHandler.shouldWork = true;
-
-        foreach (ObjectInteract objInt in LastInteractionObjects)
-        {
-            objInt.enabled = true;
-            objInt.shouldWork = true;
-        } 
-        foreach (Collider objCol in LastInteractionColliders)
-        {
-            objCol.enabled = true;
-        }
-        foreach (var inspect in enablingInspect)
-        {
-            inspect.enabled = false;
-            inspect.shouldWork = false;
-        }
-
-        // Set the current phase
         
+
         isFinalDialogComplete = true;
     }
+
+    
 
     IEnumerator ObjectsEnablePhase_4()
     {

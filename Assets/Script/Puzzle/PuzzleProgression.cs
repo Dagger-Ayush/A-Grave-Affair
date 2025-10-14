@@ -171,6 +171,7 @@ public class PuzzleProgression : MonoBehaviour
             
             OnPuzzle6And7Completed?.Invoke();
             Debug.LogWarning("Works");
+            isPuzzleCompleted = true;
         }
     }
     
