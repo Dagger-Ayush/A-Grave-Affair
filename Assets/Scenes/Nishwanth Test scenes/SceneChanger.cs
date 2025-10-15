@@ -3,27 +3,25 @@ using UnityEngine;
 public class SceneChanger : MonoBehaviour
 {
     public bool istrigger = false;
-    [SerializeField] private CanvasGroup interactiImage;
+    [SerializeField] private CanvasGroup interactiImageIn;
+    [SerializeField] private CanvasGroup interactiImageout;
     [SerializeField] private PlayerInteract playerInteract;
 
     [Header("Scene Settings")]
     [SerializeField] private int targetSceneIndex;
 
     [Header("Puzzle Requirement")]
-    public PuzzleData requiredPuzzle;
+    public PuzzleData requiredPuzzle_1;
+    public PuzzleData requiredPuzzle_2;
     private bool canChangeScene = false;
 
     void Start()
     {
-        if(requiredPuzzle == null)
-        {
-            canChangeScene = true;
-        }
     }
 
     void Update()
     {
-        if (requiredPuzzle != null && requiredPuzzle.isCompleted)
+        if (requiredPuzzle_1 != null && requiredPuzzle_1.isCompleted && requiredPuzzle_2 != null && requiredPuzzle_2.isCompleted)
         {
             canChangeScene = true;
         }
@@ -32,27 +30,28 @@ public class SceneChanger : MonoBehaviour
 
         if (playerInteract.SceneChangerHandler() == this && !istrigger)
         {
-            if (interactiImage != null)
+            if (interactiImageIn != null)
             {
-                interactiImage.alpha = 1;
+                interactiImageIn.alpha = 1;
+                interactiImageout.alpha = 0;
             }
 
             if (Input.GetKeyDown(KeyCode.E))
             {
                 StartCoroutine(LevelLoader.Instance.ChangeLevel(targetSceneIndex));
-                if (interactiImage != null)
+                if (interactiImageIn != null)
                 {
-                    interactiImage.alpha = 0;
+                    interactiImageIn.alpha = 0;
+                    interactiImageout.alpha = 0;
                 }
-
-
             }
         }
         else
         {
-            if (interactiImage != null)
+            if (interactiImageIn != null && interactiImageout !=null)
             {
-                interactiImage.alpha = 0;
+                interactiImageIn.alpha = 0;
+                interactiImageout.alpha = 1;
             }
         }
     }
