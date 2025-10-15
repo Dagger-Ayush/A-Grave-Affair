@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class GameStartReset : MonoBehaviour
 {
+    [SerializeField] private GlobalPuzzleStateData globalPuzzleState;
     void Awake()
     {
-        PlayerPrefs.DeleteKey("MotelLobby_Phase3Complete");
-        PlayerPrefs.Save();
+        globalPuzzleState.ResetAll();
     }
 }

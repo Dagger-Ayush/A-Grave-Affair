@@ -96,44 +96,36 @@ public class MotelLobby : MonoBehaviour
 
             case 1:
                 DialogsPhase_2.enabled = true;
-                PosandAnimationUpdate.Instance.UpdatePhase_1();
                 break;
 
             case 2:
                 // Simulate Phase 1 completion setup
                 StartCoroutine(ObjectsEnablePhase_1());
-                PosandAnimationUpdate.Instance.UpdatePhase_2();
                 break;
 
             case 3:
                 // Simulate Phase 2 completion setup
                 StartCoroutine(ObjectsEnablePhase_2());
-                PosandAnimationUpdate.Instance.UpdatePhase_3();
                 break;
 
             case 4:
                 StartCoroutine(ObjectsEnablePhase_3());
-                PosandAnimationUpdate.Instance.UpdatePhase_3();
                 break;
 
             case 5:
                 StartCoroutine(ObjectsEnablePhase_4());
-                PosandAnimationUpdate.Instance.UpdatePhase_5();
                 break;
 
             case 6:
                 StartCoroutine(ObjectsEnablePhase_5());
-                PosandAnimationUpdate.Instance.UpdatePhase_5();
                 break;
 
             case 7:
                 ObjectsEnablePhase_6();
-                PosandAnimationUpdate.Instance.UpdatePhase_6();
                 break;
 
             case 8:
                 StartCoroutine(ObjectsEnablePhase_7_R_1());
-                PosandAnimationUpdate.Instance.UpdatePhase_7();
                 break;
 
             case 9:
@@ -322,8 +314,9 @@ public class MotelLobby : MonoBehaviour
         Debug.Log("Phase_2 Started");
         ImageFade.instance.FadeInOut();
 
-        puzzleProgression.puzzle5.SetActive(true);
-       
+        if (puzzleProgression.puzzle5 != null)
+            puzzleProgression.puzzle5.SetActive(true);
+
         yield return new WaitForSeconds(1.5f);
         PosandAnimationUpdate.Instance.UpdatePhase_2();
 
@@ -370,7 +363,7 @@ public class MotelLobby : MonoBehaviour
 
         // Activate the doors
         if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
-        if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+        //if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
         
 
         isFinalDialogComplete = true;
@@ -382,6 +375,7 @@ public class MotelLobby : MonoBehaviour
     {
         Debug.Log("Phase_4 Started");
         currentPhase = 5; // End phase
+        
         ImageFade.instance.FadeInOut();
 
         yield return new WaitForSeconds(1.5f);
@@ -396,7 +390,7 @@ public class MotelLobby : MonoBehaviour
         }
         ONsentenceCompleteGreg.enabled = true;
         ONsentenceCompleteGreg.shouldWork = true;
-
+        
     }
     IEnumerator ObjectsEnablePhase_5()
     {
@@ -451,6 +445,10 @@ public class MotelLobby : MonoBehaviour
         suspectDialogs[2].enabled = true;
         suspectDialogs[2].shouldWork = true;
         suspectColliders[2].enabled = true;
+
+        // Activate the doors
+        if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
+        if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
     }
     public void EnableOnSentenceCompleteDialogs()
     {
@@ -460,8 +458,24 @@ public class MotelLobby : MonoBehaviour
 
     public void PuzzleUnlock()
     {
-        puzzleProgression.puzzle5.SetActive(false);
-        puzzleProgression.puzzle6.SetActive(true);
-        puzzleProgression.puzzle7.SetActive(true);
+        // Hide puzzle 5 if it exists
+        if (puzzleProgression.puzzle5 != null)
+            puzzleProgression.puzzle5.SetActive(false);
+
+        // Only enable unsolved puzzles
+        if (puzzleProgression.puzzleStateData != null)
+        {
+            if (!puzzleProgression.puzzleStateData.IsComplete(6))
+                puzzleProgression.puzzle6?.SetActive(true);
+
+            if (!puzzleProgression.puzzleStateData.IsComplete(7))
+                puzzleProgression.puzzle7?.SetActive(true);
+        }
+        else
+        {
+            // Fallback (if no data)
+            puzzleProgression.puzzle6?.SetActive(true);
+            puzzleProgression.puzzle7?.SetActive(true);
+        }
     }
 }

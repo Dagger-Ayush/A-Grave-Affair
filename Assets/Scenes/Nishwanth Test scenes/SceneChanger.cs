@@ -6,6 +6,8 @@ public class SceneChanger : MonoBehaviour
     [SerializeField] private CanvasGroup interactiImageIn;
     [SerializeField] private CanvasGroup interactiImageout;
     [SerializeField] private PlayerInteract playerInteract;
+    [SerializeField] private ObjectInteract objectInteract;
+    public GameObject door;
 
     [Header("Scene Settings")]
     [SerializeField] private int targetSceneIndex;
@@ -21,11 +23,24 @@ public class SceneChanger : MonoBehaviour
 
     void Update()
     {
-        if (requiredPuzzle_1 != null && requiredPuzzle_1.isCompleted && requiredPuzzle_2 != null && requiredPuzzle_2.isCompleted)
+        //if (requiredPuzzle_1 != null && requiredPuzzle_1.isCompleted && requiredPuzzle_2 != null && requiredPuzzle_2.isCompleted)
+        //{
+        //    canChangeScene = true;
+        //}
+
+        bool puzzle1Complete = requiredPuzzle_1 == null || requiredPuzzle_1.isCompleted;
+        bool puzzle2Complete = requiredPuzzle_2 == null || requiredPuzzle_2.isCompleted;
+
+        canChangeScene = puzzle1Complete && puzzle2Complete;
+
+        if (objectInteract != null && objectInteract.isInteractionComplete)
         {
             canChangeScene = true;
+
+            if (door != null && !door.activeSelf)
+                door.SetActive(true);
         }
-        if(!canChangeScene)
+        if (!canChangeScene)
             return;
 
         if (playerInteract.SceneChangerHandler() == this && !istrigger)

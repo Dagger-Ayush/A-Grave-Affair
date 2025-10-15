@@ -17,6 +17,8 @@ public class PuzzleProgression : MonoBehaviour
     public GameObject puzzle7;
     public TMP_Text feedbackText;
 
+    public GlobalPuzzleStateData puzzleStateData;
+
     private bool puzzle1Solved = false;
     private bool puzzle2Solved = false;
     private bool puzzle3Solved = false;
@@ -55,6 +57,20 @@ public class PuzzleProgression : MonoBehaviour
 
             Debug.Log("Puzzle 5 missing — unlocked Puzzle 6 & 7 directly at start.");
             //trackPuzzle6and7 = true;
+        }
+
+        if (puzzleStateData != null)
+        {
+            if (puzzleStateData.IsComplete(6))
+            {
+                puzzle6Solved = true;
+                puzzle6?.SetActive(false);
+            }
+            if (puzzleStateData.IsComplete(7))
+            {
+                puzzle7Solved = true;
+                puzzle7?.SetActive(false);
+            }
         }
     }
     private void Update()
@@ -122,7 +138,12 @@ public class PuzzleProgression : MonoBehaviour
     public void OnPuzzle5Solved()
     {
         // If puzzle5 exists, proceed as usual
-        if (puzzle5Solved) return;
+        //if (puzzle5Solved) return;
+
+        if (puzzleStateData == null || puzzleStateData.IsComplete(5)) return;
+
+        puzzleStateData.MarkComplete(5);
+
         puzzle5Solved = true;
         StartCoroutine(CloseTabletAfterDelay(() =>
         {
@@ -141,7 +162,12 @@ public class PuzzleProgression : MonoBehaviour
     }
     public void OnPuzzle6Solved()
     {
-        if (puzzle6Solved) return;
+        //if (puzzle6Solved) return;
+
+        if (puzzleStateData == null || puzzleStateData.IsComplete(6)) return;
+
+        puzzleStateData.MarkComplete(6);
+
         puzzle6Solved = true;
         Debug.Log("Puzzle 6 solved");
         CheckPuzzle6And7Completion();
@@ -149,7 +175,11 @@ public class PuzzleProgression : MonoBehaviour
 
     public void OnPuzzle7Solved()
     {
-        if (puzzle7Solved) return;
+        //if (puzzle7Solved) return;
+
+        if (puzzleStateData == null || puzzleStateData.IsComplete(7)) return;
+
+        puzzleStateData.MarkComplete(7);
         puzzle7Solved = true;
         Debug.Log("Puzzle 7 solved");
         CheckPuzzle6And7Completion();
@@ -192,6 +222,8 @@ public class PuzzleProgression : MonoBehaviour
         {
             nancyRoomDialog.enabled = true;
             Debug.Log("Nancy Room Dialog triggered.");
+            GamePhaseManager.MotelLobbyPhase = 5;
+            
         }
     }
 
@@ -251,7 +283,7 @@ public class PuzzleProgression : MonoBehaviour
     }
     void PuzzleCompleteDialog()
     {  
-        if (!isDialogStarted && isPuzzleCompleted)
+        if (!isDialogStarted && isPuzzleCompleted && dummyObjectDialog != null)
             {
                 dummyObjectDialog.enabled = true;
                 isDialogStarted = true;
