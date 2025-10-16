@@ -1,7 +1,10 @@
 using UnityEngine;
+using static SceneChanger;
 
 public class SceneChanger : MonoBehaviour
 {
+    public enum DoorType { protoDoor, OutSideDoor,InsideDoor,NancyRoomDoor}
+    public DoorType doortype;
     public bool istrigger = false;
     [SerializeField] private CanvasGroup interactiImageIn;
     [SerializeField] private CanvasGroup interactiImageout;
@@ -17,9 +20,6 @@ public class SceneChanger : MonoBehaviour
     public PuzzleData requiredPuzzle_2;
     private bool canChangeScene = false;
 
-    void Start()
-    {
-    }
 
     void Update()
     {
@@ -27,18 +27,36 @@ public class SceneChanger : MonoBehaviour
         //{
         //    canChangeScene = true;
         //}
-
-        bool puzzle1Complete = requiredPuzzle_1 == null || requiredPuzzle_1.isCompleted;
-        bool puzzle2Complete = requiredPuzzle_2 == null || requiredPuzzle_2.isCompleted;
-
-        canChangeScene = puzzle1Complete && puzzle2Complete;
-
-        if (objectInteract != null && objectInteract.isInteractionComplete)
+        switch (doortype)
         {
-            canChangeScene = true;
+            case DoorType.protoDoor:
+                bool puzzle1Complete = requiredPuzzle_1 == null || requiredPuzzle_1.isCompleted;
+                bool puzzle2Complete = requiredPuzzle_2 == null || requiredPuzzle_2.isCompleted;
 
-            if (door != null && !door.activeSelf)
-                door.SetActive(true);
+                canChangeScene = puzzle1Complete && puzzle2Complete;
+
+                break;
+            case DoorType.OutSideDoor:
+
+                if (objectInteract != null && objectInteract.isInteractionComplete)
+                {
+                    canChangeScene = true;
+
+                    if (door != null && !door.activeSelf)
+                        door.SetActive(true);
+                }
+                break;
+            case DoorType.InsideDoor:
+
+                bool puzzle3Complete = requiredPuzzle_1 == null || requiredPuzzle_1.isCompleted;
+
+                canChangeScene = puzzle3Complete;
+                break;
+            case DoorType.NancyRoomDoor:
+                canChangeScene = true;
+
+                break;
+        
         }
         if (!canChangeScene)
             return;

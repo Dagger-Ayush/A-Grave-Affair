@@ -144,9 +144,10 @@ public class InspectionTutorial : MonoBehaviour
   
     IEnumerator CluePickHandler()
     {
-        mouseImage.SetActive(false);
+      
         packanimator.enabled = true;
         yield return new WaitForSeconds(0.2f);
+        mouseImage.SetActive(false);
         packanimator.SetBool("CluePicking", false);
         StartCoroutine(EndPage(2f));
       

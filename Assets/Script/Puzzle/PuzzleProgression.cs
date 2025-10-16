@@ -294,6 +294,11 @@ public class PuzzleProgression : MonoBehaviour
     {
         if(puzzle1Solved && puzzle2Solved) return true;
         else return false;
+    } 
+    public bool puzzle6and7Check()
+    {
+        if(puzzle6Solved && puzzle7Solved) return true;
+        else return false;
     }
    
 }

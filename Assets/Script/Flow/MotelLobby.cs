@@ -76,9 +76,9 @@ public class MotelLobby : MonoBehaviour
         if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(false);
 
-        if(puzzleProgression != null)
+        if(puzzleProgression != null && puzzleProgression.puzzle6and7Check())
         {
-            puzzleProgression.OnPuzzle6And7Completed += EnableOnSentenceCompleteDialogs;
+            EnableOnSentenceCompleteDialogs();
         }
 
         //// Start only initial dialog if at phase 0

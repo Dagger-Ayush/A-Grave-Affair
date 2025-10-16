@@ -28,6 +28,7 @@ public class XrayTutorial : MonoBehaviour
     [SerializeField] private Canvas TutorialCanvas;
 
     public GameObject mouseImage;
+    public PuzzleData xrayPuzzle;
     private void Awake()
     {
         Instance = this;
@@ -44,7 +45,11 @@ public class XrayTutorial : MonoBehaviour
 
     void Update()
     {
-       
+        if (xrayPuzzle.isCompleted) {
+            // Ensure all panels are disabled at the start
+            foreach (var page in interactionPages)
+                page.SetActive(false);
+        }
         if (ObjectPickHandler != null && ObjectPickHandler.isPicked)
         {
             if (count < 1 && !isTyping)

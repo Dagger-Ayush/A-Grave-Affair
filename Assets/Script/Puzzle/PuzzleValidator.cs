@@ -26,7 +26,7 @@ public class PuzzleValidator : MonoBehaviour
    
     private void Start()
     {
-        ResetPuzzleCompletion();
+        //ResetPuzzleCompletion();
 
         if(audioSource == null)
             audioSource = GetComponent<AudioSource>();
