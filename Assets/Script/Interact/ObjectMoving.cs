@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class ObjectMoving : MonoBehaviour
 {  
+    public static ObjectMoving instance;
     public enum ObjectType{ DogBed, DogBowl};
    [SerializeField] private ObjectType objectType;
 
@@ -35,7 +36,10 @@ public class ObjectMoving : MonoBehaviour
     [SerializeField] private TextMeshProUGUI infoText;
     [SerializeField] private DialogAudio dogBark;
 
-
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
          objectInteract = GetComponent<ObjectInteract>();

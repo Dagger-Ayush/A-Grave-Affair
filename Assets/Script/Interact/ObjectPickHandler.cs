@@ -89,13 +89,29 @@ public class ObjectPickHandler : MonoBehaviour
         mainCam = pickReferences.inspectionCamara;
         XrayToggle = pickReferences.XrayToggle;
         clueCount = 0;
+
+
     }
 
     private void Update()
     {
+        if (ObjectInteract.isInteracting && outRange !=null && inRange != null)
+        {
+            outRange.alpha = 0;
+            inRange.alpha = 0;
+            return;
+        }
+        // Always update out-of-range UI for inactive objects
+        if (playerInteract.GetObjectPickHandler() != this && !isCollected)
+        {
+            Avoid(); // ✅ always show outRange
+            return;
+        }
+
         imageDrag();
         ObjectHandler();
 
+        // Update clue count UI
         if (clueCount < clueCountMain)
         {
             pickReferences.currentClueCount.text =
@@ -108,6 +124,7 @@ public class ObjectPickHandler : MonoBehaviour
         }
     }
 
+
     private void ObjectHandler()
     {
        
@@ -118,7 +135,7 @@ public class ObjectPickHandler : MonoBehaviour
 
         if (inRange != null)
         {
-            if (isCollected || ObjectInteract.InteractionCheck())
+            if (isCollected || ObjectInteract.isInteracting)
             {
                 inRange.alpha = 0;
             }
@@ -157,7 +174,7 @@ public class ObjectPickHandler : MonoBehaviour
         {
             if (inRange != null)
             {
-                if (!isCollected && !ObjectInteract.InteractionCheck())
+                if (!isCollected && !ObjectInteract.isInteracting)
                 {
                     inRange.alpha = 1;
                 }
@@ -171,7 +188,7 @@ public class ObjectPickHandler : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E) && !isPicked)
             {
-                if (isCollected || ObjectInteract.InteractionCheck()) return;
+                if (isCollected || ObjectInteract.isInteracting) return;
                 StartCoroutine(ObjectPickUp());
             }
         }
@@ -185,7 +202,7 @@ public class ObjectPickHandler : MonoBehaviour
 
 
     public IEnumerator ObjectPickUp()
-    {
+    { 
         clueCount = clueCountStoring;
         clueCountMain = totalClues;
 
@@ -429,7 +446,9 @@ public class ObjectPickHandler : MonoBehaviour
         {
             inRange.alpha = 0;
             outRange.alpha = 1;
+            pickReferences.AvoidCam();
         }
+
     }
     public bool InteractionCheck()
     {

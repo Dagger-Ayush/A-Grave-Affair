@@ -61,5 +61,8 @@ public class ObjectPickReferences : MonoBehaviour
             isSwitch = false;
         }
     }
-        
+       public void AvoidCam()
+    {
+        MainCam.Lens.OrthographicSize = 2.5f;
+    }
 }

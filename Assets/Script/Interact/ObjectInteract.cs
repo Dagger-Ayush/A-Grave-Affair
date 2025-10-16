@@ -79,12 +79,21 @@ public class ObjectInteract : MonoBehaviour
 
         if (type == InteractType.DogBed)
             enabled = false;
+
+
     }
 
     private void Update()
     {
-        //if (PlayerDialog.instance != null && PlayerDialog.instance.isInteraction) return;
 
+        if (ObjectPickHandler.Instance.InteractionCheck()
+           && outRange != null && inRange != null)
+        {
+            outRange.alpha = 0;
+            inRange.alpha = 0;
+            return;
+        }
+        // Interaction logic starts here
         if ((type == InteractType.DogBed && !InteractedWithDogBed) ||
             (type == InteractType.NonInteractiveAutomatic && !isAutoComplete))
         {
@@ -98,16 +107,15 @@ public class ObjectInteract : MonoBehaviour
             if (inRange != null && (isInteracted || ObjectPickHandler.Instance.InteractionCheck()))
                 inRange.alpha = 0;
         }
+
         if (playerInteract.GetObjectInteract() == this)
         {
             if (!shouldWork) return;
 
             if (outRange != null) outRange.alpha = 0;
-            if (ObjectPickHandler.Instance != null)
-            {
-                if (inRange != null)
-                    inRange.alpha = (!isInteracted && !ObjectPickHandler.Instance.InteractionCheck()) ? 1 : 0;
-            }
+            if (ObjectPickHandler.Instance != null && inRange != null)
+                inRange.alpha = (!isInteracted && !ObjectPickHandler.Instance.InteractionCheck()) ? 1 : 0;
+
             if (DoAutoRun && type == InteractType.InteractiveAutomatic && !isAutoCompleteNearObject)
             {
                 if (!isInteracted) StartInteraction();
@@ -118,8 +126,10 @@ public class ObjectInteract : MonoBehaviour
             ObjectHandler();
         }
         else if (playerInteract.GetObjectInteract() == null)
+        {
             Avoid();
 
+        }
         if (gettingClueCount != null)
             gettingClueCount.UpdateTick(clueCount);
     }

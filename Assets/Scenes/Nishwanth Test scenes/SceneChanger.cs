@@ -17,7 +17,6 @@ public class SceneChanger : MonoBehaviour
 
     [Header("Puzzle Requirement")]
     public PuzzleData requiredPuzzle_1;
-    public PuzzleData requiredPuzzle_2;
     private bool canChangeScene = false;
 
 
@@ -31,9 +30,8 @@ public class SceneChanger : MonoBehaviour
         {
             case DoorType.protoDoor:
                 bool puzzle1Complete = requiredPuzzle_1 == null || requiredPuzzle_1.isCompleted;
-                bool puzzle2Complete = requiredPuzzle_2 == null || requiredPuzzle_2.isCompleted;
 
-                canChangeScene = puzzle1Complete && puzzle2Complete;
+                canChangeScene = puzzle1Complete;
 
                 break;
             case DoorType.OutSideDoor:

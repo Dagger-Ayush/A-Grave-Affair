@@ -1,6 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using static ObjectInteract;
 
 public class PlayerInteract : MonoBehaviour
 {
@@ -14,24 +13,17 @@ public class PlayerInteract : MonoBehaviour
     public Transform player;
     public Image tabletImage;
 
-     public bool isPointAndMovementEnabled;
-
+    [HideInInspector] public bool isPointAndMovementEnabled;
     private PointAndMovement pointAndMovement;
     private PlayerDialog playerDialog;
-
     public bool shouldTabletWork;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+    private void Awake() { Instance = this; }
 
     private void Start()
     {
         pointAndMovement = GetComponent<PointAndMovement>();
         playerDialog = GetComponent<PlayerDialog>();
-
-
     }
 
     private void Update()
@@ -41,16 +33,16 @@ public class PlayerInteract : MonoBehaviour
 
         // Null-safe interaction checks
         bool pickHandlerInteract = ObjectPickHandler.isCollected;
-        bool movingInteract = ObjectMoving.canInteract; // assuming static bool, already safe
-        bool interactObject = ObjectInteract.Instance != null && ObjectInteract.isInteracting;
+        bool movingInteract = ObjectMoving.canInteract; // assuming static bool
+        bool interactObject = ObjectInteract.isInteracting;
+        bool canInteract = pickHandlerInteract || movingInteract || interactObject;
 
-        bool canInteract = pickHandlerInteract || movingInteract || interactObject ;
         bool isPlayerInteracting = playerDialog != null && playerDialog.isInteraction;
 
         if (canInteract)
         {
             isPointAndMovementEnabled = true;
-            if (pointAndMovement != null  && player != null)
+            if (pointAndMovement != null && player != null)
                 player.GetComponent<Rigidbody>().isKinematic = true;
 
             if (tabletImage != null)
@@ -64,9 +56,10 @@ public class PlayerInteract : MonoBehaviour
         }
         else if (!canInteract && !isPlayerInteracting)
         {
-            isPointAndMovementEnabled = false;
             if (player != null)
                 player.GetComponent<Rigidbody>().isKinematic = false;
+
+            isPointAndMovementEnabled = false;
 
             if (shouldTabletWork && tabletImage != null)
                 tabletImage.enabled = true;
@@ -76,19 +69,16 @@ public class PlayerInteract : MonoBehaviour
         }
     }
 
-
     public ObjectInteract GetObjectInteract()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
-
         foreach (Collider collider in colliders)
         {
             if (collider.TryGetComponent(out ObjectInteract objectInteract))
             {
-                if (objectInteract.type == InteractType.Tablet)
-                {
+                if (objectInteract.type == ObjectInteract.InteractType.Tablet)
                     shouldTabletWork = true;
-                }
+
                 return objectInteract;
             }
         }
@@ -98,7 +88,6 @@ public class PlayerInteract : MonoBehaviour
     public ObjectPickHandler GetObjectPickHandler()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
-
         foreach (Collider collider in colliders)
         {
             if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
@@ -110,7 +99,6 @@ public class PlayerInteract : MonoBehaviour
     public ObjectMoving ObjectMovingHandler()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
-
         foreach (Collider collider in colliders)
         {
             if (collider.TryGetComponent(out ObjectMoving objectMoving))
@@ -122,7 +110,6 @@ public class PlayerInteract : MonoBehaviour
     public SceneChanger SceneChangerHandler()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
-
         foreach (Collider collider in colliders)
         {
             if (collider.TryGetComponent(out SceneChanger sceneChanger))
