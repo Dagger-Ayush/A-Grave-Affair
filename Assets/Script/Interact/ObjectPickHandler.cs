@@ -43,6 +43,7 @@ public class ObjectPickHandler : MonoBehaviour
     public static bool isMouseLocked;
     [HideInInspector] public bool isPicked;
      public static bool isCollected;
+     public static bool isXrayEnabled;
 
     private bool isVision = false;
     private bool isbusy = false;
@@ -123,7 +124,7 @@ public class ObjectPickHandler : MonoBehaviour
             }
         }
         // Xray logic
-        if (isCollected && xrayType == XrayType.Xray && XrayTutorial.Instance.shouldShowIcon)
+        if (isCollected && xrayType == XrayType.Xray && ( XrayTutorial.Instance== null || XrayTutorial.Instance.shouldShowIcon))
         {
             if (Input.GetKeyDown(XrayToggle))
             {
@@ -289,9 +290,12 @@ public class ObjectPickHandler : MonoBehaviour
 
             if (count == clue.Length)
             {
-                enabled = false;
-                objectInteract.enabled = true;
-                objectInteract.StartInteraction();
+                if (objectInteract != null)
+                {
+                    enabled = false;
+                    objectInteract.enabled = true;
+                    objectInteract.StartInteraction();
+                }
             }
         }
 
@@ -302,6 +306,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void XrayVisionEnable()
     {
+        isXrayEnabled = true;
         isVision = true;
 
         pickReferences.XrayCamara.SetActive(true);
@@ -319,6 +324,8 @@ public class ObjectPickHandler : MonoBehaviour
         pickReferences.XrayCamara.SetActive(false);
         pickReferences.XrayOfImage.SetActive(false);
         pickReferences.XrayOnImage.SetActive(false);
+
+        isXrayEnabled = false;
     }
 
     private void OnMouseDown()
@@ -336,7 +343,10 @@ public class ObjectPickHandler : MonoBehaviour
     private bool isDragging = false;
     private void imageDrag()
     {
-        if (!isPicked || isMouseLocked || isVision) return;
+        
+        if (!isPicked || isMouseLocked || isVision)  return;
+        if (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) return;
+
         if (Input.GetMouseButtonDown(0) && isPicked && !isVision)
         {
             isDragging = true;

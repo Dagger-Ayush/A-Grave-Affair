@@ -32,7 +32,7 @@ public class ObjectHovering : MonoBehaviour
     }
 
     private void ObjectDetecting()
-    {
+    { if (ObjectPickHandler.isXrayEnabled) return;
         if (inspectionTutorial != null)
         {
             if (!inspectionTutorial.isRotationComplete) return;

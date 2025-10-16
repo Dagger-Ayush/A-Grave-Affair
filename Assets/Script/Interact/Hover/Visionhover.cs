@@ -27,6 +27,7 @@ public class VisionHover : MonoBehaviour
     private float orthoSizeStore;
     private Coroutine currentRoutine;
 
+
     private void Start()
     {
         if (vision != null)
@@ -51,15 +52,12 @@ public class VisionHover : MonoBehaviour
 
             foreach (Collider collider in colliders)
             {
+               
                 if (collider.CompareTag("Object"))
                 {
-                    HoverEffect();
-                    SetColor(collider.gameObject, hoverColor, visionClue);
-
                     if(collider.GetComponent<GetClue>() != null)
                     {
-                        
-                        GettingClues(collider.GetComponent<GetClue>());
+                     GettingClues(collider.GetComponent<GetClue>(), collider.gameObject);
                     }
                     found = true;
                     break;
@@ -124,12 +122,19 @@ public class VisionHover : MonoBehaviour
             yield return null;
         }
     }
-    void GettingClues(GetClue getClue)
+    void GettingClues(GetClue getClue, GameObject interactObj)
     {
         if (!ClueManager.Instance.ClueCheck(getClue.clue))
         {
+            if (ClueManager.Instance.ClueCheck(getClue.clue))return;
+            HoverEffect();
+            SetColor(interactObj, hoverColor, visionClue);
+
+            StartCoroutine(InspectionClueFeedBack.Instance.clueSet(getClue.subclue, getClue.clue));
             ClueManager.Instance.AddClue(getClue.clue);
             Debug.Log(getClue.clue);
+
+           
         }
     }
 }

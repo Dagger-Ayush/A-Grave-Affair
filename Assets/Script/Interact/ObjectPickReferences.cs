@@ -11,7 +11,7 @@ public class ObjectPickReferences : MonoBehaviour
     public CinemachineCamera MainCam, FocusCam;
 
 
-    public KeyCode XrayToggle;
+    public KeyCode XrayToggle = KeyCode.Q;
     public GameObject XrayCamara;
 
     private bool isSwitch;

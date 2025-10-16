@@ -27,6 +27,7 @@ public class XRaySync : MonoBehaviour, IDragHandler, IPointerDownHandler, IPoint
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) return;
         isDragging = true;
 
         Vector2 localMouse;
