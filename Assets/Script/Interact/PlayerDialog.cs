@@ -1,9 +1,6 @@
 using System.Collections;
 using TMPro;
-using Unity.Cinemachine.Samples;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class PlayerDialog : MonoBehaviour
 {

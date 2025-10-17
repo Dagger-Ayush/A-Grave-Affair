@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
-using UnityEditor.Rendering.PostProcessing;
 using UnityEngine;
-using UnityEngine.UIElements;
-
 public class InteractClueManager : MonoBehaviour
 {
  

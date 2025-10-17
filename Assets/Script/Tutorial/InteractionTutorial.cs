@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using TMPro;
-using UnityEditor.Rendering.PostProcessing;
 using UnityEngine;
 using static ObjectInteract;
 
@@ -31,6 +30,7 @@ public class InteractionTutorial : MonoBehaviour
     public bool isHovered = false;
 
     public GameObject mouseImage;
+
     private void Awake()
     {
         Instance = this;
@@ -66,7 +66,7 @@ public class InteractionTutorial : MonoBehaviour
             }
             return;   
         }
-        if (!interactHandler.isInteracted)
+        if (!interactHandler.isInteracted && isRunning)
         {
             mouseImage.SetActive(false);
             blurImage[0].SetActive(false);

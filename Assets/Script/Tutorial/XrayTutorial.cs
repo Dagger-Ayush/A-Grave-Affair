@@ -84,7 +84,7 @@ public class XrayTutorial : MonoBehaviour
                     isRunning = true;
                     shouldShowIcon = false;
 
-                    mainCanvas.sortingOrder = 0;
+                    mainCanvas.sortingOrder = 1;
                     TutorialCanvas.sortingOrder = 1;
                     ShowPanel(count);
                     break;

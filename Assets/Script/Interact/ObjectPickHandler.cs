@@ -1,9 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Unity.Cinemachine;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using System;
 
 public class ObjectPickHandler : MonoBehaviour
 {

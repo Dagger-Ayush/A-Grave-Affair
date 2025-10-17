@@ -57,12 +57,12 @@ public class ObjectPickReferences : MonoBehaviour
         }
         else
         {
-            MainCam.Lens.OrthographicSize = 2.5f;
+            MainCam.Lens.OrthographicSize = 3f;
             isSwitch = false;
         }
     }
        public void AvoidCam()
     {
-        MainCam.Lens.OrthographicSize = 2.5f;
+        MainCam.Lens.OrthographicSize = 3f;
     }
 }
