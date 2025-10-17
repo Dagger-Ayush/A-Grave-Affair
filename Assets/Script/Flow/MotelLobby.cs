@@ -76,19 +76,23 @@ public class MotelLobby : MonoBehaviour
         if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(false);
 
-        if(puzzleProgression != null && puzzleProgression.puzzle6and7Check())
+        //if(puzzleProgression != null && puzzleProgression.puzzle6and7Check())
+        //{
+        //    EnableOnSentenceCompleteDialogs();
+        //}
+        if (puzzleProgression != null)
         {
-            EnableOnSentenceCompleteDialogs();
+            puzzleProgression.OnPuzzle6And7Completed += EnableOnSentenceCompleteDialogs;
         }
 
-        //// Start only initial dialog if at phase 0
-        //if (currentPhase == 0)
-        //{
-        //    motelStartDialogs.enabled = true;
-        //}
+            //// Start only initial dialog if at phase 0
+            //if (currentPhase == 0)
+            //{
+            //    motelStartDialogs.enabled = true;
+            //}
 
-        //  Restore state based on saved phase
-        switch (currentPhase)
+            //  Restore state based on saved phase
+            switch (currentPhase)
         {
             case 0:
                 motelStartDialogs.enabled = true;
@@ -291,6 +295,11 @@ public class MotelLobby : MonoBehaviour
         ImageFade.instance.FadeInOut();
 
         yield return new WaitForSeconds(1.5f);
+
+        if (puzzleProgression.puzzle5 != null)
+            puzzleProgression.puzzle5.SetActive(true);
+        Debug.LogWarning("Puzzle5");
+
         PosandAnimationUpdate.Instance.UpdatePhase_1();
 
         enablingInteract.enabled = true;
@@ -314,10 +323,8 @@ public class MotelLobby : MonoBehaviour
         Debug.Log("Phase_2 Started");
         ImageFade.instance.FadeInOut();
 
-        if (puzzleProgression.puzzle5 != null)
-            puzzleProgression.puzzle5.SetActive(true);
-
         yield return new WaitForSeconds(1.5f);
+
         PosandAnimationUpdate.Instance.UpdatePhase_2();
 
         motelGatherDialogs.enabled = true;
@@ -375,7 +382,9 @@ public class MotelLobby : MonoBehaviour
     {
         Debug.Log("Phase_4 Started");
         currentPhase = 5; // End phase
-        
+
+        PosandAnimationUpdate.Instance.UpdatePhase_3();
+
         ImageFade.instance.FadeInOut();
 
         yield return new WaitForSeconds(1.5f);

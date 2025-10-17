@@ -11,4 +11,8 @@ public class PuzzleData : ScriptableObject
     public int puzzleID;
     public bool isCompleted = false;
 
+    public void ResetState()
+    {
+        isCompleted = false ;
+    }
 }

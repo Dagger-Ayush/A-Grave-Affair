@@ -6,6 +6,8 @@ public class GlobalPuzzleStateData : ScriptableObject
 {
     public List<int> completedPuzzles = new List<int>();
 
+    public PuzzleData[] allPuzzles;
+
     public void MarkComplete(int puzzleId)
     {
         if(!completedPuzzles.Contains(puzzleId))
@@ -18,6 +20,17 @@ public class GlobalPuzzleStateData : ScriptableObject
 
     public void ResetAll()
     {
+        if(allPuzzles == null || allPuzzles.Length == 0)
+            return;
+
         completedPuzzles.Clear();
+
+        foreach (var puzzle in allPuzzles)
+        {
+            if(puzzle != null)
+            {
+                puzzle.ResetState();
+            }
+        }
     }
 }

@@ -33,7 +33,7 @@ public class PuzzleProgression : MonoBehaviour
     [SerializeField] private PlayerInteract playerInteract;
 
     private bool isDialogStarted = false;
-    private bool isPuzzleCompleted = false;
+    [SerializeField] private bool isPuzzleCompleted = false;
 
     public event Action OnPuzzle6And7Completed;
 
@@ -218,7 +218,7 @@ public class PuzzleProgression : MonoBehaviour
         int sceneNumber = SceneManager.GetActiveScene().buildIndex;
 
         // Check if player is in Nancy's scene (scene 3 in this example)
-        if (sceneNumber == 3 && nancyRoomDialog != null)
+        if (sceneNumber == 4 && nancyRoomDialog != null)
         {
             nancyRoomDialog.enabled = true;
             Debug.Log("Nancy Room Dialog triggered.");
