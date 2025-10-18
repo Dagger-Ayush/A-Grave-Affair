@@ -22,8 +22,7 @@ public class PuzzleProgression : MonoBehaviour
     private bool puzzle1Solved = false;
     private bool puzzle2Solved = false;
     private bool puzzle3Solved = false;
-    
-    private bool puzzle5Solved = false;
+
     private bool puzzle6Solved = false;
     private bool puzzle7Solved = false;
 
@@ -122,6 +121,7 @@ public class PuzzleProgression : MonoBehaviour
         {
             StartCoroutine(CloseTabletAfterDelay(() =>
             {
+                LetterEnabling();
                 if (puzzle2 != null) puzzle2.SetActive(false);
                 if (puzzle3 != null) puzzle3.SetActive(false);
                 if (puzzle4 != null) puzzle4.SetActive(true);
@@ -144,7 +144,6 @@ public class PuzzleProgression : MonoBehaviour
 
         puzzleStateData.MarkComplete(5);
 
-        puzzle5Solved = true;
         StartCoroutine(CloseTabletAfterDelay(() =>
         {
             puzzle5.SetActive(false);
@@ -281,6 +280,31 @@ public class PuzzleProgression : MonoBehaviour
             }
         }
     }
+    private void LetterEnabling()
+    {
+
+        Collider[] colliderArray = Physics.OverlapSphere(transform.position, 100);
+
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
+            {
+
+                if (objectPickHandler.type == InspectType.Letter_1)
+                {
+                    objectPickHandler.enabled = true;
+                    objectPickHandler.shouldWork = true;
+                }
+                if (objectPickHandler.type == InspectType.TutorialLetter)
+                {
+                    objectPickHandler.enabled = true;
+                    objectPickHandler.shouldWork = true;
+                }
+
+            }
+        }
+
+    }
     void PuzzleCompleteDialog()
     {  
         if (!isDialogStarted && isPuzzleCompleted && dummyObjectDialog != null)
@@ -290,9 +314,9 @@ public class PuzzleProgression : MonoBehaviour
             }
       
     }
-    public bool puzzle1and2Check()
+    public bool puzzle2and3Check()
     {
-        if(puzzle1Solved && puzzle2Solved) return true;
+        if(puzzle2Solved && puzzle3Solved) return true;
         else return false;
     } 
     public bool puzzle6and7Check()

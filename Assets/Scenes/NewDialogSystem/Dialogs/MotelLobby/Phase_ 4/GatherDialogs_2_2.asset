@@ -39,7 +39,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}
   - {fileID: 21300000, guid: ad166dec978b3504c9ce83dbf0cb4235, type: 3}
   - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}
-  - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
+  - {fileID: 21300000, guid: 80e54aad4bf22e041b5bc42719ef4b7d, type: 3}
   - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}
   - {fileID: 21300000, guid: ad166dec978b3504c9ce83dbf0cb4235, type: 3}
   - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
@@ -48,8 +48,20 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ad166dec978b3504c9ce83dbf0cb4235, type: 3}
   - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}
   - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}
-  changeFontSize: 0
-  frontSize: []
+  changeFontSize: 1
+  frontSize:
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  - 45
+  - 35
   typingSpeed: 0.02
   currentClueCount: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   totalCount: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

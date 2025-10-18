@@ -85,7 +85,7 @@ public class TabletTutorial : MonoBehaviour
         endDialog = true;
     }
 
-    private void EndTutorial()
+    public void EndTutorial()
     {
         foreach (var page in interactionPages)
             page.SetActive(false);

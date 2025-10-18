@@ -57,7 +57,8 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         while (isHovering)
         {
-            int newLinkIndex = TMP_TextUtilities.FindIntersectingLink(textComponent, Input.mousePosition, uiCamera);
+            // ✅ use rotation-safe detection
+            int newLinkIndex = FindRotatedLinkUnderMouse(textComponent, Input.mousePosition, uiCamera);
 
             if (currentLinkIndex != -1 && currentLinkIndex != newLinkIndex)
             {
@@ -79,7 +80,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
                     if (Input.GetMouseButtonDown(0))
                     {
                         ClueManager.Instance.AddClue(currentClueId);
-
                         FloatingTextSpawner.Instance.SpawnFloatingText(currentClueId, Input.mousePosition);
                     }
                 }
@@ -145,11 +145,11 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         RectTransform ovalRect = ovalOutline.AddComponent<RectTransform>();
         ovalRect.sizeDelta = targetSize;
         ovalRect.localPosition = targetPosition;
+        ovalRect.localRotation = textComponent.rectTransform.localRotation; // match rotation
 
         var ovalImage = ovalOutline.AddComponent<RawImage>();
-        ovalImage.texture = new Texture2D(1, 1); // will be replaced in animation
+        ovalImage.texture = new Texture2D(1, 1);
         ovalImage.color = Color.white;
-
         ovalOutline.transform.SetAsFirstSibling();
 
         if (animationRoutine != null) StopCoroutine(animationRoutine);
@@ -178,7 +178,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             float t = animationCurve.Evaluate(elapsed / animationDuration);
             float angle = Mathf.Lerp(0, 360, t);
 
-            // redraw arc each frame
             DrawArc(texture, center, radiusX, radiusY, angle, outlineColor);
 
             texture.Apply();
@@ -192,7 +191,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     private void DrawArc(Texture2D tex, Vector2 center, float rx, float ry, float angleMax, Color col)
     {
-        int steps = 360 * 4; // resolution
+        int steps = 360 * 4;
         for (int i = 0; i < steps; i++)
         {
             float angle = (i / (float)steps) * 360f;
@@ -200,16 +199,13 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
             float rad = angle * Mathf.Deg2Rad;
 
-            // Calculate the point on the ellipse
             int baseX = Mathf.RoundToInt(center.x + Mathf.Cos(rad) * rx);
             int baseY = Mathf.RoundToInt(center.y + Mathf.Sin(rad) * ry);
 
-            // Draw thicker outline with a 5x5 pattern
             for (int dx = -2; dx <= 2; dx++)
             {
                 for (int dy = -2; dy <= 2; dy++)
                 {
-                    // Use a diamond pattern for nice smooth thickness
                     if (Mathf.Abs(dx) + Mathf.Abs(dy) <= 3)
                     {
                         int x = baseX + dx;
@@ -266,5 +262,74 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     public bool isHovered()
     {
         return currentLinkIndex != -1;
+    }
+
+    // -------------------------------
+    // ✅ ROTATION-SAFE LINK DETECTION
+    // -------------------------------
+    private int FindRotatedLinkUnderMouse(TextMeshProUGUI tmp, Vector2 mousePos, Camera cam)
+    {
+        tmp.ForceMeshUpdate();
+
+        RectTransform rect = tmp.rectTransform;
+        for (int i = 0; i < tmp.textInfo.linkCount; i++)
+        {
+            var linkInfo = tmp.textInfo.linkInfo[i];
+            bool inside = false;
+
+            for (int c = 0; c < linkInfo.linkTextLength; c++)
+            {
+                int charIndex = linkInfo.linkTextfirstCharacterIndex + c;
+                if (charIndex >= tmp.textInfo.characterCount) continue;
+
+                var charInfo = tmp.textInfo.characterInfo[charIndex];
+                if (!charInfo.isVisible) continue;
+
+                // Get local corners of the character box in world space
+                Vector3 bl = rect.TransformPoint(charInfo.bottomLeft);
+                Vector3 tl = rect.TransformPoint(new Vector3(charInfo.bottomLeft.x, charInfo.topRight.y, 0));
+                Vector3 tr = rect.TransformPoint(charInfo.topRight);
+                Vector3 br = rect.TransformPoint(new Vector3(charInfo.topRight.x, charInfo.bottomLeft.y, 0));
+
+                // Convert mouse pos to world
+                Vector3 worldMouse;
+                RectTransformUtility.ScreenPointToWorldPointInRectangle(rect, mousePos, cam, out worldMouse);
+
+                // Check if point is inside rotated quad
+                if (PointInQuad(worldMouse, bl, tl, tr, br))
+                {
+                    inside = true;
+                    break;
+                }
+            }
+
+            if (inside) return i;
+        }
+
+        return -1;
+    }
+
+    private bool PointInQuad(Vector3 p, Vector3 bl, Vector3 tl, Vector3 tr, Vector3 br)
+    {
+        return PointInTriangle(p, bl, tl, tr) || PointInTriangle(p, bl, tr, br);
+    }
+
+    private bool PointInTriangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
+    {
+        Vector3 v0 = c - a;
+        Vector3 v1 = b - a;
+        Vector3 v2 = p - a;
+
+        float dot00 = Vector3.Dot(v0, v0);
+        float dot01 = Vector3.Dot(v0, v1);
+        float dot02 = Vector3.Dot(v0, v2);
+        float dot11 = Vector3.Dot(v1, v1);
+        float dot12 = Vector3.Dot(v1, v2);
+
+        float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+        float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+        float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+        return (u >= 0) && (v >= 0) && (u + v < 1);
     }
 }

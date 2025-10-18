@@ -28,15 +28,19 @@ public class ObjectHovering : MonoBehaviour
 
     private void Update()
     {
+        // Skip if camera or input are missing
+        if (Camera.main == null || Mouse.current == null) return;
+
         ObjectDetecting();
     }
 
     private void ObjectDetecting()
-    { if (ObjectPickHandler.isXrayEnabled) return;
-        if (inspectionTutorial != null)
-        {
-            if (!inspectionTutorial.isRotationComplete) return;
-        }
+    {
+        // Skip if x-ray mode is active
+        if (ObjectPickHandler.isXrayEnabled) return;
+
+        // Skip if inspection not ready
+        if (inspectionTutorial != null && !inspectionTutorial.isRotationComplete) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
@@ -49,7 +53,9 @@ public class ObjectHovering : MonoBehaviour
 
             foreach (Collider collider in colliderArray)
             {
-                if (collider.TryGetComponent(out InteractClueManager clueManager) && !clueManager.isFinished)
+                if (collider == null) continue;
+
+                if (collider.TryGetComponent(out InteractClueManager clueManager) && clueManager != null && !clueManager.isFinished)
                 {
                     interactClueManager = clueManager;
 
@@ -60,9 +66,7 @@ public class ObjectHovering : MonoBehaviour
                     if (distance <= maxRange && ObjectPickHandler.isCollected)
                     {
                         if (distance <= clueManager.HoveringRange)
-                        {
                             mouseHovering = true;
-                        }
 
                         objectInRange = true;
                         break;
@@ -77,7 +81,7 @@ public class ObjectHovering : MonoBehaviour
                 {
                     interactClueManager?.StartRepelEffect();
 
-                    if (!isSoundPlayed && !isBusy)
+                    if (!isSoundPlayed && !isBusy && cursorAudioClip != null)
                     {
                         cursorAudioClip.Play();
                         StartCoroutine(Delay());
@@ -88,22 +92,26 @@ public class ObjectHovering : MonoBehaviour
                     interactClueManager?.StopRepelEffect();
                 }
 
-                // Cursor logic
-                if (mouseHovering)
+                // Cursor logic (only if CursorManager exists)
+                if (CursorManager.Instance != null)
                 {
-                    CursorManager.Instance.SetCursor(CursorState.Clue);
-
-                    if (Input.GetMouseButtonDown(0))
+                    if (mouseHovering)
                     {
-                        StartCoroutine(WordPicking(interactClueManager));
+                        CursorManager.Instance.SetCursor(CursorState.Clue);
+
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            if (interactClueManager != null)
+                                StartCoroutine(WordPicking(interactClueManager));
+                        }
                     }
-                }
-                else
-                {
-                    if (!TabletManager.isTabletOpen)
-                        CursorManager.Instance.SetCursor(CursorState.Normal);
                     else
-                        CursorManager.Instance.SetCursor(CursorState.Tablet);
+                    {
+                        if (!TabletManager.isTabletOpen)
+                            CursorManager.Instance.SetCursor(CursorState.Normal);
+                        else
+                            CursorManager.Instance.SetCursor(CursorState.Tablet);
+                    }
                 }
             }
         }
@@ -111,16 +119,24 @@ public class ObjectHovering : MonoBehaviour
 
     private IEnumerator WordPicking(InteractClueManager interactClueManager)
     {
+        if (interactClueManager == null)
+        {
+            isBusy = false;
+            yield break;
+        }
+
         isBusy = true;
 
         Cursor.lockState = CursorLockMode.Locked;
         ObjectPickHandler.isMouseLocked = true;
 
-        if(interactClueManager != null) interactClueManager.ClueIndication();
+        interactClueManager.ClueIndication();
 
         yield return new WaitForSeconds(1.8f);
 
-        CursorManager.Instance.SetCursor(CursorState.Normal);
+        if (CursorManager.Instance != null)
+            CursorManager.Instance.SetCursor(CursorState.Normal);
+
         ObjectPickHandler.isMouseLocked = false;
         Cursor.lockState = CursorLockMode.None;
 

@@ -40,7 +40,7 @@ public class PlayerDialog : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (progression.puzzle1and2Check())
+        if (progression.puzzle2and3Check())
         {
             EndDialog();
         }

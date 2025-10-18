@@ -28,6 +28,7 @@ public class XrayTutorial : MonoBehaviour
     [SerializeField] private Canvas TutorialCanvas;
 
     public GameObject mouseImage;
+    public GameObject etoExit;
     public PuzzleData xrayPuzzle;
     private void Awake()
     {
@@ -50,7 +51,7 @@ public class XrayTutorial : MonoBehaviour
             foreach (var page in interactionPages)
                 page.SetActive(false);
         }
-        if (ObjectPickHandler != null && ObjectPickHandler.isPicked)
+        if (ObjectPickHandler != null && ObjectPickHandler.isPicked && !xrayPuzzle.isCompleted)
         {
             if (count < 1 && !isTyping)
             {
@@ -81,6 +82,7 @@ public class XrayTutorial : MonoBehaviour
             switch (count)
             {
                 case 0:
+                    etoExit.SetActive(false);
                     isRunning = true;
                     shouldShowIcon = false;
 
@@ -95,7 +97,10 @@ public class XrayTutorial : MonoBehaviour
                     ShowPanel(count);
                     break;
                 case 3:
-                    
+                    if (!IsXrayTutorialCompleted)
+                    {
+                        etoExit.SetActive(true);
+                    }
                     foreach (var page in interactionPages)
                         page.SetActive(false);
                     IsXrayTutorialCompleted = true;

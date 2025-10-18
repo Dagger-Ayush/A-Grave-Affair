@@ -40,8 +40,7 @@ public class PuzzleValidator : MonoBehaviour
             CorrectFilledCount++;
             isIncreased = true;
         }
-        LetterEnabling();
-
+      
     }
     
     //void Update()
@@ -225,34 +224,6 @@ public class PuzzleValidator : MonoBehaviour
             puzzle.isCompleted = false;
         }
     }
-    private void LetterEnabling()
-    {
-
-        if (CorrectFilledCount >= 2)
-        {
-           
-            Collider[] colliderArray = Physics.OverlapSphere(transform.position, 100);
-
-            foreach (Collider collider in colliderArray)
-            {
-                if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
-                {
-
-                    if (objectPickHandler.type == InspectType.Letter_1)
-                    {
-                        objectPickHandler.enabled = true;
-                        objectPickHandler.shouldWork = true;
-                    }
-                    if (objectPickHandler.type == InspectType.TutorialLetter)
-                    {
-                        objectPickHandler.enabled = true;
-                        objectPickHandler.shouldWork = true;
-                    }
-
-                }
-            }
-
-        }
-    }
+   
 }
 

@@ -23,7 +23,7 @@ MonoBehaviour:
   - "That\u2019s the password detective\u2026."
   - " \u2026..Is that why you wanted me to use your phone?"
   - Now you get it, I guess you are not too rusty after all, good job detective!
-  - "John Marrow\u2019s Response: Umm..Thanks I guess "
+  - 'Umm..Thanks I guess '
   dialogAudio: []
   doBackgroundChange: 1
   backgroundImages:

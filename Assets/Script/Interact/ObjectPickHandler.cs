@@ -225,7 +225,7 @@ public class ObjectPickHandler : MonoBehaviour
         transform.parent = pickReferences.objectContainer.transform;
         transform.rotation = PickUpRotation;
 
-        if (type == InspectType.Cigarette || type == InspectType.TutorialLetter)
+        if (type == InspectType.Cigarette)
         {
              pickReferences.eToExitimage.SetActive(false);
         }
@@ -443,6 +443,7 @@ public class ObjectPickHandler : MonoBehaviour
             inRange.alpha = 0;
             outRange.alpha = 1;
             pickReferences.AvoidCam();
+            XrayVisionDisable();
         }
 
     }
