@@ -18,8 +18,8 @@ MonoBehaviour:
   - Mrs. Marrow
   - Anniversary
   requiredClues:
+  - Anniversary
   - Gift
   - Mrs. Marrow
-  - Anniversary
   puzzleID: 3
   isCompleted: 0

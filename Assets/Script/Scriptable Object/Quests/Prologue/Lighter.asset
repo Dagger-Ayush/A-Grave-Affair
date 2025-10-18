@@ -22,11 +22,11 @@ MonoBehaviour:
   - Shiny
   requiredClues:
   - Shiny
+  - Toy
+  - Obsessed
   - Lighter
   - Fred
-  - Obsessed
-  - Toy
-  - Case
   - Stolen
+  - Case
   puzzleID: 2
   isCompleted: 0

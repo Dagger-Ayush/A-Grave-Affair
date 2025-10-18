@@ -18,8 +18,8 @@ MonoBehaviour:
   - Poison
   - Discoloured
   requiredClues:
-  - Milkshake
   - Poison
+  - Milkshake
   - Discoloured
   puzzleID: 7
   isCompleted: 0

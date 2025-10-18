@@ -31,7 +31,8 @@ public class MotelLobby : MonoBehaviour
     public Collider[] LastInteractionColliders;
 
     [Header("ON Sentence Complete")]
-    public ObjectInteract ONsentenceCompleteTrigger;
+    public ObjectInteract ONsentence1CompleteTrigger;
+    public ObjectInteract ONsentence2CompleteTrigger;
     public ObjectInteract ONsentenceCompleteGreg;
     public ObjectInteract ONsentenceCompleteInteract_1;
     public ObjectInteract ONsentenceCompleteInteract_2;
@@ -82,7 +83,8 @@ public class MotelLobby : MonoBehaviour
         //}
         if (puzzleProgression != null)
         {
-            puzzleProgression.OnPuzzle6And7Completed += EnableOnSentenceCompleteDialogs;
+            puzzleProgression.OnPuzzle6Completed += EnableOnSentence1CompleteDialogs;
+            puzzleProgression.OnPuzzle7Completed += EnableOnSentence2CompleteDialogs;
         }
 
             //// Start only initial dialog if at phase 0
@@ -163,14 +165,15 @@ public class MotelLobby : MonoBehaviour
 
         if(puzzleProgression != null)
         {
-            puzzleProgression.OnPuzzle6And7Completed -= EnableOnSentenceCompleteDialogs;
+            puzzleProgression.OnPuzzle6Completed -= EnableOnSentence1CompleteDialogs;
+            puzzleProgression.OnPuzzle7Completed -= EnableOnSentence2CompleteDialogs;
         }
     }
 
     void Update()
     {
         // === Stop all earlier phases when final is reached ===
-        if (isFinalDialogComplete || ONsentenceCompleteTrigger.isAutoComplete)
+        if (isFinalDialogComplete || ONsentence1CompleteTrigger.isAutoComplete || ONsentence2CompleteTrigger.isAutoComplete)
         {
             isoCam.Follow = player;
         }
@@ -231,7 +234,7 @@ public class MotelLobby : MonoBehaviour
             StartCoroutine(ObjectsEnablePhase_3());
         }
 
-        if (currentPhase == 4 && ONsentenceCompleteTrigger.isAutoComplete)
+        if (currentPhase == 4 && GamePhaseManager.ONsentence1Complete && GamePhaseManager.ONsentence2Complete) // ONsentence1CompleteTrigger.isAutoComplete && ONsentence2CompleteTrigger.isAutoComplete)
         {
             StartCoroutine(ObjectsEnablePhase_4());
         }
@@ -459,12 +462,18 @@ public class MotelLobby : MonoBehaviour
         if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
     }
-    public void EnableOnSentenceCompleteDialogs()
+    public void EnableOnSentence1CompleteDialogs()
     {
-        ONsentenceCompleteTrigger.enabled = true;
-        ONsentenceCompleteTrigger.shouldWork = true;
+        ONsentence1CompleteTrigger.enabled = true;
+        ONsentence1CompleteTrigger.shouldWork = true;
+        GamePhaseManager.ONsentence1Complete = true;
     }
-
+    public void EnableOnSentence2CompleteDialogs()
+    {
+        ONsentence2CompleteTrigger.enabled = true;
+        ONsentence2CompleteTrigger.shouldWork = true;
+        GamePhaseManager.ONsentence2Complete = true;
+    }
     public void PuzzleUnlock()
     {
         // Hide puzzle 5 if it exists

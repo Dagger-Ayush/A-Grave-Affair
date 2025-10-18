@@ -20,9 +20,9 @@ MonoBehaviour:
   - Blood-Trail
   - Staged
   requiredClues:
-  - Fall
-  - Wound
   - Blood-Trail
   - Staged
+  - Fall
+  - Wound
   puzzleID: 5
   isCompleted: 1

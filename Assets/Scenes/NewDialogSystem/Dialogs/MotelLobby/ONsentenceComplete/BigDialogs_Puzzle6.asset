@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755441e54ba87bc44b574f651f7b7f3a, type: 3}
+  m_Name: BigDialogs_Puzzle6
+  m_EditorClassIdentifier: 
+  characterName: 
+  dialogLines:
+  - "There\u2019s only one person who manages the milkshake bar, it\u2019s Alex Tibia.
+    Things aren\u2019t looking good for her."
+  dialogAudio: []
+  doBackgroundChange: 0
+  backgroundImages: []
+  changeFontSize: 1
+  frontSize:
+  - 17
+  typingSpeed: 0.02
+  currentClueCount: 00000000
+  totalCount: 01000000

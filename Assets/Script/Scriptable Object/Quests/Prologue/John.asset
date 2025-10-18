@@ -17,7 +17,7 @@ MonoBehaviour:
   - Detective
   - Chain smoker
   requiredClues:
-  - Detective
   - Chain smoker
+  - Detective
   puzzleID: 1
   isCompleted: 0

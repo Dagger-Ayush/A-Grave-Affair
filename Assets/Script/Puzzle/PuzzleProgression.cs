@@ -27,14 +27,18 @@ public class PuzzleProgression : MonoBehaviour
     private bool puzzle7Solved = false;
 
     [SerializeField] private ObjectInteract dummyObjectDialog;
-    [SerializeField] private ObjectInteract nancyRoomDialog;
+    [SerializeField] private ObjectInteract nancyRoomDialog1;
+    [SerializeField] private ObjectInteract nancyRoomDialog2;
 
     [SerializeField] private PlayerInteract playerInteract;
 
     private bool isDialogStarted = false;
     [SerializeField] private bool isPuzzleCompleted = false;
 
-    public event Action OnPuzzle6And7Completed;
+    //public event Action OnPuzzle6And7Completed;
+
+    public event Action OnPuzzle6Completed;
+    public event Action OnPuzzle7Completed;
 
     //bool trackPuzzle6and7 = false;
 
@@ -168,8 +172,21 @@ public class PuzzleProgression : MonoBehaviour
         puzzleStateData.MarkComplete(6);
 
         puzzle6Solved = true;
+        StartCoroutine(CloseTabletAfterDelay(() =>
+        {
+            TriggerNancyRoomDialog1();
+
+            //if (puzzle6 != null) puzzle6.SetActive(false);
+            //if (puzzle7 != null) puzzle7.SetActive(false);
+
+            TabletManager.Instance.puzzlePanel.SetActive(false);
+            TabletManager.Instance.clueBox.SetActive(false);
+            feedbackText.text = " ";
+            OnPuzzle6Completed?.Invoke();
+        }));
+        
         Debug.Log("Puzzle 6 solved");
-        CheckPuzzle6And7Completion();
+        //CheckPuzzle6And7Completion();
     }
 
     public void OnPuzzle7Solved()
@@ -180,49 +197,88 @@ public class PuzzleProgression : MonoBehaviour
 
         puzzleStateData.MarkComplete(7);
         puzzle7Solved = true;
-        Debug.Log("Puzzle 7 solved");
-        CheckPuzzle6And7Completion();
-    }
-
-    private bool nancyDialogTriggered = false;
-
-    public void CheckPuzzle6And7Completion()
-    {
-        if (puzzle6Solved && puzzle7Solved)
+        StartCoroutine(CloseTabletAfterDelay(() =>
         {
-            StartCoroutine(CloseTabletAfterDelay(() =>
-            {
-                TriggerNancyRoomDialog();
+            TriggerNancyRoomDialog2();
 
-                if (puzzle6 != null) puzzle6.SetActive(false);
-                if (puzzle7 != null) puzzle7.SetActive(false);
+            //if (puzzle6 != null) puzzle6.SetActive(false);
+            //if (puzzle7 != null) puzzle7.SetActive(false);
 
-                TabletManager.Instance.puzzlePanel.SetActive(false);
-                TabletManager.Instance.clueBox.SetActive(false);
-                feedbackText.text = " ";
-
-                Debug.Log("Puzzle 6 & 7 completed!");
-            }));
-
-            OnPuzzle6And7Completed?.Invoke();
-            isPuzzleCompleted = true;
-        }
+            TabletManager.Instance.puzzlePanel.SetActive(false);
+            TabletManager.Instance.clueBox.SetActive(false);
+            feedbackText.text = " ";
+            OnPuzzle7Completed?.Invoke();
+        }));
+        
+        Debug.Log("Puzzle 7 solved");
+        
+        //CheckPuzzle6And7Completion();
     }
 
-    private void TriggerNancyRoomDialog()
+    private bool nancyDialog1Triggered = false;
+    private bool nancyDialog2Triggered = false;
+
+    //public void CheckPuzzle6And7Completion()
+    //{
+    //    if (puzzle6Solved && puzzle7Solved)
+    //    {
+    //        StartCoroutine(CloseTabletAfterDelay(() =>
+    //        {
+    //            TriggerNancyRoomDialog();
+
+    //            if (puzzle6 != null) puzzle6.SetActive(false);
+    //            if (puzzle7 != null) puzzle7.SetActive(false);
+
+    //            TabletManager.Instance.puzzlePanel.SetActive(false);
+    //            TabletManager.Instance.clueBox.SetActive(false);
+    //            feedbackText.text = " ";
+
+    //            Debug.Log("Puzzle 6 & 7 completed!");
+    //        }));
+
+    //        OnPuzzle6And7Completed?.Invoke();
+    //        //isPuzzleCompleted = true;
+    //    }
+    //}
+
+    private void TriggerNancyRoomDialog1()
     {
-        if (nancyDialogTriggered) return; // Prevent multiple triggers
-        nancyDialogTriggered = true;
+        if (nancyDialog1Triggered) return; // Prevent multiple triggers
+        nancyDialog1Triggered = true;
 
         int sceneNumber = SceneManager.GetActiveScene().buildIndex;
 
         // Check if player is in Nancy's scene (scene 3 in this example)
-        if (sceneNumber == 4 && nancyRoomDialog != null)
+        if (sceneNumber == 4 && nancyRoomDialog1 != null)
         {
-            nancyRoomDialog.enabled = true;
+            nancyRoomDialog1.enabled = true;
+            GamePhaseManager.ONsentence1Complete = true;
             Debug.Log("Nancy Room Dialog triggered.");
-            GamePhaseManager.MotelLobbyPhase = 5;
+            if(puzzle6Solved && puzzle7Solved)
+            {
+                GamePhaseManager.MotelLobbyPhase = 5;
+            }
             
+        }
+    }
+    private void TriggerNancyRoomDialog2()
+    {
+        if (nancyDialog2Triggered) return; // Prevent multiple triggers
+        nancyDialog2Triggered = true;
+
+        int sceneNumber = SceneManager.GetActiveScene().buildIndex;
+
+        // Check if player is in Nancy's scene (scene 3 in this example)
+        if (sceneNumber == 4 && nancyRoomDialog2 != null)
+        {
+            nancyRoomDialog2.enabled = true;
+            GamePhaseManager.ONsentence2Complete = true;
+            Debug.Log("Nancy Room Dialog triggered.");
+            if (puzzle6Solved && puzzle7Solved)
+            {
+                GamePhaseManager.MotelLobbyPhase = 5;
+            }
+
         }
     }
 

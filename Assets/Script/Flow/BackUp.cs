@@ -70,20 +70,20 @@ public class BackUpMotelLobby : MonoBehaviour
         if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(false);
 
-        if(puzzleProgression != null)
-        {
-            puzzleProgression.OnPuzzle6And7Completed += EnableOnSentenceCompleteDialogs;
-        }
+        //if(puzzleProgression != null)
+        //{
+        //    puzzleProgression.OnPuzzle6And7Completed += EnableOnSentenceCompleteDialogs;
+        //}
     }
 
     private void OnDisable()
     {
         isoCam.Follow = player;
 
-        if(puzzleProgression != null)
-        {
-            puzzleProgression.OnPuzzle6And7Completed -= EnableOnSentenceCompleteDialogs;
-        }
+        //if(puzzleProgression != null)
+        //{
+        //    puzzleProgression.OnPuzzle6And7Completed -= EnableOnSentenceCompleteDialogs;
+        //}
     }
 
     void Update()

@@ -19,8 +19,8 @@ MonoBehaviour:
   - Tray
   - Order
   requiredClues:
-  - "Nancy\u2019s"
-  - Tray
   - Order
+  - Tray
+  - "Nancy\u2019s"
   puzzleID: 6
   isCompleted: 0

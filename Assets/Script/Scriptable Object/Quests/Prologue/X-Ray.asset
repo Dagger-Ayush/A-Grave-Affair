@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f38292b03a8bae48b6dddaa349b61bf, type: 3}
   m_Name: X-Ray
   m_EditorClassIdentifier: 
-  sentenceTemplate: _ has been called to _ for an Investigation.
+  sentenceTemplate: _ has been called to Bloomingdale motel by a _ .
   correctAnswers:
   - John Marrow
-  - Bloomingdale
+  - Stranger
   requiredClues:
+  - Stranger
   - John Marrow
-  - Bloomingdale
   puzzleID: 4
   isCompleted: 0
