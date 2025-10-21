@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760aeebeea1bdd54d8a02740dc67da2e, type: 3}
   m_Name: That lighter was the best gift I could have gotten on our 5th anniversary
   m_EditorClassIdentifier: 
-  sorce: {fileID: 0}
-  clip: {fileID: 8300000, guid: dc99cea0461272a4d973fec03c553ea8, type: 3}
+  sorce:
+  - {fileID: 0}
+  clip: {fileID: 0}
   volume: 1
   pitch: 1
   loop: 0

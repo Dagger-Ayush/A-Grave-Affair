@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760aeebeea1bdd54d8a02740dc67da2e, type: 3}
   m_Name: I can't afford to lose this, It's her last memento
   m_EditorClassIdentifier: 
-  sorce: {fileID: 0}
-  clip: {fileID: 8300000, guid: 8752a3d2e4223be4c817eb89d354780d, type: 3}
+  sorce:
+  - {fileID: 0}
+  clip: {fileID: 0}
   volume: 1
   pitch: 1
   loop: 0

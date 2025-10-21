@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Wait a minute the lighter, I know it's still shiny but it's not your toy
     big fella
   m_EditorClassIdentifier: 
-  sorce: {fileID: 0}
-  clip: {fileID: 8300000, guid: 6d49f8ed89365ab4482feceb5c21e281, type: 3}
+  sorce:
+  - {fileID: 0}
+  clip: {fileID: 8300000, guid: 81abacede267e464b9ba86cf5065fa14, type: 3}
   volume: 1
   pitch: 1
   loop: 0

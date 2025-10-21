@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760aeebeea1bdd54d8a02740dc67da2e, type: 3}
   m_Name: Well..nothing out of the ordinary
   m_EditorClassIdentifier: 
-  sorce: {fileID: 0}
-  clip: {fileID: 8300000, guid: 8fe61b4826c853f4c88ce4fbfb0232ae, type: 3}
+  sorce:
+  - {fileID: 0}
+  clip: {fileID: 8300000, guid: 2c72dc97a110b4f49b2524d3afec7f9d, type: 3}
   volume: 1
   pitch: 1
   loop: 0

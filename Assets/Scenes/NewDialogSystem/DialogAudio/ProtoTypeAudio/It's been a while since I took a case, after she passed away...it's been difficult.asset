@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: It's been a while since I took a case, after she passed away...it's been
     difficult
   m_EditorClassIdentifier: 
-  sorce: {fileID: 0}
-  clip: {fileID: 8300000, guid: 73f9fad10c5efdc4894ec61095a6749e, type: 3}
+  sorce:
+  - {fileID: 0}
+  clip: {fileID: 8300000, guid: 81abacede267e464b9ba86cf5065fa14, type: 3}
   volume: 1
   pitch: 1
   loop: 0

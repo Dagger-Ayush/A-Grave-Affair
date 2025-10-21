@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760aeebeea1bdd54d8a02740dc67da2e, type: 3}
   m_Name: Now where the heck did I put my lighter
   m_EditorClassIdentifier: 
-  sorce: {fileID: 0}
-  clip: {fileID: 8300000, guid: 181d2c1cc02a17a45b0c42a71414e2a4, type: 3}
+  sorce:
+  - {fileID: 0}
+  clip: {fileID: 8300000, guid: 9f890daf5ee56ed4b8e7ddc2012f79f0, type: 3}
   volume: 1
   pitch: 1
   loop: 0

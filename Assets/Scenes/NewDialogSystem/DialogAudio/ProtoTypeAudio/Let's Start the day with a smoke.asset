@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760aeebeea1bdd54d8a02740dc67da2e, type: 3}
   m_Name: Let's Start the day with a smoke
   m_EditorClassIdentifier: 
-  sorce: {fileID: 0}
-  clip: {fileID: 8300000, guid: 90d72644c97a25048954f86ef0dff70c, type: 3}
+  sorce:
+  - {fileID: 0}
+  clip: {fileID: 0}
   volume: 1
   pitch: 1
   loop: 0
