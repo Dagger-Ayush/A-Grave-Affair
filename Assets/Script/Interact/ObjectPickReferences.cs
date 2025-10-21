@@ -32,6 +32,8 @@ public class ObjectPickReferences : MonoBehaviour
 
   
     public GameObject eToExitimage;
+
+    public AudioSource nextPageSound;
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)

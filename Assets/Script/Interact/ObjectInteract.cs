@@ -263,6 +263,8 @@ public class ObjectInteract : MonoBehaviour
 
     private void TypeLine()
     {
+        if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
+
         if (dialogManager.backgroundImages != null &&
          currentImageIndex < dialogManager.backgroundImages.Length && dialogManager.doBackgroundChange)
         {

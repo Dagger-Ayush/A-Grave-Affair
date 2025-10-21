@@ -10,11 +10,6 @@ public class MainMenu : MonoBehaviour
         LoadGameButton.SetActive(SaveLoadManager.Instance.HasSavedGames);
 
     }
-    void Update()
-    {
-      
-        
-    }
 
     public void NewGame()
     {
