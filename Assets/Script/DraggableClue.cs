@@ -54,9 +54,32 @@ public class DraggableClue : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if(transform.parent == transform.root)
-            ReturnToSource();
 
+        //if(transform.parent == transform.root)
+        //    ReturnToSource();
+        
+        // Check where the clue was dropped
+        GameObject dropTarget = eventData.pointerEnter;
+
+        // If dropped into the clue container
+        if (dropTarget != null && dropTarget.transform.IsChildOf(TabletManager.Instance.clueContainer))
+        {
+            // Clear its old drop zone reference
+            if (sourceDropZone != null)
+            {
+                sourceDropZone.ClearZone();
+                sourceDropZone = null;
+            }
+
+            // Place it back in clue container
+            transform.SetParent(TabletManager.Instance.clueContainer);
+            transform.localPosition = Vector3.zero;
+        }
+        // If dropped nowhere valid, return to source
+        else if (transform.parent == transform.root)
+        {
+            ReturnToSource();
+        }
         canvasGroup.blocksRaycasts = true;
         if (TabletManager.isTabletOpen)
         {

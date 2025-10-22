@@ -16,7 +16,7 @@ public class DropZone : MonoBehaviour, IDropHandler
 
         DropZone fromZone = incoming.sourceDropZone;
 
-        if (fromZone != null)
+        if (fromZone != null && fromZone != this)
         {
             DraggableClue temp = currentClue; // Swap current clue and incoming clue
 
@@ -32,11 +32,14 @@ public class DropZone : MonoBehaviour, IDropHandler
                 fromZone.currentClue = temp;
                 temp.sourceDropZone = fromZone;
             }
-
-            incoming.sourceDropZone = this; // Update references
+            else
+            {
+                fromZone.currentClue = null;
+            }
+                //incoming.sourceDropZone = this; // Update references
         }
 
-        else if (currentClue == null)
+        else if (fromZone == null && currentClue == null)
         {
             incoming.transform.SetParent(this.transform);
             incoming.transform.localPosition = Vector3.zero;
@@ -44,15 +47,20 @@ public class DropZone : MonoBehaviour, IDropHandler
             incoming.sourceDropZone = this;
         }
 
-        else // coming from clue container or outside a drop zone
+        else if (fromZone == null && currentClue != null)// coming from clue container or outside a drop zone
         {
-            if (currentClue != null)
+            // Prevent accidental null-fromZone caused by drag timing
+            if (incoming.transform.parent.GetComponent<DropZone>() != null)
             {
-                // Move existing clue back to clue container
-                currentClue.transform.SetParent(validator.tabletManager.clueContainer);
-                currentClue.transform.localPosition = Vector3.zero;
-                currentClue.sourceDropZone = null;
+                // Treat this as a swap instead
+                fromZone = incoming.transform.parent.GetComponent<DropZone>();
+                OnDrop(eventData); // Retry cleanly as a swap
+                return;
             }
+            
+            currentClue.transform.SetParent(validator.tabletManager.clueContainer);
+            currentClue.transform.localPosition = Vector3.zero;
+            currentClue.sourceDropZone = null;
 
             incoming.transform.SetParent(this.transform);
             incoming.transform.localPosition = Vector3.zero;
@@ -66,4 +74,8 @@ public class DropZone : MonoBehaviour, IDropHandler
     {
         return currentClue != null && currentClue.clueText == correctAnswer;
     }
- }
+    public void ClearZone()
+    {
+        currentClue = null;
+    }
+}

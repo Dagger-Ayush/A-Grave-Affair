@@ -160,6 +160,15 @@ public class MotelLobby : MonoBehaviour
                 motelStartDialogs.gameObject.SetActive(false);
             }
         }
+
+        if (currentPhase >= 4)
+        {
+            if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
+        }
+        if (currentPhase >= 9)
+        {
+            if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+        }
     }
 
     private void OnDisable()
