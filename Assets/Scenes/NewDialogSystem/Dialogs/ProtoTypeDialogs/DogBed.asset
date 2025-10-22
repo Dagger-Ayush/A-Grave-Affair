@@ -15,14 +15,15 @@ MonoBehaviour:
   characterName: DogBed
   dialogLines:
   - Well what do we have here?! <link="Stolen">stolen</color></link> items
-  - Looks like you have an  <link="Obsessed">obsession</color></link> with anything
+  - Looks like you have an <link="Obsessed">obsession</color></link> with anything
     that glimmers or catches the light.
   dialogAudio:
   - {fileID: 11400000, guid: 1a10d9513db84924db97f272772feb3d, type: 2}
   - {fileID: 11400000, guid: c75f50367f45be748bb6a97c589ddf5f, type: 2}
+  doBackgroundChange: 0
+  backgroundImages: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
   currentClueCount: 0000000000000000
   totalCount: 0100000001000000
-  clueStoring: 

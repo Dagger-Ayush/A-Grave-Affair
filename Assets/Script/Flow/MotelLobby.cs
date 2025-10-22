@@ -47,6 +47,9 @@ public class MotelLobby : MonoBehaviour
     private bool introPanDone = false;
     private bool isFinalDialogComplete = false;
 
+
+    [Header("Dress to activate")]
+    public ObjectInteract dressInteract;
     //// --- Track currently active phase ---
     //private int currentPhase = 0;
 
@@ -258,6 +261,10 @@ public class MotelLobby : MonoBehaviour
         {
             ObjectsEnablePhase_9_R_2();
         }
+        if (currentPhase == 10 && dressInteract != null && dressInteract.isInteractionComplete)
+        {
+            ObjectsEnablePhase_10();
+        }
     }
 
     // --------------------------- PHASE CONTROL ---------------------------
@@ -406,11 +413,12 @@ public class MotelLobby : MonoBehaviour
     }
     IEnumerator ObjectsEnablePhase_5()
     {
+       
         currentPhase = 6; // End phase
         Debug.Log("Phase_5 Started");
         ImageFade.instance.FadeInOut();
 
-      
+        ONsentenceCompleteGreg.enabled = false;
         yield return new WaitForSeconds(1.5f);
 
         ONsentenceCompleteInteract_1.enabled = true;
@@ -461,6 +469,17 @@ public class MotelLobby : MonoBehaviour
         // Activate the doors
         if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+    }
+    void ObjectsEnablePhase_10()
+    {
+        currentPhase = 11;
+        // Only set the PlayerPref if it hasn't been set before
+        if (PlayerPrefs.GetInt("DressInteractionDone", 0) == 0)
+        {
+            PlayerPrefs.SetInt("DressInteractionDone", 1); // 1 = true
+            PlayerPrefs.Save();
+            Debug.Log("Dress interaction completed and saved!");
+        }
     }
     public void EnableOnSentence1CompleteDialogs()
     {

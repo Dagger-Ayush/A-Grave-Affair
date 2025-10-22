@@ -1,17 +1,28 @@
 using UnityEngine;
 
-public class enablingObject : MonoBehaviour
+public class EnablingObject : MonoBehaviour
 {
-    private ObjectPickHandler pickHandler;
+    public static EnablingObject enablingObject;
+    public ObjectPickHandler pickHandler;
 
+    private void Awake()
+    {
+        enablingObject = this;
+    }
     private void Start()
     {
-        pickHandler = GetComponent<ObjectPickHandler>();
+        bool dressDone = PlayerPrefs.GetInt("DressInteractionDone", 0) == 1;
+
+        if (dressDone)
+        {
+            enabling();
+        }
     }
+    
     public void enabling()
     {
 
-        gameObject.SetActive(true);
+        pickHandler.gameObject.SetActive(true);
         pickHandler.enabled = true;
         pickHandler.shouldWork = true;
     }

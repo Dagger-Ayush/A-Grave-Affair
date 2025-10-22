@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -7,55 +7,63 @@ using static ObjectInteract;
 public class InteractionTutorial : MonoBehaviour
 {
     public static InteractionTutorial Instance;
+
+    [Header("UI References")]
     public GameObject[] interactionPages;
-    private int count = 0;
-    [HideInInspector] public bool isRunning;
     public GameObject[] blurImage;
+    public GameObject mouseImage;
 
-    public ObjectInteract interactHandler;
-
+    [Header("Typing Settings")]
     public TMP_Text[] textMeshPro;
     [TextArea] public string[] fullText;
     public float typingSpeed = 0.05f;
 
-    private bool[] hasTyped;
-    private bool isTyping = false;
+    [Header("Handlers")]
+    public ObjectInteract interactHandler;
+    public CursorHoverOverClue cursor;
     public string clue;
 
-    [HideInInspector] public bool isInteractionComplete = false;
+    private bool[] hasTyped;
+    private bool isTyping = false;
+    private int count = 0;
 
-    public CursorHoverOverClue cursor;
+    [HideInInspector] public bool isRunning;
+    [HideInInspector] public bool isInteractionComplete = false;
 
     public bool canHover = false;
     public bool isHovered = false;
-
-    public GameObject mouseImage;
 
     private void Awake()
     {
         Instance = this;
     }
+
     private void Start()
     {
-        canHover = false;
         isHovered = false;
         isInteractionComplete = false;
         isTyping = false;
         isRunning = false;
-        // Initialize the hasTyped array based on text length
+
         hasTyped = new bool[fullText.Length];
 
-        // Ensure all panels are disabled at the start
         foreach (var page in interactionPages)
             page.SetActive(false);
+
+        foreach (var blur in blurImage)
+            blur.SetActive(false);
+
+        if (mouseImage != null)
+            mouseImage.SetActive(false);
     }
 
     private void Update()
     {
+        // 🧩 STEP 3: When clue is found
         if (ClueManager.Instance.ClueCheck(clue) && !isInteractionComplete)
         {
             ShowPanel(3);
-            if (hasTyped[3] == true)
+            if (hasTyped[3])
             {
                 mouseImage.SetActive(true);
                 isInteractionComplete = true;
@@ -64,53 +72,59 @@ public class InteractionTutorial : MonoBehaviour
             {
                 mouseImage.SetActive(false);
             }
-            return;   
+            return;
         }
+
+        // 🧩 Close tutorial when interaction ends
         if (!interactHandler.isInteracted && isRunning)
         {
             mouseImage.SetActive(false);
-            blurImage[0].SetActive(false);
-            foreach (var page in interactionPages)
-                page.SetActive(false);
-            blurImage[1].SetActive(false);
-            interactionPages[3].SetActive(false);
+            foreach (var blur in blurImage) blur.SetActive(false);
+            foreach (var page in interactionPages) page.SetActive(false);
             isRunning = false;
         }
+
+        // 🧩 Left click after interaction complete = close panels
         if (Input.GetMouseButtonDown(0) && isInteractionComplete)
         {
             if (interactionPages[3].activeSelf)
             {
                 mouseImage.SetActive(false);
-                blurImage[0].SetActive(false);
-                blurImage[1].SetActive(false);
+                foreach (var blur in blurImage) blur.SetActive(false);
                 interactionPages[3].SetActive(false);
             }
             isRunning = false;
         }
-        if (!isInteractionComplete && interactHandler.isInteracted) 
-        {
 
+        // 🧩 Interaction active
+        if (!isInteractionComplete && interactHandler.isInteracted)
+        {
             if (canHover)
             {
-                if (cursor.isHovered() == true)
-                {
-                    mouseImage.SetActive(true);
-                    ShowPanel(2);
-                    isHovered = true;
-                }
-                else if (cursor.isHovered() == false)
-                {
-                    mouseImage.SetActive(false);
-                    ShowPanel(1);
-                }
-
-                blurImage[0].SetActive(false);
+                HandleHoverPhase();
             }
             else
             {
                 TutorialHandler();
             }
         }
+    }
+
+    private void HandleHoverPhase()
+    {
+        if (cursor.isHovered())
+        {
+            mouseImage.SetActive(true);
+            ShowPanel(2); // Hover panel
+            isHovered = true;
+        }
+        else
+        {
+            mouseImage.SetActive(false);
+            ShowPanel(1); // Previous instruction
+        }
+
+        blurImage[0].SetActive(false);
     }
 
     private void TutorialHandler()
@@ -120,9 +134,8 @@ public class InteractionTutorial : MonoBehaviour
             if (!isTyping && hasTyped[count])
                 count++;
         }
-        
 
-        if (count >= interactionPages.Length )
+        if (count >= interactionPages.Length)
         {
             isInteractionComplete = true;
             return;
@@ -130,39 +143,30 @@ public class InteractionTutorial : MonoBehaviour
 
         switch (count)
         {
-            case 0:
+            case 0: // 🧭 First panel
                 mouseImage.SetActive(true);
                 blurImage[0].SetActive(true);
                 isRunning = true;
                 ShowPanel(count);
                 break;
-            case 1:
+
+            case 1: // 🧭 Explain hover
                 mouseImage.SetActive(false);
                 blurImage[0].SetActive(false);
                 blurImage[1].SetActive(true);
                 ShowPanel(count);
-                if (hasTyped[count] == true && cursor.isHovered() == true)
-                {
                     canHover = true;
-                }
                 break;
-     
-
         }
-      
-
     }
 
     private void ShowPanel(int index)
     {
-        // Hide all first
         foreach (var page in interactionPages)
             page.SetActive(false);
 
-        // Show current
         interactionPages[index].SetActive(true);
 
-        // Start typing if not already done
         if (!hasTyped[index])
             StartCoroutine(TypeText(textMeshPro[index], fullText[index], index));
     }
@@ -173,11 +177,13 @@ public class InteractionTutorial : MonoBehaviour
 
         isTyping = true;
         text.text = "";
+
         foreach (char c in message)
         {
             text.text += c;
             yield return new WaitForSeconds(typingSpeed);
         }
+
         isTyping = false;
         hasTyped[index] = true;
     }

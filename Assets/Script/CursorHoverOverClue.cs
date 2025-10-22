@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    public static CursorHoverOverClue instance;
     [Header("Hover Settings")]
     public Color outlineColor = Color.red;
     public float ovalPadding = 9f;
@@ -26,21 +27,32 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     void Awake()
     {
+        instance = this;
         textComponent = GetComponent<TextMeshProUGUI>();
         uiCamera = GetCanvasCamera();
 
-        // Disable raycast blocking from this object's Image (if any)
+        // Disable raycast blocking from background image if present
         Image img = GetComponent<Image>();
-        if (img != null)
-            img.raycastTarget = false;
-
+        if (img != null) img.raycastTarget = false;
         RawImage rawImg = GetComponent<RawImage>();
-        if (rawImg != null)
-            rawImg.raycastTarget = false;
+        if (rawImg != null) rawImg.raycastTarget = false;
+    }
+
+    void OnEnable()
+    {
+        // force mesh update to avoid link geometry delay
+        if (textComponent != null)
+            textComponent.ForceMeshUpdate();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!ObjectInteract.isInteracting ||
+            (InteractionTutorial.Instance != null && !InteractionTutorial.Instance.canHover))
+            return;
+
+        textComponent.ForceMeshUpdate(); // ✅ ensures link bounds are updated right away
+
         if (!isHovering)
         {
             isHovering = true;
@@ -57,13 +69,10 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         while (isHovering)
         {
-            // ✅ use rotation-safe detection
             int newLinkIndex = FindRotatedLinkUnderMouse(textComponent, Input.mousePosition, uiCamera);
 
             if (currentLinkIndex != -1 && currentLinkIndex != newLinkIndex)
-            {
                 RemoveOutline();
-            }
 
             currentLinkIndex = newLinkIndex;
 
@@ -99,7 +108,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
 
-    private void StopHover()
+    public void StopHover()
     {
         if (hoverRoutine != null)
         {
@@ -117,7 +126,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     private void CreateOutline(int linkIndex)
     {
         if (linkIndex < 0 || linkIndex >= textComponent.textInfo.linkCount) return;
-        if (ovalOutline != null) return; // Already exists
+        if (ovalOutline != null) return;
 
         var linkInfo = textComponent.textInfo.linkInfo[linkIndex];
         float minX = float.MaxValue, maxX = float.MinValue;
@@ -127,7 +136,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         {
             int charIndex = linkInfo.linkTextfirstCharacterIndex + i;
             if (charIndex >= textComponent.textInfo.characterCount) continue;
-
             var charInfo = textComponent.textInfo.characterInfo[charIndex];
             if (!charInfo.isVisible) continue;
 
@@ -145,7 +153,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         RectTransform ovalRect = ovalOutline.AddComponent<RectTransform>();
         ovalRect.sizeDelta = targetSize;
         ovalRect.localPosition = targetPosition;
-        ovalRect.localRotation = textComponent.rectTransform.localRotation; // match rotation
+        ovalRect.localRotation = textComponent.rectTransform.localRotation;
 
         var ovalImage = ovalOutline.AddComponent<RawImage>();
         ovalImage.texture = new Texture2D(1, 1);
@@ -167,7 +175,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         float radiusX = texW / 2f - outlineThickness;
         float radiusY = texH / 2f - outlineThickness;
 
-        // Fill transparent
         Color[] clear = new Color[texW * texH];
         for (int i = 0; i < clear.Length; i++) clear[i] = Color.clear;
         texture.SetPixels(clear);
@@ -177,9 +184,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         {
             float t = animationCurve.Evaluate(elapsed / animationDuration);
             float angle = Mathf.Lerp(0, 360, t);
-
             DrawArc(texture, center, radiusX, radiusY, angle, outlineColor);
-
             texture.Apply();
             elapsed += Time.deltaTime;
             yield return null;
@@ -198,7 +203,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             if (angle > angleMax) break;
 
             float rad = angle * Mathf.Deg2Rad;
-
             int baseX = Mathf.RoundToInt(center.x + Mathf.Cos(rad) * rx);
             int baseY = Mathf.RoundToInt(center.y + Mathf.Sin(rad) * ry);
 
@@ -210,11 +214,8 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
                     {
                         int x = baseX + dx;
                         int y = baseY + dy;
-
                         if (x >= 0 && y >= 0 && x < tex.width && y < tex.height)
-                        {
                             tex.SetPixel(x, y, col);
-                        }
                     }
                 }
             }
@@ -228,7 +229,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             StopCoroutine(animationRoutine);
             animationRoutine = null;
         }
-
         if (ovalOutline != null)
         {
             Destroy(ovalOutline);
@@ -256,21 +256,18 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     void OnDisable()
     {
-        StopHover();
+        // 🔧 Don’t clear hover if panel is just being toggled — only if destroyed
+        if (!gameObject.activeInHierarchy)
+        {
+            StopHover();
+        }
     }
 
-    public bool isHovered()
-    {
-        return currentLinkIndex != -1;
-    }
+    public bool isHovered() => currentLinkIndex != -1;
 
-    // -------------------------------
-    // ✅ ROTATION-SAFE LINK DETECTION
-    // -------------------------------
     private int FindRotatedLinkUnderMouse(TextMeshProUGUI tmp, Vector2 mousePos, Camera cam)
     {
         tmp.ForceMeshUpdate();
-
         RectTransform rect = tmp.rectTransform;
         for (int i = 0; i < tmp.textInfo.linkCount; i++)
         {
@@ -281,21 +278,16 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             {
                 int charIndex = linkInfo.linkTextfirstCharacterIndex + c;
                 if (charIndex >= tmp.textInfo.characterCount) continue;
-
                 var charInfo = tmp.textInfo.characterInfo[charIndex];
                 if (!charInfo.isVisible) continue;
 
-                // Get local corners of the character box in world space
                 Vector3 bl = rect.TransformPoint(charInfo.bottomLeft);
                 Vector3 tl = rect.TransformPoint(new Vector3(charInfo.bottomLeft.x, charInfo.topRight.y, 0));
                 Vector3 tr = rect.TransformPoint(charInfo.topRight);
                 Vector3 br = rect.TransformPoint(new Vector3(charInfo.topRight.x, charInfo.bottomLeft.y, 0));
 
-                // Convert mouse pos to world
-                Vector3 worldMouse;
-                RectTransformUtility.ScreenPointToWorldPointInRectangle(rect, mousePos, cam, out worldMouse);
+                RectTransformUtility.ScreenPointToWorldPointInRectangle(rect, mousePos, cam, out Vector3 worldMouse);
 
-                // Check if point is inside rotated quad
                 if (PointInQuad(worldMouse, bl, tl, tr, br))
                 {
                     inside = true;
@@ -305,7 +297,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
             if (inside) return i;
         }
-
         return -1;
     }
 

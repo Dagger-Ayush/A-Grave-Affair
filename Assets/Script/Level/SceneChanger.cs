@@ -19,7 +19,33 @@ public class SceneChanger : MonoBehaviour
     public PuzzleData requiredPuzzle_1;
     private bool canChangeScene = false;
 
+    public GameObject gregObject;
 
+    private void Start()
+    {
+            // Check if the outside door was already entered
+            if (doortype == DoorType.OutSideDoor)
+            {
+                if (PlayerPrefs.GetInt("EnteredOutsideDoor", 0) == 1)
+                {
+                    canChangeScene = true;
+
+                    // Destroy gregObject if it exists
+                    if (gregObject != null)
+                    {
+                        Destroy(gregObject);
+                    }
+
+                    // Make door active if assigned
+                    if (door != null && !door.activeSelf)
+                    {
+                        door.SetActive(true);
+                    }
+
+                    Debug.Log("Outside door already entered: canChangeScene=true & gregObject destroyed");
+                }
+            }
+    }
     void Update()
     {
         //if (requiredPuzzle_1 != null && requiredPuzzle_1.isCompleted && requiredPuzzle_2 != null && requiredPuzzle_2.isCompleted)
@@ -35,13 +61,24 @@ public class SceneChanger : MonoBehaviour
 
                 break;
             case DoorType.OutSideDoor:
-
                 if (objectInteract != null && objectInteract.isInteractionComplete)
                 {
                     canChangeScene = true;
 
                     if (door != null && !door.activeSelf)
                         door.SetActive(true);
+
+                    // --- Set PlayerPref and destroy gregObject once ---
+                    if (PlayerPrefs.GetInt("EnteredOutsideDoor", 0) == 0)
+                    {
+                        PlayerPrefs.SetInt("EnteredOutsideDoor", 1); // 1 = true
+                        PlayerPrefs.Save();
+
+                        if (gregObject != null)
+                            Destroy(gregObject);
+
+                        Debug.Log("Entered outside door: PlayerPref saved & gregObject destroyed");
+                    }
                 }
                 break;
             case DoorType.InsideDoor:

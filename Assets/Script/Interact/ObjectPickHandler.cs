@@ -181,10 +181,10 @@ public class ObjectPickHandler : MonoBehaviour
             }
 
             if (isbusy) return;
+            if (isCollected || ObjectInteract.isInteracting) return;
 
             if (Input.GetKeyDown(KeyCode.E) && !isPicked)
-            {
-                if (isCollected || ObjectInteract.isInteracting) return;
+            {  
                 StartCoroutine(ObjectPickUp());
             }
         }

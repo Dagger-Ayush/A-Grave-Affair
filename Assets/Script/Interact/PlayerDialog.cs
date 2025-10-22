@@ -6,7 +6,7 @@ public class PlayerDialog : MonoBehaviour
 {
     public static PlayerDialog instance;
     private PointAndMovement pointAndMovement;
-    
+    [SerializeField] private ObjectPickReferences pickReferences;
     private int currentImageIndex = 0;
     [HideInInspector] public bool isInteraction;
     private bool isEndDialogRunning;
@@ -134,6 +134,7 @@ public class PlayerDialog : MonoBehaviour
     }
     void TypeLine(GameObject gameObject,int currentImageIndex, int audioIndex)
     {
+        if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
         gameObject.SetActive(true);
         dialogText.SetText(dialogManager.dialogLines[currentImageIndex]);
 

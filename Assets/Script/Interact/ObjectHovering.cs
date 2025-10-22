@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,8 +18,8 @@ public class ObjectHovering : MonoBehaviour
     private bool isSoundPlayed = false;
     private Vector2 cursorHotspot;
 
-    public static bool isRunning = false; // balance with CursorHoverOverClue
-    private static bool isBusy = false;   // prevents overlap during interaction
+    public static bool isRunning = false; // controlled by CursorHoverOverClue
+    private static bool isBusy = false;
 
     private void Awake()
     {
@@ -28,18 +28,16 @@ public class ObjectHovering : MonoBehaviour
 
     private void Update()
     {
-        // Skip if camera or input are missing
         if (Camera.main == null || Mouse.current == null) return;
-
         ObjectDetecting();
     }
 
     private void ObjectDetecting()
     {
-        // Skip if x-ray mode is active
-        if (ObjectPickHandler.isXrayEnabled) return;
+        // 🛑 Skip if UI clue system is running
+        if (isRunning || !ObjectPickHandler.isCollected) return;
 
-        // Skip if inspection not ready
+        if (ObjectPickHandler.isXrayEnabled) return;
         if (inspectionTutorial != null && !inspectionTutorial.isRotationComplete) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -74,44 +72,39 @@ public class ObjectHovering : MonoBehaviour
                 }
             }
 
-            // Handle cursor + audio when not overridden by another system
-            if (!isRunning)
+            if (objectInRange)
             {
-                if (objectInRange)
-                {
-                    interactClueManager?.StartRepelEffect();
+                interactClueManager?.StartRepelEffect();
 
-                    if (!isSoundPlayed && !isBusy && cursorAudioClip != null)
+                if (!isSoundPlayed && !isBusy && cursorAudioClip != null)
+                {
+                    cursorAudioClip.Play();
+                    StartCoroutine(Delay());
+                }
+            }
+            else
+            {
+                interactClueManager?.StopRepelEffect();
+            }
+
+            if (CursorManager.Instance != null)
+            {
+                if (mouseHovering)
+                {
+                    CursorManager.Instance.SetCursor(CursorState.Clue);
+
+                    if (Input.GetMouseButtonDown(0))
                     {
-                        cursorAudioClip.Play();
-                        StartCoroutine(Delay());
+                        if (interactClueManager != null)
+                            StartCoroutine(WordPicking(interactClueManager));
                     }
                 }
                 else
                 {
-                    interactClueManager?.StopRepelEffect();
-                }
-
-                // Cursor logic (only if CursorManager exists)
-                if (CursorManager.Instance != null)
-                {
-                    if (mouseHovering)
-                    {
-                        CursorManager.Instance.SetCursor(CursorState.Clue);
-
-                        if (Input.GetMouseButtonDown(0))
-                        {
-                            if (interactClueManager != null)
-                                StartCoroutine(WordPicking(interactClueManager));
-                        }
-                    }
+                    if (!TabletManager.isTabletOpen)
+                        CursorManager.Instance.SetCursor(CursorState.Normal);
                     else
-                    {
-                        if (!TabletManager.isTabletOpen)
-                            CursorManager.Instance.SetCursor(CursorState.Normal);
-                        else
-                            CursorManager.Instance.SetCursor(CursorState.Tablet);
-                    }
+                        CursorManager.Instance.SetCursor(CursorState.Tablet);
                 }
             }
         }

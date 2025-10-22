@@ -79,14 +79,12 @@ public class ObjectInteract : MonoBehaviour
 
         if (type == InteractType.DogBed)
             enabled = false;
-
-
     }
 
     private void Update()
     {
 
-        if (ObjectPickHandler.Instance.InteractionCheck()
+        if ((ObjectPickHandler.Instance!=null && ObjectPickHandler.Instance.InteractionCheck())
            && outRange != null && inRange != null)
         {
             outRange.alpha = 0;
@@ -155,6 +153,8 @@ public class ObjectInteract : MonoBehaviour
     }
     public void StartInteraction()
     {
+        if (ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck())return;
+
         isInteracting = true;
         isInteracted = true;
 
@@ -264,7 +264,7 @@ public class ObjectInteract : MonoBehaviour
     private void TypeLine()
     {
         if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
-
+        if (CursorHoverOverClue.instance != null) { CursorHoverOverClue.instance.StopHover(); }
         if (dialogManager.backgroundImages != null &&
          currentImageIndex < dialogManager.backgroundImages.Length && dialogManager.doBackgroundChange)
         {
