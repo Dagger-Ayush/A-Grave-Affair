@@ -38,7 +38,6 @@ public class ObjectHovering : MonoBehaviour
         if (isRunning || !ObjectPickHandler.isCollected) return;
 
         if (ObjectPickHandler.isXrayEnabled) return;
-        if (inspectionTutorial != null && !inspectionTutorial.isRotationComplete) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 

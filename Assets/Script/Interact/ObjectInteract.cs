@@ -57,7 +57,7 @@ public class ObjectInteract : MonoBehaviour
     {
         Instance = this;
         jhon = dialogContainer.GetComponent<Image>();
-        
+
     }
 
     private void Start()
@@ -84,7 +84,7 @@ public class ObjectInteract : MonoBehaviour
     private void Update()
     {
 
-        if ((ObjectPickHandler.Instance!=null && ObjectPickHandler.Instance.InteractionCheck())
+        if ((ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck())
            && outRange != null && inRange != null)
         {
             outRange.alpha = 0;
@@ -153,7 +153,7 @@ public class ObjectInteract : MonoBehaviour
     }
     public void StartInteraction()
     {
-        if (ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck())return;
+        if (ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck()) return;
 
         isInteracting = true;
         isInteracted = true;
@@ -177,13 +177,11 @@ public class ObjectInteract : MonoBehaviour
     public void NextDialogueImage()
     {
         isSecondDialog = true;
-        // Save the clue count before hiding
+
         if (dialogManager.currentClueCount != null && currentImageIndex < dialogManager.currentClueCount.Length)
             dialogManager.currentClueCount[currentImageIndex] = clueCount;
 
-
-            dialogContainer.SetActive(false);
-
+        dialogContainer.SetActive(false);
 
         if (dialogManager.dialogAudio.Length > currentImageIndex &&
             dialogManager.dialogAudio[currentImageIndex]?.sorce != null)
@@ -193,11 +191,19 @@ public class ObjectInteract : MonoBehaviour
 
         if (currentImageIndex < dialogManager.dialogLines.Length)
         {
-           
             clueCount = dialogManager.currentClueCount[currentImageIndex];
-
             totalClues = dialogManager.totalCount[currentImageIndex];
             clueCountMain = totalClues;
+
+            // Set new dialogue text here, e.g.
+            dialogText.SetText(dialogManager.dialogLines[currentImageIndex]);
+
+            // Important: Refresh outlines now that text changed
+            if (CursorHoverOverClue.instance != null)
+            {
+                CursorHoverOverClue.instance.RefreshPermanentOutlines();
+            }
+
             TypeLine();
         }
         else
@@ -209,7 +215,6 @@ public class ObjectInteract : MonoBehaviour
         }
     }
 
-   
     private void HandlePostDialogueActions()
     {
         isInteractionComplete = true;
@@ -264,7 +269,6 @@ public class ObjectInteract : MonoBehaviour
     private void TypeLine()
     {
         if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
-        if (CursorHoverOverClue.instance != null) { CursorHoverOverClue.instance.StopHover(); }
         if (dialogManager.backgroundImages != null &&
          currentImageIndex < dialogManager.backgroundImages.Length && dialogManager.doBackgroundChange)
         {
@@ -274,7 +278,7 @@ public class ObjectInteract : MonoBehaviour
         {
             jhon.sprite = jhonSpriteStore;
         }
-       
+
         dialogContainer.SetActive(true);
         // Font size
         dialogText.fontSize = (dialogManager.changeFontSize && dialogManager.frontSize != null && currentImageIndex < dialogManager.frontSize.Length)
@@ -307,5 +311,14 @@ public class ObjectInteract : MonoBehaviour
         }
     }
     public static bool InteractionCheck() => isInteracting;
+    // Example inside your page switch logic
+    void SwitchPage()
+    {
+        // Disable current page CursorHoverOverClue, if any
+        CursorHoverOverClue.instance?.StopHover();
+        CursorHoverOverClue.instance?.ClearPermanentOutlines();
 
+        CursorHoverOverClue.instance?.RefreshPermanentOutlines();
+
+    }
 }

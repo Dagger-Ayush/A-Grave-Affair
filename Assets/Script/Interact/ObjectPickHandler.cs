@@ -93,6 +93,7 @@ public class ObjectPickHandler : MonoBehaviour
     {
         if (ObjectInteract.isInteracting && outRange !=null && inRange != null)
         {
+            XrayVisionDisable();
             outRange.alpha = 0;
             inRange.alpha = 0;
             return;
@@ -253,15 +254,15 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectDrop()
     {
-       
+        XrayVisionDisable();
+
         pickReferences.eToExitimage.SetActive(false);
         if (XrayLetterMain != null) XrayLetterMain.SetActive(true);
         if (XrayObject != null) XrayObject.SetActive(false);
         clueCountStoring = clueCount;
         pickReferences.currentClue.SetActive(false);
 
-        XrayVisionDisable();
-
+       
         transform.rotation = objectRotation;
         transform.parent = null;
         pickReferences.SwitchCam();

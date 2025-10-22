@@ -89,29 +89,15 @@ public class MainMenuUI : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         if (currentScene.name != "New Mainmenu") return;
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // Only act if volume panel is active
+        if (Input.GetKeyDown(KeyCode.Escape) && volumeMenu != null && volumeMenu.activeSelf)
         {
-            // Case 1: Volume panel is active → go back to Pause Menu
-            if (volumeMenu != null && volumeMenu.activeSelf)
-            {
-                volumeMenu.SetActive(false);
+            volumeMenu.SetActive(false);
+            if (mainMenu != null)
                 mainMenu.SetActive(true);
-                Debug.Log("Closed Volume Panel → Returned to Pause Menu");
-            }
-            // Case 2: Pause menu is active → resume game
-            else if (mainMenu != null && mainMenu.activeSelf)
-            {
-                mainMenu.SetActive(false);
-                Time.timeScale = 1f;
-                Debug.Log("Closed Pause Menu → Game Resumed");
-            }
-            // Case 3: No menu is open → open Pause Menu
-            else
-            {
-                mainMenu.SetActive(true);
-                Time.timeScale = 0f;
-                Debug.Log("Opened Pause Menu");
-            }
+
+            Debug.Log("Closed Volume Panel → Returned to Main Menu");
         }
     }
+
 }

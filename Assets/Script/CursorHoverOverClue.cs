@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public static CursorHoverOverClue instance;
+
     [Header("Hover Settings")]
     public Color outlineColor = Color.red;
     public float ovalPadding = 9f;
@@ -21,9 +23,18 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
     private bool isHovering = false;
     private int currentLinkIndex = -1;
     private string currentClueId = "";
+
     private GameObject ovalOutline;
     private Vector2 targetSize;
     private Vector3 targetPosition;
+
+    // For permanent outlines
+    private List<GameObject> permanentOutlines = new List<GameObject>();
+
+    // Store last hover’s position & size for exact permanent matching
+    private Vector2 lastHoverSize;
+    private Vector3 lastHoverPosition;
+    private string lastHoverClueId;
 
     void Awake()
     {
@@ -31,7 +42,6 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         textComponent = GetComponent<TextMeshProUGUI>();
         uiCamera = GetCanvasCamera();
 
-        // Disable raycast blocking from background image if present
         Image img = GetComponent<Image>();
         if (img != null) img.raycastTarget = false;
         RawImage rawImg = GetComponent<RawImage>();
@@ -40,9 +50,22 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     void OnEnable()
     {
-        // force mesh update to avoid link geometry delay
         if (textComponent != null)
             textComponent.ForceMeshUpdate();
+
+        StartCoroutine(DelayedDrawPermanentOutlines());
+    }
+
+    void OnDisable()
+    {
+        ClearPermanentOutlines();
+        StopHover();
+    }
+
+    private IEnumerator DelayedDrawPermanentOutlines()
+    {
+        yield return null;
+        RefreshPermanentOutlines();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -51,7 +74,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
             (InteractionTutorial.Instance != null && !InteractionTutorial.Instance.canHover))
             return;
 
-        textComponent.ForceMeshUpdate(); // ✅ ensures link bounds are updated right away
+        textComponent.ForceMeshUpdate();
 
         if (!isHovering)
         {
@@ -67,41 +90,57 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
     private IEnumerator HoverCheck()
     {
+        int previousLinkIndex = -1;
+
         while (isHovering)
         {
-            int newLinkIndex = FindRotatedLinkUnderMouse(textComponent, Input.mousePosition, uiCamera);
+            int newLinkIndex = TMP_TextUtilities.FindIntersectingLink(textComponent, Input.mousePosition, uiCamera);
 
-            if (currentLinkIndex != -1 && currentLinkIndex != newLinkIndex)
+            if (newLinkIndex != previousLinkIndex)
+            {
                 RemoveOutline();
 
-            currentLinkIndex = newLinkIndex;
-
-            if (currentLinkIndex != -1)
-            {
-                var linkInfo = textComponent.textInfo.linkInfo[currentLinkIndex];
-                currentClueId = linkInfo.GetLinkID();
-
-                if (!ClueManager.Instance.ClueCheck(currentClueId))
+                if (newLinkIndex != -1)
                 {
-                    CreateOutline(currentLinkIndex);
-                    SetCursorState(CursorState.Clue);
+                    var linkInfo = textComponent.textInfo.linkInfo[newLinkIndex];
+                    currentClueId = linkInfo.GetLinkID();
 
-                    if (Input.GetMouseButtonDown(0))
+                    if (!ClueManager.Instance.ClueCheck(currentClueId))
                     {
-                        ClueManager.Instance.AddClue(currentClueId);
-                        FloatingTextSpawner.Instance.SpawnFloatingText(currentClueId, Input.mousePosition);
+                        CreateOutline(newLinkIndex);
+                        SetCursorState(CursorState.Clue);
+                    }
+                    else
+                    {
+                        SetCursorState(CursorState.Normal);
                     }
                 }
                 else
                 {
-                    RemoveOutline();
                     SetCursorState(CursorState.Normal);
                 }
+
+                previousLinkIndex = newLinkIndex;
+                currentLinkIndex = newLinkIndex;
             }
-            else
+
+            if (newLinkIndex != -1 && Input.GetMouseButtonDown(0))
             {
-                RemoveOutline();
-                SetCursorState(CursorState.Normal);
+                var linkInfo = textComponent.textInfo.linkInfo[newLinkIndex];
+                currentClueId = linkInfo.GetLinkID();
+
+                if (!ClueManager.Instance.ClueCheck(currentClueId))
+                {
+                    ClueManager.Instance.AddClue(currentClueId);
+                    FloatingTextSpawner.Instance.SpawnFloatingText(currentClueId, Input.mousePosition);
+
+                    // Record this position & size for exact permanent matching
+                    lastHoverSize = targetSize;
+                    lastHoverPosition = targetPosition;
+                    lastHoverClueId = currentClueId;
+
+                    RefreshPermanentOutlines();
+                }
             }
 
             yield return null;
@@ -117,6 +156,20 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         }
 
         RemoveOutline();
+        isHovering = false;
+        currentLinkIndex = -1;
+        currentClueId = "";
+        SetCursorState(CursorState.Normal);
+    }
+
+    public void ResetHover()
+    {
+        if (hoverRoutine != null)
+        {
+            StopCoroutine(hoverRoutine);
+            hoverRoutine = null;
+        }
+
         isHovering = false;
         currentLinkIndex = -1;
         currentClueId = "";
@@ -157,7 +210,7 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
 
         var ovalImage = ovalOutline.AddComponent<RawImage>();
         ovalImage.texture = new Texture2D(1, 1);
-        ovalImage.color = Color.white;
+        ovalImage.color = outlineColor;
         ovalOutline.transform.SetAsFirstSibling();
 
         if (animationRoutine != null) StopCoroutine(animationRoutine);
@@ -254,73 +307,135 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         return canvas?.worldCamera ?? Camera.main;
     }
 
-    void OnDisable()
+    // --- Permanent Outline Logic ---
+
+    public void RefreshPermanentOutlines()
     {
-        // 🔧 Don’t clear hover if panel is just being toggled — only if destroyed
-        if (!gameObject.activeInHierarchy)
+        ClearPermanentOutlines();
+        textComponent.ForceMeshUpdate();
+
+        for (int i = 0; i < textComponent.textInfo.linkCount; i++)
         {
-            StopHover();
+            var linkInfo = textComponent.textInfo.linkInfo[i];
+            string clueId = linkInfo.GetLinkID();
+
+            if (ClueManager.Instance.ClueCheck(clueId))
+            {
+                CreatePermanentOutline(i, clueId);
+            }
         }
+    }
+
+    private void CreatePermanentOutline(int linkIndex, string clueId)
+    {
+        if (linkIndex < 0 || linkIndex >= textComponent.textInfo.linkCount) return;
+
+        var linkInfo = textComponent.textInfo.linkInfo[linkIndex];
+        float minX = float.MaxValue, maxX = float.MinValue;
+        float minY = float.MaxValue, maxY = float.MinValue;
+
+        for (int i = 0; i < linkInfo.linkTextLength; i++)
+        {
+            int charIndex = linkInfo.linkTextfirstCharacterIndex + i;
+            if (charIndex >= textComponent.textInfo.characterCount) continue;
+            var charInfo = textComponent.textInfo.characterInfo[charIndex];
+            if (!charInfo.isVisible) continue;
+
+            minX = Mathf.Min(minX, charInfo.bottomLeft.x);
+            maxX = Mathf.Max(maxX, charInfo.topRight.x);
+            minY = Mathf.Min(minY, charInfo.descender);
+            maxY = Mathf.Max(maxY, charInfo.ascender);
+        }
+
+        Vector3 position;
+        Vector2 size;
+
+        // ✅ Use last hover’s size/pos if it’s the same clue
+        if (clueId == lastHoverClueId)
+        {
+            size = lastHoverSize;
+            position = lastHoverPosition;
+        }
+        else
+        {
+            position = new Vector3((minX + maxX) * 0.5f, (minY + maxY) * 0.5f, 0);
+            size = new Vector2((maxX - minX) + ovalPadding, (maxY - minY) + ovalPadding);
+        }
+
+        GameObject outlineGO = new GameObject("PermanentOvalOutline");
+        outlineGO.transform.SetParent(transform, false);
+        RectTransform rect = outlineGO.AddComponent<RectTransform>();
+        rect.sizeDelta = size;
+        rect.localPosition = position;
+        rect.localRotation = textComponent.rectTransform.localRotation;
+
+        RawImage image = outlineGO.AddComponent<RawImage>();
+
+        // 👇 thinner permanent outline — 40% of hover thickness
+        float thinOutline = Mathf.Max(1f, outlineThickness * 0.1f);
+
+        image.texture = CreateOvalOutlineTexture(
+            (int)(size.x * 2),
+            (int)(size.y * 2),
+             Mathf.RoundToInt(thinOutline),
+            outlineColor
+        );
+
+        image.color = Color.white;
+        outlineGO.transform.SetAsFirstSibling();
+
+        permanentOutlines.Add(outlineGO);
+    }
+
+    private Texture2D CreateOvalOutlineTexture(int width, int height, int thickness, Color outlineColor)
+    {
+        Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        Color[] pixels = new Color[width * height];
+        for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.clear;
+        tex.SetPixels(pixels);
+
+        Vector2 center = new Vector2(width / 2f, height / 2f);
+        float radiusX = width / 2f - thickness;
+        float radiusY = height / 2f - thickness;
+        int steps = 360 * 4;
+
+        for (int i = 0; i < steps; i++)
+        {
+            float angle = (i / (float)steps) * 360f;
+            float rad = angle * Mathf.Deg2Rad;
+            int baseX = Mathf.RoundToInt(center.x + Mathf.Cos(rad) * radiusX);
+            int baseY = Mathf.RoundToInt(center.y + Mathf.Sin(rad) * radiusY);
+
+            for (int dx = -thickness; dx <= thickness; dx++)
+            {
+                for (int dy = -thickness; dy <= thickness; dy++)
+                {
+                    if (Mathf.Abs(dx) + Mathf.Abs(dy) <= thickness * 1.5f)
+                    {
+                        int x = baseX + dx;
+                        int y = baseY + dy;
+                        if (x >= 0 && y >= 0 && x < tex.width && y < tex.height)
+                            tex.SetPixel(x, y, outlineColor);
+                    }
+                }
+            }
+        }
+
+        tex.Apply();
+        return tex;
+    }
+
+    public void ClearPermanentOutlines()
+    {
+        if (permanentOutlines == null) return;
+
+        foreach (var outline in permanentOutlines)
+        {
+            if (outline != null)
+                Destroy(outline);
+        }
+        permanentOutlines.Clear();
     }
 
     public bool isHovered() => currentLinkIndex != -1;
-
-    private int FindRotatedLinkUnderMouse(TextMeshProUGUI tmp, Vector2 mousePos, Camera cam)
-    {
-        tmp.ForceMeshUpdate();
-        RectTransform rect = tmp.rectTransform;
-        for (int i = 0; i < tmp.textInfo.linkCount; i++)
-        {
-            var linkInfo = tmp.textInfo.linkInfo[i];
-            bool inside = false;
-
-            for (int c = 0; c < linkInfo.linkTextLength; c++)
-            {
-                int charIndex = linkInfo.linkTextfirstCharacterIndex + c;
-                if (charIndex >= tmp.textInfo.characterCount) continue;
-                var charInfo = tmp.textInfo.characterInfo[charIndex];
-                if (!charInfo.isVisible) continue;
-
-                Vector3 bl = rect.TransformPoint(charInfo.bottomLeft);
-                Vector3 tl = rect.TransformPoint(new Vector3(charInfo.bottomLeft.x, charInfo.topRight.y, 0));
-                Vector3 tr = rect.TransformPoint(charInfo.topRight);
-                Vector3 br = rect.TransformPoint(new Vector3(charInfo.topRight.x, charInfo.bottomLeft.y, 0));
-
-                RectTransformUtility.ScreenPointToWorldPointInRectangle(rect, mousePos, cam, out Vector3 worldMouse);
-
-                if (PointInQuad(worldMouse, bl, tl, tr, br))
-                {
-                    inside = true;
-                    break;
-                }
-            }
-
-            if (inside) return i;
-        }
-        return -1;
-    }
-
-    private bool PointInQuad(Vector3 p, Vector3 bl, Vector3 tl, Vector3 tr, Vector3 br)
-    {
-        return PointInTriangle(p, bl, tl, tr) || PointInTriangle(p, bl, tr, br);
-    }
-
-    private bool PointInTriangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
-    {
-        Vector3 v0 = c - a;
-        Vector3 v1 = b - a;
-        Vector3 v2 = p - a;
-
-        float dot00 = Vector3.Dot(v0, v0);
-        float dot01 = Vector3.Dot(v0, v1);
-        float dot02 = Vector3.Dot(v0, v2);
-        float dot11 = Vector3.Dot(v1, v1);
-        float dot12 = Vector3.Dot(v1, v2);
-
-        float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-        float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-        float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-
-        return (u >= 0) && (v >= 0) && (u + v < 1);
-    }
 }

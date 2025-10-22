@@ -96,7 +96,7 @@ public class SceneChanger : MonoBehaviour
         if (!canChangeScene)
             return;
 
-        if (playerInteract.SceneChangerHandler() == this && !istrigger)
+        if ((playerInteract != null&& playerInteract.SceneChangerHandler() == this) && !istrigger)
         {
             if (interactiImageIn != null)
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -47,12 +48,9 @@ public class MotelLobby : MonoBehaviour
     private bool introPanDone = false;
     private bool isFinalDialogComplete = false;
 
-
-    [Header("Dress to activate")]
-    public ObjectInteract dressInteract;
     //// --- Track currently active phase ---
     //private int currentPhase = 0;
-
+    public bool savePhase;
     // Current phase now stored globally
     private int currentPhase
     {
@@ -63,6 +61,7 @@ public class MotelLobby : MonoBehaviour
     public ObjectInteract[] suspectDialogs;
     public Collider[] suspectColliders;
 
+    public List<PuzzleData> allPuzzles;
     //public bool DontsavePhase_3;
     void Start()
     {
@@ -90,61 +89,136 @@ public class MotelLobby : MonoBehaviour
             puzzleProgression.OnPuzzle7Completed += EnableOnSentence2CompleteDialogs;
         }
 
-            //// Start only initial dialog if at phase 0
-            //if (currentPhase == 0)
-            //{
-            //    motelStartDialogs.enabled = true;
-            //}
-
+        //// Start only initial dialog if at phase 0
+        //if (currentPhase == 0)
+        //{
+        //    motelStartDialogs.enabled = true;
+        //}
+        if (savePhase)
+        {
             //  Restore state based on saved phase
             switch (currentPhase)
-        {
-            case 0:
-                motelStartDialogs.enabled = true;
-                break;
+            {
+                case 0:
+                    motelStartDialogs.enabled = true;
+                    break;
 
-            case 1:
-                DialogsPhase_2.enabled = true;
-                break;
+                case 1:
+                    DialogsPhase_2.enabled = true;
+                    break;
 
-            case 2:
-                // Simulate Phase 1 completion setup
-                StartCoroutine(ObjectsEnablePhase_1());
-                break;
+                case 2:
+                    // Simulate Phase 1 completion setup
+                    StartCoroutine(ObjectsEnablePhase_1());
+                    break;
 
-            case 3:
-                // Simulate Phase 2 completion setup
-                StartCoroutine(ObjectsEnablePhase_2());
-                break;
+                case 3:
+                    // Simulate Phase 2 completion setup
+                    StartCoroutine(ObjectsEnablePhase_2());
+                    break;
 
-            case 4:
-                StartCoroutine(ObjectsEnablePhase_3());
-                break;
+                case 4:
+                    StartCoroutine(ObjectsEnablePhase_3());
+                    break;
 
-            case 5:
-                StartCoroutine(ObjectsEnablePhase_4());
-                break;
+                case 5:
+                    StartCoroutine(ObjectsEnablePhase_4());
+                    break;
 
-            case 6:
-                StartCoroutine(ObjectsEnablePhase_5());
-                break;
+                case 6:
+                    StartCoroutine(ObjectsEnablePhase_5());
+                    break;
 
-            case 7:
-                ObjectsEnablePhase_6();
-                break;
+                case 7:
+                    ObjectsEnablePhase_6();
+                    break;
 
-            case 8:
-                StartCoroutine(ObjectsEnablePhase_7_R_1());
-                break;
+                case 8:
+                    StartCoroutine(ObjectsEnablePhase_7_R_1());
+                    break;
 
-            case 9:
-                ObjectsEnablePhase_8_M_1();
-                break;
+                case 9:
+                    ObjectsEnablePhase_8_M_1();
+                    break;
 
-            case 10:
-                ObjectsEnablePhase_9_R_2();
-                break;
+                case 10:
+                    ObjectsEnablePhase_9_R_2();
+                    break;
+            }
         }
+        else
+        {
+            // ---- RESET EVERYTHING if savePhase is false ----
+            currentPhase = 0;
+            introPanDone = false;
+            isFinalDialogComplete = false;
+
+            // Disable all progression dialogs/interacts
+            if (DialogsPhase_2) DialogsPhase_2.enabled = false;
+            if (enablingInteract) enablingInteract.enabled = false;
+            if (enablingInteractafterPhase_1) enablingInteractafterPhase_1.enabled = false;
+            if (enablingInteractafterPhase_2) enablingInteractafterPhase_2.enabled = false;
+            if (motelGatherDialogs) motelGatherDialogs.enabled = false;
+            if (puzzleProgressionInteract) puzzleProgressionInteract.enabled = false;
+            if (orderBookPickHandler) orderBookPickHandler.enabled = false;
+            if (ONsentence1CompleteTrigger) ONsentence1CompleteTrigger.enabled = false;
+            if (ONsentence2CompleteTrigger) ONsentence2CompleteTrigger.enabled = false;
+            if (ONsentenceCompleteGreg) ONsentenceCompleteGreg.enabled = false;
+            if (ONsentenceCompleteInteract_1) ONsentenceCompleteInteract_1.enabled = false;
+            if (ONsentenceCompleteInteract_2) ONsentenceCompleteInteract_2.enabled = false;
+
+            // Disable all suspect interactions
+            foreach (var suspect in suspectDialogs)
+                if (suspect) suspect.enabled = false;
+            foreach (var col in suspectColliders)
+                if (col) col.enabled = false;
+
+            // Disable final interaction objects
+            foreach (var obj in LastInteractionObjects)
+                if (obj) obj.enabled = false;
+            foreach (var col in LastInteractionColliders)
+                if (col) col.enabled = false;
+
+            // Disable puzzles
+            if (puzzleProgression)
+            {
+                if (puzzleProgression.puzzle5) puzzleProgression.puzzle5.SetActive(false);
+                if (puzzleProgression.puzzle6) puzzleProgression.puzzle6.SetActive(false);
+                if (puzzleProgression.puzzle7) puzzleProgression.puzzle7.SetActive(false);
+            }
+
+            // Reset doors
+            if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
+            if (doorToOutsideMotel) doorToOutsideMotel.SetActive(false);
+
+            // Enable only the starting dialog
+            if (motelStartDialogs)
+            {
+                motelStartDialogs.enabled = true;
+                motelStartDialogs.gameObject.SetActive(true);
+            }
+
+            Debug.Log("MotelLobby reset: Starting fresh (Phase 0).");
+            foreach (PuzzleData puzzle in allPuzzles)
+            {
+                puzzle.isCompleted = false;
+            } // Reset dress interaction PlayerPref
+        if (PlayerPrefs.HasKey("DressInteractionDone"))
+        {
+            PlayerPrefs.DeleteKey("DressInteractionDone");
+        }
+
+        // Reset outside door PlayerPref
+        if (PlayerPrefs.HasKey("EnteredOutsideDoor"))
+        {
+            PlayerPrefs.DeleteKey("EnteredOutsideDoor");
+        }
+
+        // Save changes immediately
+        PlayerPrefs.Save();
+
+        Debug.Log("All puzzles, dress interaction, and outside door reset!");
+    }
 
         // Disable intro pan & dialogs for higher phases
         if (currentPhase > 0)
@@ -270,7 +344,7 @@ public class MotelLobby : MonoBehaviour
         {
             ObjectsEnablePhase_9_R_2();
         }
-        if (currentPhase == 10 && dressInteract != null && dressInteract.isInteractionComplete)
+        if (suspectDialogs[2].isInteractionComplete)
         {
             ObjectsEnablePhase_10();
         }
@@ -338,6 +412,9 @@ public class MotelLobby : MonoBehaviour
 
     IEnumerator ObjectsEnablePhase_2()
     {
+        enablingInteractafterPhase_1.enabled = false;
+        enablingInteractafterPhase_2.enabled = false;
+
         currentPhase = 3; // Move to Phase 3
         Debug.Log("Phase_2 Started");
         ImageFade.instance.FadeInOut();
@@ -352,9 +429,7 @@ public class MotelLobby : MonoBehaviour
         // Disable earlier phase interactions
         enablingInteract.enabled = false;
         DialogsPhase_2.enabled = false;
-        enablingInteractafterPhase_1.enabled = false;
-        enablingInteractafterPhase_2.enabled = false;
-
+      
         foreach (var inspect in enablingInspect)
             inspect.enabled = false;
 
@@ -460,15 +535,19 @@ public class MotelLobby : MonoBehaviour
    
     void ObjectsEnablePhase_8_M_1()
     {
+        
         Debug.Log("Phase_8 Started");
         currentPhase = 9;
+        suspectDialogs[0].enabled = false;
+        suspectDialogs[0].shouldWork = false;
+        suspectColliders[0].enabled = false;
+
         suspectDialogs[1].enabled = true;
         suspectDialogs[1].shouldWork = true;
         suspectColliders[1].enabled = true;
     }
     void ObjectsEnablePhase_9_R_2()
     {
-        suspectColliders[0].enabled = false;
         Debug.Log("Phase_9 Started");
         currentPhase = 10;
         suspectDialogs[2].enabled = true;

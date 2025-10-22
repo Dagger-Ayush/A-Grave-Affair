@@ -155,7 +155,7 @@ public class InteractionTutorial : MonoBehaviour
                 blurImage[0].SetActive(false);
                 blurImage[1].SetActive(true);
                 ShowPanel(count);
-                    canHover = true;
+                canHover = true;
                 break;
         }
     }

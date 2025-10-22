@@ -126,7 +126,6 @@ public class VisionHover : MonoBehaviour
     {
         if (!ClueManager.Instance.ClueCheck(getClue.clue))
         {
-            if (ClueManager.Instance.ClueCheck(getClue.clue))return;
             HoverEffect();
             SetColor(interactObj, hoverColor, visionClue);
 
