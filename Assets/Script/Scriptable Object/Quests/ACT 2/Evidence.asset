@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f38292b03a8bae48b6dddaa349b61bf, type: 3}
-  m_Name: Milkshake
+  m_Name: Evidence
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleData
-  sentenceTemplate: "The _ had  _ , It was _ and was found in Nancy\u2019s room."
+  sentenceTemplate: The _ buried in the _ is clear evidence of Alex being _ .
   correctAnswers:
-  - Milkshake
-  - Poison
-  - Discoloured
+  - Uniform
+  - Garbage
+  - Framed
   requiredClues:
-  - Poison
-  - Milkshake
-  - Discoloured
-  puzzleID: 7
+  - Framed
+  - Uniform
+  - Garbage
+  puzzleID: 8
   isCompleted: 1

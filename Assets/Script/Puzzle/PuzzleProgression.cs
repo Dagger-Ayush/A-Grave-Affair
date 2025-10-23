@@ -15,6 +15,7 @@ public class PuzzleProgression : MonoBehaviour
     public GameObject puzzle5;
     public GameObject puzzle6;
     public GameObject puzzle7;
+    public GameObject puzzle8;
     public TMP_Text feedbackText;
 
     public GlobalPuzzleStateData puzzleStateData;
@@ -25,15 +26,21 @@ public class PuzzleProgression : MonoBehaviour
 
     private bool puzzle6Solved = false;
     private bool puzzle7Solved = false;
+    private bool puzzle8Solved = false;
 
     [SerializeField] private ObjectInteract dummyObjectDialog;
     [SerializeField] private ObjectInteract nancyRoomDialog1;
     [SerializeField] private ObjectInteract nancyRoomDialog2;
+    [SerializeField] private ObjectInteract outsideMotelDialog;
 
     [SerializeField] private PlayerInteract playerInteract;
 
     private bool isDialogStarted = false;
     [SerializeField] private bool isPuzzleCompleted = false;
+
+    [Header("To Be Continued UI")]
+    [SerializeField] private GameObject toBeContinuedPanel;
+    [SerializeField] private TMP_Text toBeContinuedText;
 
     //public event Action OnPuzzle6And7Completed;
 
@@ -51,6 +58,7 @@ public class PuzzleProgression : MonoBehaviour
         if (puzzle5 != null) puzzle5.SetActive(false);
         if (puzzle6 != null) puzzle6.SetActive(false);
         if (puzzle7 != null) puzzle7.SetActive(false);
+        //if (puzzle8 != null) puzzle8.SetActive(false);
 
         // Automatically unlock puzzle 6 & 7 if puzzle 5 is missing
         if (puzzle5 == null)
@@ -62,7 +70,7 @@ public class PuzzleProgression : MonoBehaviour
             //trackPuzzle6and7 = true;
         }
 
-        if (puzzleStateData != null)
+        if (puzzleStateData != null && puzzle6 != null && puzzle7 != null)
         {
             if (puzzleStateData.IsComplete(6))
             {
@@ -79,7 +87,7 @@ public class PuzzleProgression : MonoBehaviour
     private void Update()
     {
         PuzzleCompleteDialog();
-        
+        EndDialog();
     }
     public void OnPuzzle1Solved()
     {
@@ -215,31 +223,36 @@ public class PuzzleProgression : MonoBehaviour
         //CheckPuzzle6And7Completion();
     }
 
+    public void ActivatePuzzle8()
+    {
+        if(puzzle8 != null)
+            puzzle8.SetActive(true);
+    }
+
+    public void OnPuzzle8Solved()
+    {
+        //if (puzzle6Solved) return;
+
+        if (puzzleStateData == null || puzzleStateData.IsComplete(8)) return;
+
+        puzzleStateData.MarkComplete(8);
+
+        puzzle8Solved = true;
+        StartCoroutine(CloseTabletAfterDelay(() =>
+        {
+            OutsideMotelDialog();
+            
+            TabletManager.Instance.puzzlePanel.SetActive(false);
+            TabletManager.Instance.clueBox.SetActive(false);
+            feedbackText.text = " ";
+            
+        }));
+
+        Debug.Log("Puzzle 8 solved");
+    }
+
     private bool nancyDialog1Triggered = false;
     private bool nancyDialog2Triggered = false;
-
-    //public void CheckPuzzle6And7Completion()
-    //{
-    //    if (puzzle6Solved && puzzle7Solved)
-    //    {
-    //        StartCoroutine(CloseTabletAfterDelay(() =>
-    //        {
-    //            TriggerNancyRoomDialog();
-
-    //            if (puzzle6 != null) puzzle6.SetActive(false);
-    //            if (puzzle7 != null) puzzle7.SetActive(false);
-
-    //            TabletManager.Instance.puzzlePanel.SetActive(false);
-    //            TabletManager.Instance.clueBox.SetActive(false);
-    //            feedbackText.text = " ";
-
-    //            Debug.Log("Puzzle 6 & 7 completed!");
-    //        }));
-
-    //        OnPuzzle6And7Completed?.Invoke();
-    //        //isPuzzleCompleted = true;
-    //    }
-    //}
 
     private void TriggerNancyRoomDialog1()
     {
@@ -282,6 +295,34 @@ public class PuzzleProgression : MonoBehaviour
         }
     }
 
+    private bool outsideMotelDialogTriggered = false;
+
+    private void OutsideMotelDialog()
+    {
+        if(outsideMotelDialogTriggered) return;
+        outsideMotelDialogTriggered = true;
+
+        int sceneNumber = SceneManager.GetActiveScene().buildIndex;
+
+        if(sceneNumber == 2 && outsideMotelDialog != null)
+        {
+            outsideMotelDialog.enabled = true;
+            GamePhaseManager.MotelLobbyPhase = 11;
+            Debug.Log("Outside Motel Dialog triggered.");
+        }
+    }
+
+    private void EndDialog()
+    {
+        if (outsideMotelDialog != null && outsideMotelDialog.isAutoComplete)
+        {
+            ImageFade.instance.FadeInOut();
+            if(toBeContinuedPanel != null && toBeContinuedText != null)
+            {
+                ShowToBeContinuedAfterFade();
+            }
+        }
+    }
     private IEnumerator CloseTabletAfterDelay(System.Action onClose)
     {
         Time.timeScale = 1f;
@@ -380,5 +421,36 @@ public class PuzzleProgression : MonoBehaviour
         if(puzzle6Solved && puzzle7Solved) return true;
         else return false;
     }
-   
+
+    public void ShowToBeContinuedAfterFade()
+    {
+        StartCoroutine(ShowAfterFadeRoutine());
+    }
+
+    private IEnumerator ShowAfterFadeRoutine()
+    {
+        // Wait for fade to finish — adjust duration to match your fade time
+        yield return new WaitForSeconds(ImageFade.instance.fadeTime);
+
+        if (PlayerInteract.Instance != null)
+        {
+            PlayerInteract.Instance.enabled = false; // disable the script
+            if (PlayerInteract.Instance.tabletImage != null)
+                PlayerInteract.Instance.tabletImage.enabled = false; // hide the tablet UI
+        }
+
+        // Now show the panel
+        if (toBeContinuedPanel != null && toBeContinuedText != null)
+        {
+            toBeContinuedPanel.SetActive(true);
+            toBeContinuedText.text = "To Be Continued...";
+        }
+
+        Debug.Log("Fade completed — showing To Be Continued message.");
+
+        yield return new WaitForSeconds(3f);
+
+        // Load the main menu scene
+        SceneManager.LoadScene("New Mainmenu");
+    }
 }

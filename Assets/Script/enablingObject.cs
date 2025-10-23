@@ -25,5 +25,6 @@ public class EnablingObject : MonoBehaviour
         pickHandler.gameObject.SetActive(true);
         pickHandler.enabled = true;
         pickHandler.shouldWork = true;
+        FindAnyObjectByType<PuzzleProgression>()?.ActivatePuzzle8();
     }
 }

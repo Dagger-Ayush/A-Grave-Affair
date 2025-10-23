@@ -79,6 +79,8 @@ public class MotelLobby : MonoBehaviour
         if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(false);
 
+        Debug.LogWarning(currentPhase);
+
         //if(puzzleProgression != null && puzzleProgression.puzzle6and7Check())
         //{
         //    EnableOnSentenceCompleteDialogs();
@@ -242,6 +244,10 @@ public class MotelLobby : MonoBehaviour
         if (currentPhase >= 9)
         {
             if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+        }
+        if(currentPhase == 11)
+        {
+            PosandAnimationUpdate.Instance.UpdatePhase_7();
         }
     }
 

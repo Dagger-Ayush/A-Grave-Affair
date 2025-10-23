@@ -6,5 +6,10 @@ public class GameStartReset : MonoBehaviour
     void Awake()
     {
         globalPuzzleState.ResetAll();
+
+        PlayerPrefs.SetInt("EnteredOutsideDoor", 0);
+        PlayerPrefs.SetInt("DressInteractionDone", 0);
+        PlayerPrefs.Save();
+
     }
 }
