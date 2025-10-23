@@ -1,9 +1,11 @@
+using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using static SceneChanger;
 
 public class SceneChanger : MonoBehaviour
 {
-    public enum DoorType { protoDoor, OutSideDoor,InsideDoor,NancyRoomDoor}
+    public enum DoorType { protoDoor, OutSideDoor,InsideDoor,NancyRoomDoor, EndScreenDoor}
     public DoorType doortype;
     public bool istrigger = false;
     [SerializeField] private CanvasGroup interactiImageIn;
@@ -20,6 +22,7 @@ public class SceneChanger : MonoBehaviour
     private bool canChangeScene = false;
 
     public GameObject gregObject;
+    public GameObject endPage;
 
     private void Start()
     {
@@ -58,6 +61,12 @@ public class SceneChanger : MonoBehaviour
                 bool puzzle1Complete = requiredPuzzle_1 == null || requiredPuzzle_1.isCompleted;
 
                 canChangeScene = puzzle1Complete;
+
+                break; 
+            case DoorType.EndScreenDoor:
+                bool puzzle1CompleteTest = requiredPuzzle_1 == null || requiredPuzzle_1.isCompleted;
+
+                canChangeScene = puzzle1CompleteTest;
 
                 break;
             case DoorType.OutSideDoor:
@@ -106,11 +115,19 @@ public class SceneChanger : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                StartCoroutine(LevelLoader.Instance.ChangeLevel(targetSceneIndex));
-                if (interactiImageIn != null)
+                if (doortype != DoorType.EndScreenDoor)
                 {
-                    interactiImageIn.alpha = 0;
-                    interactiImageout.alpha = 0;
+                    StartCoroutine(LevelLoader.Instance.ChangeLevel(targetSceneIndex));
+                    if (interactiImageIn != null)
+                    {
+                        interactiImageIn.alpha = 0;
+                        interactiImageout.alpha = 0;
+                    }
+                }
+                else
+                {
+                    endPage.SetActive(true);
+                    StartCoroutine(Exit());
                 }
             }
         }
@@ -133,5 +150,14 @@ public class SceneChanger : MonoBehaviour
         {
             StartCoroutine(LevelLoader.Instance.ChangeLevel(targetSceneIndex));
         }
+    }
+    public IEnumerator Exit()
+    {
+        yield return new WaitForSeconds(2);
+#if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+#else
+        Application.Quit();
+#endif
     }
 }
