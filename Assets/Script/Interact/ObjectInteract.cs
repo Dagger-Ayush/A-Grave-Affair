@@ -92,8 +92,14 @@ public class ObjectInteract : MonoBehaviour
             return;
         }
         // Interaction logic starts here
-        if ((type == InteractType.DogBed && !InteractedWithDogBed) ||
-            (type == InteractType.NonInteractiveAutomatic && !isAutoComplete))
+        if (type == InteractType.DogBed && !InteractedWithDogBed)  
+        {
+            if (!isInteracted) StartInteraction();
+            else if (isInteracted && Input.GetKeyDown(KeyCode.E)) NextDialogueImage();
+            return;
+        } 
+
+        if (type == InteractType.NonInteractiveAutomatic && !isAutoComplete)
         {
             if (!isInteracted) StartInteraction();
             else if (isInteracted && Input.GetKeyDown(KeyCode.E)) NextDialogueImage();
@@ -177,7 +183,7 @@ public class ObjectInteract : MonoBehaviour
     public void NextDialogueImage()
     {
         isSecondDialog = true;
-
+        if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
         if (dialogManager.currentClueCount != null && currentImageIndex < dialogManager.currentClueCount.Length)
             dialogManager.currentClueCount[currentImageIndex] = clueCount;
 
@@ -268,7 +274,7 @@ public class ObjectInteract : MonoBehaviour
 
     private void TypeLine()
     {
-        if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
+       
         if (dialogManager.backgroundImages != null &&
          currentImageIndex < dialogManager.backgroundImages.Length && dialogManager.doBackgroundChange)
         {

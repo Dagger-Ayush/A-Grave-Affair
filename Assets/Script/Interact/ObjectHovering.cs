@@ -28,6 +28,7 @@ public class ObjectHovering : MonoBehaviour
 
     private void Update()
     {
+        if (!InspectionTutorial.Instance.isRotationComplete) return;
         if (Camera.main == null || Mouse.current == null) return;
         ObjectDetecting();
     }
@@ -38,7 +39,7 @@ public class ObjectHovering : MonoBehaviour
         if (isRunning || !ObjectPickHandler.isCollected) return;
 
         if (ObjectPickHandler.isXrayEnabled) return;
-
+        
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (Physics.Raycast(ray, out RaycastHit hit))

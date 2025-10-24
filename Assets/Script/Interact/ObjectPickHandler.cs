@@ -38,8 +38,8 @@ public class ObjectPickHandler : MonoBehaviour
 
     public static bool isMouseLocked;
     [HideInInspector] public bool isPicked;
-     public static bool isCollected;
-     public static bool isXrayEnabled;
+    public static bool isCollected;
+    public static bool isXrayEnabled;
 
     private bool isVision = false;
     private bool isbusy = false;
@@ -91,7 +91,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void Update()
     {
-        if (ObjectInteract.isInteracting && outRange !=null && inRange != null)
+        if (ObjectInteract.isInteracting && outRange != null && inRange != null)
         {
             XrayVisionDisable();
             outRange.alpha = 0;
@@ -124,7 +124,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private void ObjectHandler()
     {
-       
+
 
         if (!shouldWork) return;
 
@@ -138,7 +138,7 @@ public class ObjectPickHandler : MonoBehaviour
             }
         }
         // Xray logic
-        if (isCollected && xrayType == XrayType.Xray && ( XrayTutorial.Instance== null || XrayTutorial.Instance.shouldShowIcon))
+        if (isCollected && xrayType == XrayType.Xray && (XrayTutorial.Instance == null || XrayTutorial.Instance.shouldShowIcon))
         {
             if (Input.GetKeyDown(XrayToggle))
             {
@@ -150,7 +150,7 @@ public class ObjectPickHandler : MonoBehaviour
             pickReferences.XrayOnImage.SetActive(isVision);
             pickReferences.XrayOfImage.SetActive(!isVision);
         }
-        else if(!isCollected)
+        else if (!isCollected)
         {
             // Ensure everything is off if Xray shouldn't show
             XrayVisionDisable();
@@ -162,7 +162,7 @@ public class ObjectPickHandler : MonoBehaviour
                 if (isbusy || InteractClueManager.isClueShowing || pickReferences.inspectionTutorial.isRunning) return;
             }
             if ((InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) ||
-                (XrayTutorial.Instance != null && XrayTutorial.Instance.isRunning))return;
+                (XrayTutorial.Instance != null && XrayTutorial.Instance.isRunning)) return;
 
             StartCoroutine(ObjectDrop());
         }
@@ -185,7 +185,7 @@ public class ObjectPickHandler : MonoBehaviour
             if (isCollected || ObjectInteract.isInteracting) return;
 
             if (Input.GetKeyDown(KeyCode.E) && !isPicked)
-            {  
+            {
                 StartCoroutine(ObjectPickUp());
             }
         }
@@ -194,12 +194,12 @@ public class ObjectPickHandler : MonoBehaviour
             Avoid();
         }
 
-        
+
     }
 
 
     public IEnumerator ObjectPickUp()
-    { 
+    {
         clueCount = clueCountStoring;
         clueCountMain = totalClues;
 
@@ -228,7 +228,7 @@ public class ObjectPickHandler : MonoBehaviour
 
         if (type == InspectType.Cigarette)
         {
-             pickReferences.eToExitimage.SetActive(false);
+            pickReferences.eToExitimage.SetActive(false);
         }
         else
         {
@@ -240,7 +240,7 @@ public class ObjectPickHandler : MonoBehaviour
             transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, time * 2);
             yield return null;
         }
-        
+
         transform.localPosition = Vector3.zero;
         yield return new WaitForSeconds(0.2f);
         isbusy = false;
@@ -262,7 +262,7 @@ public class ObjectPickHandler : MonoBehaviour
         clueCountStoring = clueCount;
         pickReferences.currentClue.SetActive(false);
 
-       
+
         transform.rotation = objectRotation;
         transform.parent = null;
         pickReferences.SwitchCam();
@@ -277,7 +277,7 @@ public class ObjectPickHandler : MonoBehaviour
             objectInteractCigarette.shouldWork = true;
             enabled = false;
         }
-         
+
 
         while (time < 1f)
         {
@@ -334,7 +334,7 @@ public class ObjectPickHandler : MonoBehaviour
     private void XrayVisionDisable()
     {
         isVision = false;
-    
+
         pickReferences.XrayCamara.SetActive(false);
         pickReferences.XrayOfImage.SetActive(false);
         pickReferences.XrayOnImage.SetActive(false);
@@ -357,8 +357,8 @@ public class ObjectPickHandler : MonoBehaviour
     private bool isDragging = false;
     private void imageDrag()
     {
-        
-        if (!isPicked || isMouseLocked || isVision)  return;
+
+        if (!isPicked || isMouseLocked || isVision) return;
         if (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) return;
 
         if (Input.GetMouseButtonDown(0) && isPicked && !isVision)
@@ -453,4 +453,5 @@ public class ObjectPickHandler : MonoBehaviour
         if (!isCollected) return false;
         else return true;
     }
+
 }

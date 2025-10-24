@@ -14,7 +14,7 @@ public class PlayerDialog : MonoBehaviour
     [SerializeField] private Collider bedCollider;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-     [Header("Dialog System")]
+    [Header("Dialog System")]
     public DialogManager dialogManager;
     public AudioManager audioManager;
     public TextMeshProUGUI dialogText;
@@ -44,7 +44,7 @@ public class PlayerDialog : MonoBehaviour
         {
             EndDialog();
         }
-        if (isEndDialogRunning)return;
+        if (isEndDialogRunning) return;
 
         if (Input.GetKeyDown(KeyCode.E) && currentImageIndex <= 1)
         {
@@ -65,11 +65,11 @@ public class PlayerDialog : MonoBehaviour
         if (pointAndMovement.isMoving && !HasRun)
         {
             isInteraction = false;
-            movementTutorial.SetActive(false);
+            StartCoroutine(movementTutorialDelay());
             HasRun = true;
         }
 
-        
+
 
     }
     private IEnumerator StartInteraction()
@@ -86,7 +86,7 @@ public class PlayerDialog : MonoBehaviour
 
         if (dialogManager.dialogLines.Length > 0)
         {
-            TypeLine(dialogContainer,currentImageIndex, currentImageIndex);
+            TypeLine(dialogContainer, currentImageIndex, currentImageIndex);
         }
     }
 
@@ -98,7 +98,7 @@ public class PlayerDialog : MonoBehaviour
         {
             audioManager.Stop();
         }
-       
+        if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
         dialogContainer.SetActive(false);
         currentImageIndex++;
         if (currentImageIndex == 2)
@@ -109,14 +109,14 @@ public class PlayerDialog : MonoBehaviour
         }
         if (currentImageIndex < dialogManager.dialogLines.Length)
         {
-           
-            TypeLine(dialogContainer,currentImageIndex, currentImageIndex);
+
+            TypeLine(dialogContainer, currentImageIndex, currentImageIndex);
         }
         else
         {
             isInteraction = false;
         }
-        
+
     }
 
     public void EndDialog()
@@ -126,15 +126,15 @@ public class PlayerDialog : MonoBehaviour
         if (!isInteraction && !isEndDialogRunning)
         {
             isEndDialogRunning = true;
-          
+
             LastDialog.enabled = true;
             audioManager.PlayDialogBigLine(lastDialogAudio);
         }
-       
+
     }
-    void TypeLine(GameObject gameObject,int currentImageIndex, int audioIndex)
+    void TypeLine(GameObject gameObject, int currentImageIndex, int audioIndex)
     {
-        if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
+
         gameObject.SetActive(true);
         dialogText.SetText(dialogManager.dialogLines[currentImageIndex]);
 
@@ -146,7 +146,13 @@ public class PlayerDialog : MonoBehaviour
             {
                 audioManager.PlayDialogLine(dialogManager, audioIndex);
             }
-            
+
         }
+    }
+    private IEnumerator movementTutorialDelay()
+    {
+
+        yield return new WaitForSeconds(1f);
+        movementTutorial.SetActive(false);
     }
 }
