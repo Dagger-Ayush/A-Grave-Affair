@@ -69,8 +69,36 @@ public class PlayerInteract : MonoBehaviour
         }
     }
 
+    public ObjectPickHandler GetObjectPickHandler()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
+        foreach (Collider collider in colliders)
+        {
+            if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
+                return objectPickHandler; // Highest priority
+        }
+        return null;
+    }
+
+    public ObjectMoving ObjectMovingHandler()
+    {
+        if (GetObjectPickHandler() != null) // check PickHandler first
+            return null;
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
+        foreach (Collider collider in colliders)
+        {
+            if (collider.TryGetComponent(out ObjectMoving objectMoving))
+                return objectMoving;
+        }
+        return null;
+    }
+
     public ObjectInteract GetObjectInteract()
     {
+        if (GetObjectPickHandler() != null || ObjectMovingHandler() != null) // check higher priority first
+            return null;
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in colliders)
         {
@@ -85,27 +113,6 @@ public class PlayerInteract : MonoBehaviour
         return null;
     }
 
-    public ObjectPickHandler GetObjectPickHandler()
-    {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
-        foreach (Collider collider in colliders)
-        {
-            if (collider.TryGetComponent(out ObjectPickHandler objectPickHandler))
-                return objectPickHandler;
-        }
-        return null;
-    }
-
-    public ObjectMoving ObjectMovingHandler()
-    {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
-        foreach (Collider collider in colliders)
-        {
-            if (collider.TryGetComponent(out ObjectMoving objectMoving))
-                return objectMoving;
-        }
-        return null;
-    }
 
     public SceneChanger SceneChangerHandler()
     {

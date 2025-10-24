@@ -2,7 +2,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static ObjectPickHandler;
 
 public class ObjectInteract : MonoBehaviour
 {
@@ -18,6 +17,8 @@ public class ObjectInteract : MonoBehaviour
     public GameObject dialogContainer;
 
     public static bool isInteracting;
+    public static ObjectInteract activeInteraction; // ✅ new: track the currently active interaction
+
     [HideInInspector] public bool isInteracted;
     public bool DoAutoRun = false;
 
@@ -40,35 +41,35 @@ public class ObjectInteract : MonoBehaviour
     [Header("Clues")]
     public GettingClueCount gettingClueCount;
     public static int clueCount;
-    private int totalClues;              // max clues this line  
-    public static int clueCountMain;    // global count for UI
+    private int totalClues;
+    public static int clueCountMain;
 
-
-    //private Sprite jhonSprite;
     public Sprite jhonSpriteStore;
     private Image jhon;
 
     private void OnDisable()
     {
+        if (activeInteraction == this)
+            activeInteraction = null; // ✅ release active interaction if this is the one being disabled
+
         if (outRange != null) outRange.alpha = 0;
         if (inRange != null) inRange.alpha = 0;
     }
+
     private void Awake()
     {
         Instance = this;
         jhon = dialogContainer.GetComponent<Image>();
-
     }
 
     private void Start()
     {
-        // Ensure currentClueCount array is initialized
         if (dialogManager != null)
         {
             if (dialogManager.currentClueCount == null || dialogManager.currentClueCount.Length != dialogManager.dialogLines.Length)
                 dialogManager.currentClueCount = new int[dialogManager.dialogLines.Length];
 
-            dialogManager.ResetClues(); // optional: resets UI
+            dialogManager.ResetClues();
         }
 
         if (type == InteractType.Tablet)
@@ -83,7 +84,6 @@ public class ObjectInteract : MonoBehaviour
 
     private void Update()
     {
-
         if ((ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck())
            && outRange != null && inRange != null)
         {
@@ -91,13 +91,13 @@ public class ObjectInteract : MonoBehaviour
             inRange.alpha = 0;
             return;
         }
-        // Interaction logic starts here
-        if (type == InteractType.DogBed && !InteractedWithDogBed)  
+
+        if (type == InteractType.DogBed && !InteractedWithDogBed)
         {
             if (!isInteracted) StartInteraction();
             else if (isInteracted && Input.GetKeyDown(KeyCode.E)) NextDialogueImage();
             return;
-        } 
+        }
 
         if (type == InteractType.NonInteractiveAutomatic && !isAutoComplete)
         {
@@ -132,8 +132,8 @@ public class ObjectInteract : MonoBehaviour
         else if (playerInteract.GetObjectInteract() == null)
         {
             Avoid();
-
         }
+
         if (gettingClueCount != null)
             gettingClueCount.UpdateTick(clueCount);
     }
@@ -157,8 +157,16 @@ public class ObjectInteract : MonoBehaviour
             gameObject.GetComponent<Renderer>().enabled = false;
         }
     }
+
     public void StartInteraction()
     {
+        // ✅ Prevent multiple objects interacting at once
+        if (activeInteraction != null && activeInteraction != this)
+            return;
+        if (ObjectPickHandler.activePickup != null) return;
+
+        activeInteraction = this; // mark this as the current active one
+
         if (ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck()) return;
 
         isInteracting = true;
@@ -167,11 +175,8 @@ public class ObjectInteract : MonoBehaviour
         if (currentImageIndex >= dialogManager.dialogLines.Length)
             currentImageIndex = 0;
 
-        // Load saved progress
         clueCount = dialogManager.currentClueCount[currentImageIndex];
         totalClues = dialogManager.totalCount[currentImageIndex];
-
-        // ✅ clueCountMain should match progress, not total
         clueCountMain = clueCount;
 
         gettingClueCount?.AddTick(clueCount, totalClues);
@@ -179,11 +184,13 @@ public class ObjectInteract : MonoBehaviour
         TypeLine();
     }
 
-
     public void NextDialogueImage()
     {
         isSecondDialog = true;
-        if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
+
+        if (pickReferences.nextPageSound != null)
+            pickReferences.nextPageSound.Play();
+
         if (dialogManager.currentClueCount != null && currentImageIndex < dialogManager.currentClueCount.Length)
             dialogManager.currentClueCount[currentImageIndex] = clueCount;
 
@@ -201,14 +208,10 @@ public class ObjectInteract : MonoBehaviour
             totalClues = dialogManager.totalCount[currentImageIndex];
             clueCountMain = totalClues;
 
-            // Set new dialogue text here, e.g.
             dialogText.SetText(dialogManager.dialogLines[currentImageIndex]);
 
-            // Important: Refresh outlines now that text changed
             if (CursorHoverOverClue.instance != null)
-            {
                 CursorHoverOverClue.instance.RefreshPermanentOutlines();
-            }
 
             TypeLine();
         }
@@ -216,6 +219,7 @@ public class ObjectInteract : MonoBehaviour
         {
             isInteracting = false;
             isInteracted = false;
+            activeInteraction = null; // ✅ allow next object to be interactable
             gettingClueCount?.DisableAll();
             HandlePostDialogueActions();
         }
@@ -224,6 +228,7 @@ public class ObjectInteract : MonoBehaviour
     private void HandlePostDialogueActions()
     {
         isInteractionComplete = true;
+
         if (type == InteractType.Tablet)
         {
             TabletUnlocker.instance.UnlockTablet();
@@ -231,7 +236,7 @@ public class ObjectInteract : MonoBehaviour
             if (pickReferences.ObjectInteractBadge.type == InteractType.Badge)
                 pickReferences.ObjectInteractBadge.shouldWork = true;
 
-            if (pickReferences.ObjectPickHandlerCigarette.type == InspectType.Cigarette)
+            if (pickReferences.ObjectPickHandlerCigarette.type == ObjectPickHandler.InspectType.Cigarette)
                 pickReferences.ObjectPickHandlerCigarette.shouldWork = true;
 
             Destroy(gameObject, 0.1f);
@@ -257,11 +262,13 @@ public class ObjectInteract : MonoBehaviour
 
         if (type == InteractType.Lighter)
             Destroy(gameObject, 0.1f);
-
     }
 
     private void Avoid()
     {
+        if (activeInteraction == this)
+            activeInteraction = null;
+
         isInteracting = false;
         isInteracted = false;
 
@@ -274,9 +281,8 @@ public class ObjectInteract : MonoBehaviour
 
     private void TypeLine()
     {
-       
         if (dialogManager.backgroundImages != null &&
-         currentImageIndex < dialogManager.backgroundImages.Length && dialogManager.doBackgroundChange)
+            currentImageIndex < dialogManager.backgroundImages.Length && dialogManager.doBackgroundChange)
         {
             jhon.sprite = dialogManager.backgroundImages[currentImageIndex];
         }
@@ -286,21 +292,18 @@ public class ObjectInteract : MonoBehaviour
         }
 
         dialogContainer.SetActive(true);
-        // Font size
+
         dialogText.fontSize = (dialogManager.changeFontSize && dialogManager.frontSize != null && currentImageIndex < dialogManager.frontSize.Length)
             ? dialogManager.frontSize[currentImageIndex] : 45;
 
-        // Text
         dialogText.SetText((dialogManager.dialogLines != null && currentImageIndex < dialogManager.dialogLines.Length)
             ? dialogManager.dialogLines[currentImageIndex] : "");
 
-        // Audio
         if (dialogManager.dialogAudio != null &&
             currentImageIndex < dialogManager.dialogAudio.Length &&
             dialogManager.dialogAudio[currentImageIndex]?.sorce != null)
             audioManager.PlayDialogLine(dialogManager, currentImageIndex);
 
-        // Clues
         if (gettingClueCount != null)
             gettingClueCount.AddTick(clueCount, totalClues);
     }
@@ -316,15 +319,13 @@ public class ObjectInteract : MonoBehaviour
             gettingClueCount?.AddTick(clueCount, totalClues);
         }
     }
+
     public static bool InteractionCheck() => isInteracting;
-    // Example inside your page switch logic
+
     void SwitchPage()
     {
-        // Disable current page CursorHoverOverClue, if any
         CursorHoverOverClue.instance?.StopHover();
         CursorHoverOverClue.instance?.ClearPermanentOutlines();
-
         CursorHoverOverClue.instance?.RefreshPermanentOutlines();
-
     }
 }

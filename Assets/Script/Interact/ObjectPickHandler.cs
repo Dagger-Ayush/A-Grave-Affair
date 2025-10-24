@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ObjectPickHandler : MonoBehaviour
 {
     public static ObjectPickHandler Instance;
+    public static ObjectPickHandler activePickup; // ✅ track the currently active pickup
 
     public enum InspectType { Cigarette, Lighter, Letter_1, TutorialLetter, None }
     public InspectType type = InspectType.None;
@@ -13,6 +15,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     public enum XrayType { Xray, None }
     public XrayType xrayType = XrayType.None;
+
     private float time;
     private Vector3 offset;
     private Plane dragPlane;
@@ -31,7 +34,6 @@ public class ObjectPickHandler : MonoBehaviour
     [SerializeField] private GameObject XrayLetterMain;
 
     [SerializeField] private string[] clue;
-
     public float rotationSensitivity = 4f;
     public bool shouldWork = false;
     [SerializeField] private bool checkClue = false;
@@ -85,12 +87,18 @@ public class ObjectPickHandler : MonoBehaviour
         mainCam = pickReferences.inspectionCamara;
         XrayToggle = pickReferences.XrayToggle;
         clueCount = 0;
-
-
     }
 
     private void Update()
     {
+        // Prevent other objects from being active while one pickup is ongoing
+        if (activePickup != null && activePickup != this)
+        {
+            Avoid();
+            return;
+        }
+
+        // Hide UI when interacting with ObjectInteract
         if (ObjectInteract.isInteracting && outRange != null && inRange != null)
         {
             XrayVisionDisable();
@@ -98,6 +106,7 @@ public class ObjectPickHandler : MonoBehaviour
             inRange.alpha = 0;
             return;
         }
+
         // Always update out-of-range UI for inactive objects
         if (playerInteract.GetObjectPickHandler() != this && !isCollected)
         {
@@ -121,11 +130,8 @@ public class ObjectPickHandler : MonoBehaviour
         }
     }
 
-
     private void ObjectHandler()
     {
-
-
         if (!shouldWork) return;
 
         outRange.alpha = 0;
@@ -137,8 +143,10 @@ public class ObjectPickHandler : MonoBehaviour
                 inRange.alpha = 0;
             }
         }
+
         // Xray logic
-        if (isCollected && xrayType == XrayType.Xray && (XrayTutorial.Instance == null || XrayTutorial.Instance.shouldShowIcon))
+        if (isCollected && xrayType == XrayType.Xray &&
+            (XrayTutorial.Instance == null || XrayTutorial.Instance.shouldShowIcon))
         {
             if (Input.GetKeyDown(XrayToggle))
             {
@@ -152,17 +160,16 @@ public class ObjectPickHandler : MonoBehaviour
         }
         else if (!isCollected)
         {
-            // Ensure everything is off if Xray shouldn't show
             XrayVisionDisable();
         }
+
         if (isPicked && Input.GetKeyDown(KeyCode.E))
         {
-            if (InteractClueManager.instance != null && pickReferences.inspectionTutorial != null)
-            {
-                if (isbusy || InteractClueManager.isClueShowing || pickReferences.inspectionTutorial.isRunning) return;
-            }
-            if ((InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) ||
-                (XrayTutorial.Instance != null && XrayTutorial.Instance.isRunning)) return;
+            if ((InteractClueManager.instance != null && pickReferences.inspectionTutorial != null &&
+                 (isbusy || InteractClueManager.isClueShowing || pickReferences.inspectionTutorial.isRunning))
+                || (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy)
+                || (XrayTutorial.Instance != null && XrayTutorial.Instance.isRunning))
+                return;
 
             StartCoroutine(ObjectDrop());
         }
@@ -193,13 +200,15 @@ public class ObjectPickHandler : MonoBehaviour
         {
             Avoid();
         }
-
-
     }
-
 
     public IEnumerator ObjectPickUp()
     {
+        if (activePickup != null && activePickup != this) yield break; // ✅ prevent multiple pickups
+        if (ObjectInteract.activeInteraction!= null) yield break;
+
+        activePickup = this; // mark this as active pickup
+
         clueCount = clueCountStoring;
         clueCountMain = totalClues;
 
@@ -209,7 +218,6 @@ public class ObjectPickHandler : MonoBehaviour
         Vector3 target = transform.position;
         target.y = playerInteract.player.transform.position.y; // lock Y so no tilt
         playerInteract.player.transform.LookAt(target);
-
 
         isbusy = true;
         time = 0;
@@ -227,13 +235,10 @@ public class ObjectPickHandler : MonoBehaviour
         transform.rotation = PickUpRotation;
 
         if (type == InspectType.Cigarette)
-        {
             pickReferences.eToExitimage.SetActive(false);
-        }
         else
-        {
             pickReferences.eToExitimage.SetActive(true);
-        }
+
         while (time < 1f)
         {
             time += Time.deltaTime;
@@ -249,7 +254,6 @@ public class ObjectPickHandler : MonoBehaviour
         {
             pickReferences.gameOverTrigger.SetActive(true);
         }
-
     }
 
     public IEnumerator ObjectDrop()
@@ -261,7 +265,6 @@ public class ObjectPickHandler : MonoBehaviour
         if (XrayObject != null) XrayObject.SetActive(false);
         clueCountStoring = clueCount;
         pickReferences.currentClue.SetActive(false);
-
 
         transform.rotation = objectRotation;
         transform.parent = null;
@@ -278,7 +281,6 @@ public class ObjectPickHandler : MonoBehaviour
             enabled = false;
         }
 
-
         while (time < 1f)
         {
             time += Time.deltaTime;
@@ -290,6 +292,8 @@ public class ObjectPickHandler : MonoBehaviour
 
         isPicked = false;
         isCollected = false;
+        activePickup = null; // ✅ release active pickup so others can be picked
+
         if (checkClue)
         {
             int count = 0;
@@ -315,7 +319,6 @@ public class ObjectPickHandler : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
         isbusy = false;
-
     }
 
     private void XrayVisionEnable()
@@ -326,9 +329,7 @@ public class ObjectPickHandler : MonoBehaviour
         pickReferences.XrayCamara.SetActive(true);
 
         if (type == InspectType.Letter_1 && isCollected)
-        {
             pickReferences.gameOverTrigger.SetActive(true);
-        }
     }
 
     private void XrayVisionDisable()
@@ -354,10 +355,10 @@ public class ObjectPickHandler : MonoBehaviour
             offset = transform.position - ray.GetPoint(enter);
         }
     }
+
     private bool isDragging = false;
     private void imageDrag()
     {
-
         if (!isPicked || isMouseLocked || isVision) return;
         if (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) return;
 
@@ -401,40 +402,6 @@ public class ObjectPickHandler : MonoBehaviour
         {
             isDragging = false;
         }
-        /*
-        if (moveType == MoveType.Movable)
-        {
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            if (dragPlane.Raycast(ray, out float enter))
-            {
-                Vector3 hitPoint = ray.GetPoint(enter);
-                transform.position = hitPoint + offset;
-            }
-
-            Vector3 screenPos = mainCam.WorldToScreenPoint(transform.position);
-            screenPos.x = Mathf.Clamp(screenPos.x, 0, Screen.width);
-            screenPos.y = Mathf.Clamp(screenPos.y, 0, Screen.height);
-            transform.position = mainCam.ScreenToWorldPoint(screenPos);
-        }
-        else
-        {
-            turn.x = Input.GetAxis("Mouse X") * rotationSensitivity;
-            turn.y = Input.GetAxis("Mouse Y") * rotationSensitivity;
-
-            Vector3 right = Vector3.Cross(mainCam.transform.up, transform.position - mainCam.transform.position);
-            Vector3 up = Vector3.Cross(transform.position - mainCam.transform.position, right);
-
-            transform.rotation = Quaternion.AngleAxis(-turn.x, up) * transform.rotation;
-            transform.rotation = Quaternion.AngleAxis(turn.y, right) * transform.rotation;
-        }
-        */
-    }
-
-    private Vector3 GetMouseWorldPosition()
-    {
-        Vector3 mousePoint = Input.mousePosition;
-        mousePoint.z = mainCam.WorldToScreenPoint(transform.position).z;
-        return mainCam.ScreenToWorldPoint(mousePoint);
     }
 
     private void Avoid()
@@ -446,12 +413,10 @@ public class ObjectPickHandler : MonoBehaviour
             pickReferences.AvoidCam();
             XrayVisionDisable();
         }
-
     }
+
     public bool InteractionCheck()
     {
-        if (!isCollected) return false;
-        else return true;
+        return isCollected;
     }
-
 }
