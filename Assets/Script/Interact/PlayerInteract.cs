@@ -71,6 +71,8 @@ public class PlayerInteract : MonoBehaviour
 
     public ObjectPickHandler GetObjectPickHandler()
     {
+        if(TabletManager.isTabletOpen)return null;
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in colliders)
         {
@@ -81,7 +83,9 @@ public class PlayerInteract : MonoBehaviour
     }
 
     public ObjectMoving ObjectMovingHandler()
-    {/*
+    {
+        if (TabletManager.isTabletOpen) return null;
+        /*
         if (GetObjectPickHandler() != null) // check PickHandler first
             return null;
         */
@@ -95,7 +99,9 @@ public class PlayerInteract : MonoBehaviour
     }
 
     public ObjectInteract GetObjectInteract()
-    {/*
+    {
+        if (TabletManager.isTabletOpen) return null;
+        /*
         if (GetObjectPickHandler() != null || ObjectMovingHandler() != null) // check higher priority first
             return null;
         */
@@ -116,6 +122,8 @@ public class PlayerInteract : MonoBehaviour
 
     public SceneChanger SceneChangerHandler()
     {
+        if (TabletManager.isTabletOpen) return null;
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in colliders)
         {

@@ -145,10 +145,11 @@ public class ObjectPickHandler : MonoBehaviour
         }
 
         // Xray logic
-        if (isCollected && xrayType == XrayType.Xray &&
-            (XrayTutorial.Instance == null || XrayTutorial.Instance.shouldShowIcon))
+        if (isCollected && xrayType == XrayType.Xray)
         {
-            if (Input.GetKeyDown(XrayToggle))
+            if (XrayTutorial.Instance != null && !XrayTutorial.Instance.shouldShowIcon) return;
+
+                if (Input.GetKeyDown(XrayToggle))
             {
                 if (!isVision) XrayVisionEnable();
                 else XrayVisionDisable();

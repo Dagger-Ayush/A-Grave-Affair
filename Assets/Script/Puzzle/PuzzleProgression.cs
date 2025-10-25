@@ -24,6 +24,8 @@ public class PuzzleProgression : MonoBehaviour
     private bool puzzle2Solved = false;
     private bool puzzle3Solved = false;
 
+    private bool puzzle5Solved = false;
+
     private bool puzzle6Solved = false;
     private bool puzzle7Solved = false;
     private bool puzzle8Solved = false;
@@ -151,7 +153,7 @@ public class PuzzleProgression : MonoBehaviour
     {
         // If puzzle5 exists, proceed as usual
         //if (puzzle5Solved) return;
-
+        puzzle5Solved = true;
         if (puzzleStateData == null || puzzleStateData.IsComplete(5)) return;
 
         puzzleStateData.MarkComplete(5);
@@ -419,6 +421,10 @@ public class PuzzleProgression : MonoBehaviour
     public bool puzzle6and7Check()
     {
         if(puzzle6Solved && puzzle7Solved) return true;
+        else return false;
+    } public bool InfoPanelEnable()
+    {
+        if(puzzle5Solved) return true;
         else return false;
     }
 

@@ -33,6 +33,7 @@ public class TabletManager : MonoBehaviour
     public PointAndMovement pointAndMovement;
     public PlayerInteract playerInteract;
     private PuzzleData currentDisplayedPuzzle = null;
+    public PuzzleProgression puzzleProgression;
 
     public GameObject[] tabs;
     private int currentTab = 0;
@@ -49,7 +50,7 @@ public class TabletManager : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && playerInteract.isPointAndMovementEnabled == false)
+        if (Input.GetKeyDown(KeyCode.Tab) && ObjectInteract.activeInteraction == null && ObjectPickHandler.activePickup==null)
         {
             if (!canOpenTablet)
             {
@@ -62,7 +63,7 @@ public class TabletManager : MonoBehaviour
             StartCoroutine(SlideTablet(isOpen));
         }
 
-        if(isTabletOpen && Input.GetKeyDown(KeyCode.Q))
+        if(isTabletOpen && Input.GetKeyDown(KeyCode.Q) && puzzleProgression.InfoPanelEnable())
         {
             NextTab();
         }
@@ -93,6 +94,7 @@ public class TabletManager : MonoBehaviour
     }
     public IEnumerator SlideTablet(bool show)
     {
+        isTabletOpen = show;
         float startY = tabletPanel.anchoredPosition.y;
         float endY = show ? visibleY : hiddenY;
         float elapsed = 0f;
@@ -133,7 +135,6 @@ public class TabletManager : MonoBehaviour
             playerInteract.enabled = true;
         }
 
-        isTabletOpen = show;
     }
 
     public void CloseTablet()
