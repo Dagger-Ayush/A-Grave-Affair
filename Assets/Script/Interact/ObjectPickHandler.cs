@@ -258,6 +258,8 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectDrop()
     {
+        activePickup = null; // ✅ release active pickup so others can be picked
+
         XrayVisionDisable();
 
         pickReferences.eToExitimage.SetActive(false);
@@ -292,7 +294,6 @@ public class ObjectPickHandler : MonoBehaviour
 
         isPicked = false;
         isCollected = false;
-        activePickup = null; // ✅ release active pickup so others can be picked
 
         if (checkClue)
         {

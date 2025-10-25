@@ -81,10 +81,10 @@ public class PlayerInteract : MonoBehaviour
     }
 
     public ObjectMoving ObjectMovingHandler()
-    {
+    {/*
         if (GetObjectPickHandler() != null) // check PickHandler first
             return null;
-
+        */
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in colliders)
         {
@@ -95,10 +95,10 @@ public class PlayerInteract : MonoBehaviour
     }
 
     public ObjectInteract GetObjectInteract()
-    {
+    {/*
         if (GetObjectPickHandler() != null || ObjectMovingHandler() != null) // check higher priority first
             return null;
-
+        */
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in colliders)
         {

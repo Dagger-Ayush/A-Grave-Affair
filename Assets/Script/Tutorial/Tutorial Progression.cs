@@ -4,6 +4,7 @@ using UnityEngine;
 public class TutorialProgression: MonoBehaviour
 {
     public PuzzleData tabletData;
+
     private void Update()
     {
         ProgressionHandler();

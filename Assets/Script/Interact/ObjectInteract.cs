@@ -7,7 +7,7 @@ public class ObjectInteract : MonoBehaviour
 {
     public static ObjectInteract Instance;
 
-    public enum InteractType { Tablet, DogBed, Badge, Lighter, InteractiveAutomatic, NonInteractiveAutomatic, None }
+    public enum InteractType { Tablet, DogBed, Badge, Lighter, InteractiveAutomatic, NonInteractiveAutomatic, Cigarette, None }
     public InteractType type = InteractType.None;
 
     [Header("Dialog System")]
