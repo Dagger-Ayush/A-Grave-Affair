@@ -28,7 +28,10 @@ public class ObjectHovering : MonoBehaviour
 
     private void Update()
     {
-        if (!InspectionTutorial.Instance.isRotationComplete) return;
+        if (InspectionTutorial.Instance != null)
+        {
+            if (!InspectionTutorial.Instance.isRotationComplete) return;
+        }
         if (Camera.main == null || Mouse.current == null) return;
         ObjectDetecting();
     }
