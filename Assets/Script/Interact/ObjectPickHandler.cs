@@ -144,36 +144,18 @@ public class ObjectPickHandler : MonoBehaviour
             }
         }
 
-        // Xray logic
-        if (isCollected && xrayType == XrayType.Xray)
+        if (isCollected && Input.GetKeyDown(KeyCode.E))
         {
-            if (XrayTutorial.Instance != null && !XrayTutorial.Instance.shouldShowIcon) return;
-
-                if (Input.GetKeyDown(XrayToggle))
-            {
-                if (!isVision) XrayVisionEnable();
-                else XrayVisionDisable();
-            }
-
-            // Update UI
-            pickReferences.XrayOnImage.SetActive(isVision);
-            pickReferences.XrayOfImage.SetActive(!isVision);
-        }
-        else if (!isCollected)
-        {
-            XrayVisionDisable();
-        }
-
-        if (isPicked && Input.GetKeyDown(KeyCode.E))
-        {
-            if ((InteractClueManager.instance != null && pickReferences.inspectionTutorial != null &&
-                 (isbusy || InteractClueManager.isClueShowing || pickReferences.inspectionTutorial.isRunning))
-                || (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy)
-                || (XrayTutorial.Instance != null && XrayTutorial.Instance.isRunning))
-                return;
+             if (isbusy) return;
+             if (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) return;
+            if (XrayTutorial.Instance != null && XrayTutorial.Instance.isRunning) return;
+             if (InteractClueManager.instance != null && InteractClueManager.isClueShowing) return;
+             if (pickReferences.inspectionTutorial != null && pickReferences.inspectionTutorial.isRunning) return;
 
             StartCoroutine(ObjectDrop());
         }
+        
+
 
         if (playerInteract.GetObjectPickHandler() == this)
         {
@@ -201,6 +183,24 @@ public class ObjectPickHandler : MonoBehaviour
         {
             Avoid();
         }
+
+        if(!isCollected)return;
+        // Xray logic
+        if (isCollected && xrayType == XrayType.Xray)
+        {
+            if (XrayTutorial.Instance != null && !XrayTutorial.Instance.shouldShowIcon) return;
+
+            if (Input.GetKeyDown(XrayToggle))
+            {
+                if (!isVision) XrayVisionEnable();
+                else XrayVisionDisable();
+            }
+
+            // Update UI
+            pickReferences.XrayOnImage.SetActive(isVision);
+            pickReferences.XrayOfImage.SetActive(!isVision);
+        }
+
     }
 
     public IEnumerator ObjectPickUp()

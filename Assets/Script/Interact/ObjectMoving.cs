@@ -108,22 +108,12 @@ public class ObjectMoving : MonoBehaviour
     }
     void DogBedMoving()
     {
-
-       
-
         objectInteract.enabled = true;
-
-      
-
-        float objectMove = 2;
-
-        float z = transform.position.z ;
-        
+        float objectMove = 1.15f;
+        float z = transform.position.z ;  
         transform.position = new Vector3(transform.position.x, transform.position.y, z -= objectMove);
-
         isCompleted = true;
-
-
+        enabled = false;
     }
     void DogBowlFilling()
     {
