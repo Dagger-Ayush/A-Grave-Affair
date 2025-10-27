@@ -24,7 +24,12 @@ MonoBehaviour:
     blood at the base of the stairs.
   - "Ahh.. right, the call. Well, no need to worry, now that we are here, we\u2019ll
     get to the bottom of this"
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: b3e11886e3c275f4d9844ba4e6f48864, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: ad7e156a56b15484589d86d3eb87931e, type: 2}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}

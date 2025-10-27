@@ -22,7 +22,7 @@ MonoBehaviour:
     sharper than anyone I\u2019ve worked with."
   - The detective is always right. Arrest her before she poisons the other guests!
   - "I swear I didn\u2019t do it! You have to believe me !!"
-  - "t\u2019s not looking good for you, Alex. You are the only one who delivered
+  - "it\u2019s not looking good for you, Alex. You are the only one who delivered
     milkshakes to the guests, and Martin had an Alibi as he was with Ms. Regina."
   - "But it\u2019s also true that there\u2019s no motive for her to do this, so until
     I investigate further, Gregory will have to keep an eye on her and everyone else."
@@ -33,7 +33,19 @@ MonoBehaviour:
   - "Calm down, you idiot! Detective, there has to be some misunderstanding. Please
     get to the bottom of this! Our Motel\u2019s spotless record can\u2019t be tainted
     because of this."
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 11400000, guid: c2d38121e28504b4591f883d79974bbd, type: 2}
+  - {fileID: 11400000, guid: 9f903245a28a56a4798bd3a5292b85f9, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: eac35bed13575d644a4a1f5fbc22807d, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 2bbe42abd5b47fc408a70ff77245a32d, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: c289506b6ba325246adcd0d561f552cb, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 970a39f2aaa6ee1418bab2fb6484f166, type: 2}
+  - {fileID: 0}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}

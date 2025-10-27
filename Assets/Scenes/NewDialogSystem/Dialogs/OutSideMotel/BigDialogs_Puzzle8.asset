@@ -16,7 +16,8 @@ MonoBehaviour:
   dialogLines:
   - "Oh No! It seems like I was Wrong, Alex is being framed\u2026 Then who is the
     killer???"
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 11400000, guid: 378adfd601ddaad4282fd55984c696ed, type: 2}
   doBackgroundChange: 0
   backgroundImages: []
   changeFontSize: 1

@@ -19,7 +19,11 @@ MonoBehaviour:
   - "What do you mean? Didn\u2019t she die by falling down the stairs? "
   - "No, I\u2019m afraid Nancy was murdered by poisoning. There were traces of poison
     on her milkshake."
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 11400000, guid: 4d9a574eded8e874c9a2e4716a741710, type: 2}
+  - {fileID: 11400000, guid: 9cd8b7bb3d51c92459d0deb667188a47, type: 2}
+  - {fileID: 11400000, guid: bc3a6bd3bc1f961409869cbae2fba41c, type: 2}
+  - {fileID: 0}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}

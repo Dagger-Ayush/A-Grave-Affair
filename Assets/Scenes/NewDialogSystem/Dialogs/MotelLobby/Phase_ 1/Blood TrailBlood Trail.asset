@@ -16,7 +16,10 @@ MonoBehaviour:
   dialogLines:
   - That looks odd. If Nancy had a fall, why is there a <link="Blood-Trail">Blood-Trail</color></link>
     on the top of the stairs?
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 11400000, guid: 86c2beb8e5f874a499a41e76d45be3b8, type: 2}
+  doBackgroundChange: 0
+  backgroundImages: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02

@@ -19,7 +19,11 @@ MonoBehaviour:
   - "Nancy didn\u2019t actually die from falling down the stairs; she was murdered
     by poisoning !!"
   - "Oh my god, alright, I\u2019ll gather everyone."
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 77b65f4190ea3f84b8489230bf26b3e1, type: 2}
+  - {fileID: 11400000, guid: 395a88425c739ab48a929ba259ed1215, type: 2}
+  - {fileID: 0}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}

@@ -34,7 +34,18 @@ MonoBehaviour:
   - "Okay okay don\u2019t get all mushy on me, but only because something might actually
     be wrong, and I\u2019ll be the one making the arrest."
   - "You got yourself a deal, now let\u2019s go!"
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 1c8dc4b06213dbe499504aaa9ffb901f, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 5dead43dc3f62e541b1f78cbe3d99c88, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: c5ac4ffe23f2895449c12d98de948280, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 8155989756be57a419a2def4883cbf54, type: 2}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}

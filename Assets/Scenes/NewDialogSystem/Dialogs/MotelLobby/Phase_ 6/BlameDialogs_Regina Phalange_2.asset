@@ -23,7 +23,14 @@ MonoBehaviour:
     fidgeting with something heavy.
   - "Well that\u2019s not confusing at all\u2026. thank you Ms. Phalange!. I am not
     sure if this is helpful but I do have an extra place for investigation now."
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: fd9cbd18599c1af4d9ae6b9a28343f68, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 355669e018593cf41b9c5475ee0b8040, type: 2}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: abb8620d0fb691e4dbc6e1d4e2677d77, type: 3}

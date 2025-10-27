@@ -18,7 +18,9 @@ MonoBehaviour:
     friendly to a hot lady, now is that a crime??
   - "It isn\u2019t, but it\u2019s still suspicious if she gets MURDERED! (This guy
     must suck at parties.)"
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 11400000, guid: d4b52437ab6fa37439822c836633c8cc, type: 2}
+  - {fileID: 0}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 570d000110eef59419fa71169cb32054, type: 3}

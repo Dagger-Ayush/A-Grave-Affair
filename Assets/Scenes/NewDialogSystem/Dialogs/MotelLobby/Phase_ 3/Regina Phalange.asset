@@ -19,7 +19,9 @@ MonoBehaviour:
     it !?"
   - "Umm.. yeah\u2026 strange indeed (even more strange that you were eavesdropping
     on strangers)."
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 11400000, guid: 3c0f46c2794668741ad9d42fe767223c, type: 2}
+  - {fileID: 0}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: abb8620d0fb691e4dbc6e1d4e2677d77, type: 3}

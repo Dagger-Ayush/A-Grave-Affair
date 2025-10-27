@@ -24,7 +24,17 @@ MonoBehaviour:
   - " \u2026..Is that why you wanted me to use your phone?"
   - Now you get it, I guess you are not too rusty after all, good job detective!
   - 'Umm..Thanks I guess '
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: cd0f7b2662a7cad45bf173a254591a7f, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 83b88f5ea7e19f546bef21e7dbf867b4, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 4f1aa099030d46946a5a8fc65a3aa609, type: 2}
+  - {fileID: 0}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 78a2781b132846d45a83db16be7da217, type: 3}

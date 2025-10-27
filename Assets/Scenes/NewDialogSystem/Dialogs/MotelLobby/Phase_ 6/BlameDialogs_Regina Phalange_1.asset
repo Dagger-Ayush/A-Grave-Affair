@@ -25,7 +25,15 @@ MonoBehaviour:
   - "Umm\u2026.Are you Serious?"
   - As Serious as a heart attack
   - "Unbelievable \u2026\u2026"
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 86bbc7fed98795548abcc974eaefd960, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 0d387f45f25b10b40bc612d1354f0183, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: abb8620d0fb691e4dbc6e1d4e2677d77, type: 3}

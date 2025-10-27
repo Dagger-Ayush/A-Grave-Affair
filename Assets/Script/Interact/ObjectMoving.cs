@@ -31,6 +31,8 @@ public class ObjectMoving : MonoBehaviour
     [SerializeField] private Animation anim;
     [SerializeField] private Transform Dog;
     [SerializeField] private Image fadeImage;
+    [SerializeField] private GameObject bed_dummy;
+    [SerializeField] private GameObject bed_Main;
 
 
     [SerializeField] private TextMeshProUGUI infoText;

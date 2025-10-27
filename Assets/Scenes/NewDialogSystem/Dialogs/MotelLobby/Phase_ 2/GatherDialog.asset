@@ -27,7 +27,14 @@ MonoBehaviour:
   - "Great! There\u2019s at least one of you who has kept their wits. Greg, please
     see that no one leaves the motel. I have a lot of questions."
   - You got it, Johny!  Now carry on and let me know what you find.
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 3b1cf6586f728fd44ba2c32b1c3e2ec7, type: 2}
+  - {fileID: 11400000, guid: fbdf3c9f89ae03b48b5253e11533aab7, type: 2}
+  - {fileID: 11400000, guid: 8c682e7c5ed86a1478c1dae7bc447c5d, type: 2}
+  - {fileID: 11400000, guid: ebccba94f1a0fdf4785d4264da080bc8, type: 2}
+  - {fileID: 11400000, guid: b80725a67ac60d34188434ad20431e1f, type: 2}
+  - {fileID: 11400000, guid: 197a30abd7df6d04985c783acbde0336, type: 2}
   doBackgroundChange: 1
   backgroundImages:
   - {fileID: 21300000, guid: 91209a4b899d6af429944ebcdd87bcbb, type: 3}
