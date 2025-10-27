@@ -411,6 +411,7 @@ public class ObjectPickHandler : MonoBehaviour
             outRange.alpha = 1;
             pickReferences.AvoidCam();
             XrayVisionDisable();
+            pickReferences.XrayOfImage.SetActive(false);
         }
     }
 
