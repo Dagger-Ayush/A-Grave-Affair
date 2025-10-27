@@ -143,11 +143,14 @@ public class ObjectPickHandler : MonoBehaviour
                 inRange.alpha = 0;
             }
         }
-        if (isCollected && xrayType == XrayType.Xray && Input.GetKeyDown(XrayToggle) &&
+        if (isCollected && xrayType == XrayType.Xray &&
             (XrayTutorial.Instance == null || XrayTutorial.Instance.shouldShowIcon))
         {
-            if (!isVision) XrayVisionEnable();
-            else XrayVisionDisable();
+            if (Input.GetKeyDown(XrayToggle))
+            {
+                if (!isVision) XrayVisionEnable();
+                else XrayVisionDisable();
+            }
 
             // Update UI
             pickReferences.XrayOnImage.SetActive(isVision);

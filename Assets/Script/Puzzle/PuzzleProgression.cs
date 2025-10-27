@@ -28,7 +28,6 @@ public class PuzzleProgression : MonoBehaviour
 
     private bool puzzle6Solved = false;
     private bool puzzle7Solved = false;
-    private bool puzzle8Solved = false;
 
     [SerializeField] private ObjectInteract dummyObjectDialog;
     [SerializeField] private ObjectInteract nancyRoomDialog1;
@@ -239,7 +238,6 @@ public class PuzzleProgression : MonoBehaviour
 
         puzzleStateData.MarkComplete(8);
 
-        puzzle8Solved = true;
         StartCoroutine(CloseTabletAfterDelay(() =>
         {
             OutsideMotelDialog();

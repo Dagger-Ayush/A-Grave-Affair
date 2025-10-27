@@ -21,6 +21,7 @@ public class ObjectMoving : MonoBehaviour
     public GameObject dialogContainer;
 
     private bool isCompleted = false;
+    private bool isMainMoved = false;
     [HideInInspector]public static bool canInteract = false;
     private static bool canInteractWithBed = false;
 
@@ -107,15 +108,26 @@ public class ObjectMoving : MonoBehaviour
             outRange.alpha = 0;
             inRange.alpha = 0;
         }
+
+        if (isCompleted && objectInteract!=null && objectInteract.isInteractionComplete && !isMainMoved)
+        {
+            float objectMove = 2f;
+            float z = bed_Main.transform.position.z;
+
+            bed_dummy.transform.localPosition = Vector3.zero;
+            bed_Main.transform.position = new Vector3(bed_Main.transform.position.x, bed_Main.transform.position.y, z -= objectMove);
+            isMainMoved = true;
+            enabled = false;
+        }
     }
     void DogBedMoving()
     {
         objectInteract.enabled = true;
-        float objectMove = 1.15f;
-        float z = transform.position.z ;  
-        transform.position = new Vector3(transform.position.x, transform.position.y, z -= objectMove);
-        isCompleted = true;
-        enabled = false;
+       
+            float objectMove = 2f;
+            float z = bed_dummy.transform.position.z;
+            bed_dummy.transform.position = new Vector3(bed_dummy.transform.position.x, bed_dummy.transform.position.y, z -= objectMove);
+            isCompleted = true;
     }
     void DogBowlFilling()
     {
