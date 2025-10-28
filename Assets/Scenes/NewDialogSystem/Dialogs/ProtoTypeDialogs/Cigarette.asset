@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: JhonM
   dialogLines:
-  - 'Did I smoke a whole pack in the last week?? '
-  - Eh might as well finish it and have the last one
+  - 'Did I smoke a whole pack  last week?? '
+  - Eh might as well finish  the last one
   dialogAudio:
   - {fileID: 11400000, guid: c1b726ea410187e4ba7b5fc5e4de12cb, type: 2}
   - {fileID: 11400000, guid: 303264ad1f4deb846b71a3eb2e94ee57, type: 2}
+  doBackgroundChange: 0
+  backgroundImages: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02

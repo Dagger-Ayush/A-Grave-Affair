@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Badge
   dialogLines:
-  - The broken heel looks very precise, like it has been cut cleanly instead of breaking
-    by tripping.
+  - The broken heel looks very precise, like it has been cut cleanly instead of breaking.
   dialogAudio: []
+  doBackgroundChange: 0
+  backgroundImages: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02

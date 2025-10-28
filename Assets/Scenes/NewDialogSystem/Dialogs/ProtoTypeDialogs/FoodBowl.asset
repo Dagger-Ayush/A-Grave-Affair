@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: JhonM
   dialogLines:
-  - Here you go Buddy
+  - Here you go Buddy!
   dialogAudio:
   - {fileID: 11400000, guid: 02d677418c5613b4e8f7e02c4bd0c7c9, type: 2}
+  doBackgroundChange: 0
+  backgroundImages: []
   changeFontSize: 0
   frontSize:
   - 45

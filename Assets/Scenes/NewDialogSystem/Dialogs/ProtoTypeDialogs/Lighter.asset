@@ -14,12 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: JhonM
   dialogLines:
-  - "Wait a minute, The Lighter. I know it\u2019s still shiny, but it\u2019s not
-    your toy big fella."
+  - "Wait a minute, The Lighter. I know it\u2019s shiny, but it\u2019s not your toy
+    big fella."
   - "I cannot afford to lose this, it\u2019s her last memento"
   dialogAudio:
-  - {fileID: 11400000, guid: a798dd0f8fe60e14c9b00c6560e154ad, type: 2}
-  - {fileID: 11400000, guid: 7c199c0ce4098e545b31f9ceb9d5b187, type: 2}
+  - {fileID: 11400000, guid: d4daf122bb6ea174aa0a3f55c9d9f59c, type: 2}
+  - {fileID: 0}
+  doBackgroundChange: 0
+  backgroundImages: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02

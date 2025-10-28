@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sorce:
   - {fileID: 0}
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: 39e1d6af3b333d542bf006c3ae25f335, type: 3}
   volume: 1
   pitch: 1
   loop: 0

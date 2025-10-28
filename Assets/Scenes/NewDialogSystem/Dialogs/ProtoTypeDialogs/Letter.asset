@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: JhonM
   dialogLines:
-  - What a strange letter....And how does this person know I can read hidden letters??
+  - What a strange letter....and how does this person know I can read hidden letters??
   - This is very suspicious, it may be worth checking it out
   dialogAudio:
   - {fileID: 0}

@@ -15,7 +15,7 @@ MonoBehaviour:
   characterName: JhonM
   dialogLines:
   - "It\u2019s been a while since I took a  <link=\"Case\">case </color></link>.
-    After she passed away, it\u2019s difficult."
+    After she passed away, it\u2019s been difficult."
   - I doubt if I even have it in me anymore.
   dialogAudio:
   - {fileID: 11400000, guid: 7acc7dcb369c6bc49be294395fd420a4, type: 2}

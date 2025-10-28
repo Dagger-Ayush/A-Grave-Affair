@@ -16,12 +16,12 @@ MonoBehaviour:
   dialogLines:
   - "Hey y\u2019all, we received a call about an accidental death. I\u2019m Detective
     John Marrow. "
-  - This is my colleague Gregory Vertebrae. We had a few questions before we conducted
+  - That's my colleague Gregory Vertebrae. We had a few questions before we conducted
     the investigation.
   - "I\u2019m Martin Femur, the manager of this motel. I\u2019m the one who made
     the call. The lady you can see lying on the floor was a guest named Nancy Cranium.  "
   - I had gone out to the back for a smoke break and found her lying in a pool of
-    blood at the base of the stairs.
+    blood at the base of the stairs!
   - "Ahh.. right, the call. Well, no need to worry, now that we are here, we\u2019ll
     get to the bottom of this"
   dialogAudio:

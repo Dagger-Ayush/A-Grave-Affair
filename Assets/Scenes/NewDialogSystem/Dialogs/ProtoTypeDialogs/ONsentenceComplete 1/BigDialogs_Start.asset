@@ -15,7 +15,8 @@ MonoBehaviour:
   characterName: 
   dialogLines:
   - ' Now where the heck did I put my lighter '
-  dialogAudio: []
+  dialogAudio:
+  - {fileID: 11400000, guid: 3079302c59f1def468cad3ab42edbba6, type: 2}
   doBackgroundChange: 0
   backgroundImages: []
   changeFontSize: 1
