@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e6fae3ee9237644facb1260f816c726, type: 3}
   m_Name: Global Puzzle State
   m_EditorClassIdentifier: Assembly-CSharp::GlobalPuzzleStateData
-  completedPuzzles: 050000000600000007000000
+  completedPuzzles: 05000000
   allPuzzles:
   - {fileID: 11400000, guid: 10f26d7a2cd2eb84d9dcd9b65e98dc68, type: 2}
   - {fileID: 11400000, guid: 2f8f2949ff1ea364d8b777fe084744e1, type: 2}

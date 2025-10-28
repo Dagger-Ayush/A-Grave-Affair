@@ -102,6 +102,7 @@ public class PuzzleProgression : MonoBehaviour
 
             TabletManager.Instance.puzzlePanel.SetActive(false);
             TabletManager.Instance.clueBox.SetActive(false);
+            ClueBoxManager.Instance.RestoreClueBoxPosition();
             feedbackText.text = " ";
 
             if (puzzle2 != null) puzzle2.SetActive(true);
@@ -163,6 +164,7 @@ public class PuzzleProgression : MonoBehaviour
 
             TabletManager.Instance.puzzlePanel.SetActive(false);
             TabletManager.Instance.clueBox.SetActive(false);
+            ClueBoxManager.Instance.RestoreClueBoxPosition();
             feedbackText.text = " ";
 
             if (puzzle6 != null) puzzle6.SetActive(true);
@@ -190,6 +192,7 @@ public class PuzzleProgression : MonoBehaviour
 
             TabletManager.Instance.puzzlePanel.SetActive(false);
             TabletManager.Instance.clueBox.SetActive(false);
+            ClueBoxManager.Instance.RestoreClueBoxPosition();
             feedbackText.text = " ";
             OnPuzzle6Completed?.Invoke();
         }));
@@ -215,6 +218,7 @@ public class PuzzleProgression : MonoBehaviour
 
             TabletManager.Instance.puzzlePanel.SetActive(false);
             TabletManager.Instance.clueBox.SetActive(false);
+            ClueBoxManager.Instance.RestoreClueBoxPosition();
             feedbackText.text = " ";
             OnPuzzle7Completed?.Invoke();
         }));
@@ -244,6 +248,7 @@ public class PuzzleProgression : MonoBehaviour
             
             TabletManager.Instance.puzzlePanel.SetActive(false);
             TabletManager.Instance.clueBox.SetActive(false);
+            ClueBoxManager.Instance.RestoreClueBoxPosition();
             feedbackText.text = " ";
             
         }));

@@ -3,14 +3,28 @@ using UnityEngine.UI;
 
 public class ClueBoxManager : MonoBehaviour
 {
+    public static ClueBoxManager Instance;
     public GameObject clueBox; 
     private GameObject currentButton;
+    private int clueBoxOriginalIndex;
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    void Start()
+    {
+        clueBoxOriginalIndex = clueBox.transform.GetSiblingIndex();
+    }
 
     public void ToggleClueBoxBelow(Transform buttonTransform)
     {
         if (clueBox.activeSelf && currentButton == buttonTransform.gameObject)
         {
             clueBox.SetActive(false);
+            clueBox.transform.SetSiblingIndex(clueBoxOriginalIndex);
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)clueBox.transform.parent);
             currentButton = null;
             return;
         }
@@ -27,4 +41,10 @@ public class ClueBoxManager : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)clueBox.transform.parent);
     }
+
+    public void RestoreClueBoxPosition()
+    {
+        clueBox.transform.SetSiblingIndex(clueBoxOriginalIndex);
+    }
+
 }
