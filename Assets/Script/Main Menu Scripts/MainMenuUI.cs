@@ -56,9 +56,6 @@ public class MainMenuUI : MonoBehaviour
 
     private void TriggerPauseMenu()
     {
-        Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.name != "Proto Scene") return;
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             // Case 1: Volume panel is active → go back to Pause Menu
