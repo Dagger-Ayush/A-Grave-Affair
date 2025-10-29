@@ -460,6 +460,6 @@ public class PuzzleProgression : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         // Load the main menu scene
-        SceneManager.LoadScene("New Mainmenu");
+        SceneManager.LoadScene(0);
     }
 }
