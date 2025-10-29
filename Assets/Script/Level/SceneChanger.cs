@@ -26,29 +26,21 @@ public class SceneChanger : MonoBehaviour
 
     private void Start()
     {
-        // Check if the outside door was already entered
-        if (doortype == DoorType.OutSideDoor)
+            // Check if the outside door was already entered
+            if (doortype == DoorType.OutSideDoor)
             {
-            if (PlayerPrefs.GetInt("EnteredOutsideDoor", 0) == 1)
-            {
-                canChangeScene = true;
-
-                // Destroy gregObject if it exists
-                if (gregObject != null)
+                if (PlayerPrefs.GetInt("EnteredOutsideDoor", 0) == 1)
                 {
-                    Destroy(gregObject);
-                }
+                    canChangeScene = true;
 
-                if (GamePhaseManager.MotelLobbyPhase >= 9)
-                {
-                    if(door != null)
+                    // Destroy gregObject if it exists
+                    if (gregObject != null)
                     {
-                        door.SetActive(false);
+                        Destroy(gregObject);
                     }
-                    return;
-                }
+
                     // Make door active if assigned
-                    else if (door != null && !door.activeSelf)
+                    if (door != null && !door.activeSelf)
                     {
                         door.SetActive(true);
                     }

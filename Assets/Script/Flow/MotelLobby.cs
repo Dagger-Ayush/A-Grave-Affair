@@ -524,7 +524,6 @@ public class MotelLobby : MonoBehaviour
         ONsentenceCompleteInteract_2.enabled = true;
         ONsentenceCompleteInteract_2.shouldWork = true;
         PosandAnimationUpdate.Instance.UpdatePhase_6();
-        DisableCompletedPuzzle();
     }
     IEnumerator ObjectsEnablePhase_7_R_1()
     {
@@ -608,18 +607,6 @@ public class MotelLobby : MonoBehaviour
             // Fallback (if no data)
             puzzleProgression.puzzle6?.SetActive(true);
             puzzleProgression.puzzle7?.SetActive(true);
-        }
-    }
-
-    private void DisableCompletedPuzzle()
-    {
-        if(puzzleProgression.puzzle6 != null && puzzleProgression.puzzle6.activeSelf)
-        {
-            puzzleProgression.puzzle6.SetActive(false);
-        }
-        if (puzzleProgression.puzzle7 != null && puzzleProgression.puzzle7.activeSelf)
-        {
-            puzzleProgression.puzzle7.SetActive(false);
         }
     }
 }

@@ -22,4 +22,4 @@ MonoBehaviour:
   - Uniform
   - Garbage
   puzzleID: 8
-  isCompleted: 0
+  isCompleted: 1
