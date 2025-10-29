@@ -46,6 +46,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private bool isVision = false;
     private bool isbusy = false;
+   [SerializeField] private bool doRotationInvert = false;
 
     public static int clueCount;
     public int totalClues;
@@ -394,7 +395,10 @@ public class ObjectPickHandler : MonoBehaviour
                 Vector3 up = Vector3.Cross(transform.position - mainCam.transform.position, right);
 
                 transform.rotation = Quaternion.AngleAxis(-turn.x, up) * transform.rotation;
-                transform.rotation = Quaternion.AngleAxis(turn.y, right) * transform.rotation;
+                if (!doRotationInvert)
+                    transform.rotation = Quaternion.AngleAxis(turn.y, right) * transform.rotation;
+                else
+                transform.rotation = Quaternion.AngleAxis(-turn.y, right) * transform.rotation;
             }
         }
 
