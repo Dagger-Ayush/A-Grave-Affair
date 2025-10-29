@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class ObjectPickHandler : MonoBehaviour
 {
     public static ObjectPickHandler Instance;
+
     public static ObjectPickHandler activePickup; // ✅ track the currently active pickup
 
     public enum InspectType { Cigarette, Lighter, Letter_1, TutorialLetter, None }

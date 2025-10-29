@@ -84,6 +84,7 @@ public class ObjectInteract : MonoBehaviour
 
     private void Update()
     {
+       
         if ((ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck())
            && outRange != null && inRange != null)
         {
@@ -91,7 +92,21 @@ public class ObjectInteract : MonoBehaviour
             inRange.alpha = 0;
             return;
         }
+        if (!shouldWork) return;
 
+        if (type == InteractType.NonInteractiveAutomatic && !isAutoComplete)
+        {
+            if (activeInteraction != null && activeInteraction != this)
+                return;
+
+            if (!isInteracted)
+            {
+                StartInteraction();
+                playerInteract.doPointAndMovementWork = true;
+            }
+            else if (isInteracted && Input.GetKeyDown(KeyCode.E)) NextDialogueImage();
+            return;
+        }
         if (type == InteractType.DogBed && !InteractedWithDogBed)
         {
             if (!isInteracted) StartInteraction();
@@ -99,12 +114,6 @@ public class ObjectInteract : MonoBehaviour
             return;
         }
 
-        if (type == InteractType.NonInteractiveAutomatic && !isAutoComplete)
-        {
-            if (!isInteracted) StartInteraction();
-            else if (isInteracted && Input.GetKeyDown(KeyCode.E)) NextDialogueImage();
-            return;
-        }
 
         if (ObjectPickHandler.Instance != null)
         {
@@ -114,8 +123,7 @@ public class ObjectInteract : MonoBehaviour
 
         if (playerInteract.GetObjectInteract() == this)
         {
-            if (!shouldWork) return;
-
+           
             if (outRange != null) outRange.alpha = 0;
             if (ObjectPickHandler.Instance != null && inRange != null)
                 inRange.alpha = (!isInteracted && !ObjectPickHandler.Instance.InteractionCheck()) ? 1 : 0;
@@ -172,6 +180,9 @@ public class ObjectInteract : MonoBehaviour
         isInteracting = true;
         isInteracted = true;
 
+        if (type == InteractType.NonInteractiveAutomatic && !isAutoComplete)
+        { playerInteract.doPointAndMovementWork = true;}
+           
         if (currentImageIndex >= dialogManager.dialogLines.Length)
             currentImageIndex = 0;
 
@@ -182,6 +193,12 @@ public class ObjectInteract : MonoBehaviour
         gettingClueCount?.AddTick(clueCount, totalClues);
 
         TypeLine();
+       
+            if (ObjectPickReferences.instance != null)
+            {
+                ObjectPickReferences.instance.XrayOnImage.SetActive(false);
+                ObjectPickReferences.instance.XrayOfImage.SetActive(false);
+            }
     }
 
     public void NextDialogueImage()
@@ -217,14 +234,22 @@ public class ObjectInteract : MonoBehaviour
         }
         else
         {
-            isInteracting = false;
-            isInteracted = false;
-            activeInteraction = null; // ✅ allow next object to be interactable
             gettingClueCount?.DisableAll();
             HandlePostDialogueActions();
-        }
-    }
 
+            // ✅ Keep interaction active for NonInteractiveAutomatic until it’s marked complete
+            if (type == InteractType.NonInteractiveAutomatic)
+            {
+                playerInteract.doPointAndMovementWork = false;
+            }
+             // Default end of interaction
+                isInteracting = false;
+                isInteracted = false;
+                activeInteraction = null;
+        }
+
+    }
+  
     private void HandlePostDialogueActions()
     {
         isInteractionComplete = true;
@@ -251,13 +276,11 @@ public class ObjectInteract : MonoBehaviour
         if (type == InteractType.InteractiveAutomatic)
         {
             isAutoCompleteNearObject = true;
-            playerInteract.player.GetComponent<PointAndMovement>().enabled = true;
         }
 
         if (type == InteractType.NonInteractiveAutomatic)
         {
             isAutoComplete = true;
-            playerInteract.player.GetComponent<PointAndMovement>().enabled = true;
         }
 
         if (type == InteractType.Lighter)

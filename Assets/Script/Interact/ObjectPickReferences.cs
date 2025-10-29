@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class ObjectPickReferences : MonoBehaviour
 {
+    public static ObjectPickReferences instance;
+
     public GameObject objectContainer;
     public GameObject inspectionBackroundimage;
     public Camera inspectionCamara;
@@ -34,6 +36,11 @@ public class ObjectPickReferences : MonoBehaviour
     public GameObject eToExitimage;
 
     public AudioSource nextPageSound;
+
+    private void Awake()
+    {
+        instance = this;
+    }
     public void SwitchCam()
     {/*
         if (FocusCam.Priority == 0)

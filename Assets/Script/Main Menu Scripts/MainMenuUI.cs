@@ -10,8 +10,18 @@ public class MainMenuUI : MonoBehaviour
 
     void Update()
     {
-        TriggerPauseMenu();
-        TriggerVolume();
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name != "New Mainmenu")
+        {
+            TriggerVolume();
+        }
+        else
+        {
+            TriggerPauseMenu();
+           
+        }
+
+
     }
 
     public void Exit()
@@ -83,9 +93,6 @@ public class MainMenuUI : MonoBehaviour
     }
     private void TriggerVolume()
     {
-        Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.name != "New Mainmenu") return;
-
         // Only act if volume panel is active
         if (Input.GetKeyDown(KeyCode.Escape) && volumeMenu != null && volumeMenu.activeSelf)
         {

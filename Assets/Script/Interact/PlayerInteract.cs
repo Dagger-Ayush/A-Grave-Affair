@@ -14,6 +14,7 @@ public class PlayerInteract : MonoBehaviour
     public Image tabletImage;
 
     [HideInInspector] public bool isPointAndMovementEnabled;
+     public bool doPointAndMovementWork = false;
     private PointAndMovement pointAndMovement;
     private PlayerDialog playerDialog;
     public bool shouldTabletWork;
@@ -22,6 +23,7 @@ public class PlayerInteract : MonoBehaviour
 
     private void Start()
     {
+        doPointAndMovementWork = false;
         pointAndMovement = GetComponent<PointAndMovement>();
         playerDialog = GetComponent<PlayerDialog>();
     }
@@ -39,7 +41,7 @@ public class PlayerInteract : MonoBehaviour
 
         bool isPlayerInteracting = playerDialog != null && playerDialog.isInteraction;
 
-        if (canInteract)
+        if (canInteract || doPointAndMovementWork)
         {
             isPointAndMovementEnabled = true;
             if (pointAndMovement != null && player != null)
@@ -54,7 +56,7 @@ public class PlayerInteract : MonoBehaviour
             if (animator != null)
                 animator.SetBool("IsWalking", false);
         }
-        else if (!canInteract && !isPlayerInteracting)
+        else if (!canInteract && !isPlayerInteracting && !doPointAndMovementWork)
         {
             if (player != null)
                 player.GetComponent<Rigidbody>().isKinematic = false;
@@ -67,6 +69,7 @@ public class PlayerInteract : MonoBehaviour
             if (pointAndMovement != null)
                 pointAndMovement.enabled = true;
         }
+      
     }
 
     public ObjectPickHandler GetObjectPickHandler()
