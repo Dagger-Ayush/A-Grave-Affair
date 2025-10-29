@@ -25,4 +25,4 @@ MonoBehaviour:
   - Fall
   - Wound
   puzzleID: 5
-  isCompleted: 1
+  isCompleted: 0
