@@ -350,9 +350,19 @@ public class MotelLobby : MonoBehaviour
         {
             ObjectsEnablePhase_9_R_2();
         }
-        if (suspectDialogs[2].isInteractionComplete)
+        if (currentPhase == 10 && suspectDialogs[2].isInteractionComplete)
         {
             ObjectsEnablePhase_10();
+        }
+        if (suspectDialogs[2].isInteractionComplete)
+        {
+            // Only set the PlayerPref if it hasn't been set before
+            if (PlayerPrefs.GetInt("DressInteractionDone", 0) == 0)
+            {
+                PlayerPrefs.SetInt("DressInteractionDone", 1); // 1 = true
+                PlayerPrefs.Save();
+                Debug.Log("Dress interaction completed and saved!");
+            }
         }
     }
 
@@ -556,6 +566,7 @@ public class MotelLobby : MonoBehaviour
     {
         Debug.Log("Phase_9 Started");
         currentPhase = 10;
+       
         suspectDialogs[2].enabled = true;
         suspectDialogs[2].shouldWork = true;
         suspectColliders[2].enabled = true;
@@ -567,14 +578,17 @@ public class MotelLobby : MonoBehaviour
     void ObjectsEnablePhase_10()
     {
         currentPhase = 11;
-        // Only set the PlayerPref if it hasn't been set before
-        if (PlayerPrefs.GetInt("DressInteractionDone", 0) == 0)
+        foreach(ObjectInteract interact in suspectDialogs)
         {
-            PlayerPrefs.SetInt("DressInteractionDone", 1); // 1 = true
-            PlayerPrefs.Save();
-            Debug.Log("Dress interaction completed and saved!");
+            interact.enabled = false;
+            interact.shouldWork = false;
+        }
+        foreach(Collider col in suspectColliders)
+        {
+            col.enabled = false;
         }
     }
+  
     public void EnableOnSentence1CompleteDialogs()
     {
         ONsentence1CompleteTrigger.enabled = true;
