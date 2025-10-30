@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PosandAnimationUpdate : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class PosandAnimationUpdate : MonoBehaviour
     public GameObject[] charObjects;
     public GameObject[] targetposition_1;
     public AnimationClip[] newAnimationClips_1;
-    public Animator[] charAnimators; // same animators for both phases
+    public Animator[] charAnimators;
 
     [Header("Phase_2")]
     public GameObject[] targetposition_2;
@@ -27,91 +27,80 @@ public class PosandAnimationUpdate : MonoBehaviour
 
     [Header("Phase_5")]
     public AnimationClip[] newAnimationClips_5;
+
     [Header("Phase_6")]
     public GameObject[] targetposition_6;
     public AnimationClip[] newAnimationClips_6;
+
+    // cache override controllers
+    private AnimatorOverrideController[] overrideControllers;
+
     private void Awake()
     {
         Instance = this;
     }
 
-    // --- PHASE 1 ---
-    public void UpdatePhase_1()
+    private void Start()
     {
-        UpdatePhase(charObjects, targetposition_1, charAnimators, newAnimationClips_1);
-    }
+        if (charAnimators == null || charAnimators.Length == 0)
+            return;
 
-    // --- PHASE 2 ---
-    public void UpdatePhase_2()
-    {
-        // Update characters
-        UpdatePhase(charObjects, targetposition_2, charAnimators, newAnimationClips_2);
+        overrideControllers = new AnimatorOverrideController[charAnimators.Length];
 
-        // Update player
-        UpdatePlayerPhase_2();
-    }
-    public void UpdatePhase_3()
-    {
-        // Update characters
-        UpdatePhase(charObjects, targetposition_3, charAnimators, newAnimationClips_3);
-
-
-    }
-    public void UpdatePhase_5()
-    {
-        // Update characters
-        UpdatePhase(charObjects, targetposition_2, charAnimators, newAnimationClips_4);
-
-        UpdatePlayerPhase_2();
-    }
-    public void UpdatePhase_6()
-    {
-        // Update characters
-        UpdatePhase(charObjects, targetposition_2, charAnimators, newAnimationClips_5);
-
-    }
-    public void UpdatePhase_7()
-    {
-        // Update characters
-        UpdatePhase(charObjects, targetposition_6, charAnimators, newAnimationClips_6);
-
-    }
-    // --- Shared Logic for Characters ---
-    private void UpdatePhase(GameObject[] chars, GameObject[] targets, Animator[] animators, AnimationClip[] clips)
-    {
-        for (int i = 0; i < chars.Length; i++)
+        for (int i = 0; i < charAnimators.Length; i++)
         {
-            if (chars[i] == null || i >= targets.Length || targets[i] == null)
-                continue;
+            if (charAnimators[i] == null) continue;
 
-            // --- Parent to target ---
-            chars[i].transform.SetParent(targets[i].transform);
-
-            // --- Snap instantly to target position and rotation ---
-            chars[i].transform.position = targets[i].transform.position;
-            chars[i].transform.rotation = targets[i].transform.rotation;
-
-            // --- Play animation if assigned ---
-            if (i < animators.Length && animators[i] != null && i < clips.Length && clips[i] != null)
-            {
-                animators[i].Play(clips[i].name);
-            }
+            // Create unique override controller
+            overrideControllers[i] = new AnimatorOverrideController(charAnimators[i].runtimeAnimatorController);
+            charAnimators[i].runtimeAnimatorController = overrideControllers[i];
         }
     }
 
-    // --- Player Phase 2 Logic ---
+    // --- PHASES ---
+    public void UpdatePhase_1() => UpdatePhase(charObjects, targetposition_1, charAnimators, newAnimationClips_1);
+    public void UpdatePhase_2() { UpdatePhase(charObjects, targetposition_2, charAnimators, newAnimationClips_2); UpdatePlayerPhase_2(); }
+    public void UpdatePhase_3() => UpdatePhase(charObjects, targetposition_3, charAnimators, newAnimationClips_3);
+    public void UpdatePhase_5() { UpdatePhase(charObjects, targetposition_2, charAnimators, newAnimationClips_4); UpdatePlayerPhase_2(); }
+    public void UpdatePhase_6() => UpdatePhase(charObjects, targetposition_2, charAnimators, newAnimationClips_5);
+    public void UpdatePhase_7() => UpdatePhase(charObjects, targetposition_6, charAnimators, newAnimationClips_6);
+
+    // --- MAIN LOGIC ---
+    private void UpdatePhase(GameObject[] chars, GameObject[] targets, Animator[] animators, AnimationClip[] clips)
+    {
+        if (animators == null || overrideControllers == null) return;
+
+        for (int i = 0; i < chars.Length; i++)
+        {
+            if (i >= animators.Length || i >= targets.Length || i >= clips.Length) continue;
+            if (chars[i] == null || targets[i] == null || animators[i] == null || clips[i] == null) continue;
+
+            // Reposition
+            chars[i].transform.SetParent(targets[i].transform);
+            chars[i].transform.SetPositionAndRotation(targets[i].transform.position, targets[i].transform.rotation);
+
+            Animator animator = animators[i];
+            AnimatorOverrideController overrideController = overrideControllers[i];
+            AnimationClip newClip = clips[i];
+
+            // ✅ “Delete” extra states by overriding ALL clips in controller with the same newClip
+            foreach (var oldClip in overrideController.animationClips)
+                overrideController[oldClip.name] = newClip;
+
+            animator.runtimeAnimatorController = overrideController;
+
+            // ✅ Force to play the new clip from the beginning
+            animator.Play(overrideController.animationClips[0].name, 0, 0f);
+
+            Debug.Log($"▶ {chars[i].name} now only plays '{newClip.name}' (all other states disabled)");
+        }
+    }
+
+    // --- PLAYER ---
     private void UpdatePlayerPhase_2()
     {
-        if (player == null || playerTarget_2 == null)
-            return;
-
-        // Parent player to target
+        if (player == null || playerTarget_2 == null) return;
         player.transform.SetParent(playerTarget_2.transform);
-
-        // Snap instantly to target position and rotation
-        player.transform.position = playerTarget_2.transform.position;
-        player.transform.rotation = playerTarget_2.transform.rotation;
-
-        
-    }
+        player.transform.SetPositionAndRotation(playerTarget_2.transform.position, playerTarget_2.transform.rotation);
+    }
 }
