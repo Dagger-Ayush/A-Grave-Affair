@@ -39,8 +39,18 @@ public class SceneChanger : MonoBehaviour
                         Destroy(gregObject);
                     }
 
-                    // Make door active if assigned
-                    if (door != null && !door.activeSelf)
+                if (GamePhaseManager.MotelLobbyPhase >= 9)
+                {
+                    if (door != null)
+                    {
+                        door.SetActive(false);
+                        Debug.Log("Phase 9+ reached Outside door disabled.");
+                    }
+                    return; // Stop running any other door logic
+                }
+                
+                // Make door active if assigned
+                else if (door != null && !door.activeSelf)
                     {
                         door.SetActive(true);
                     }
