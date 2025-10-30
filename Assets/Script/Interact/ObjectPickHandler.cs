@@ -223,6 +223,9 @@ public class ObjectPickHandler : MonoBehaviour
         time = 0;
         isPicked = true;
 
+        if(pickReferences.lights!=null)
+        pickReferences.lights.SetActive(false);
+
         if (XrayLetterMain != null) XrayLetterMain.SetActive(false);
         if (XrayObject != null) XrayObject.SetActive(true);
 
@@ -262,6 +265,9 @@ public class ObjectPickHandler : MonoBehaviour
 
         XrayVisionDisable();
 
+        if (pickReferences.lights != null)
+            pickReferences.lights.SetActive(true);
+
         pickReferences.eToExitimage.SetActive(false);
         if (XrayLetterMain != null) XrayLetterMain.SetActive(true);
         if (XrayObject != null) XrayObject.SetActive(false);
@@ -292,6 +298,7 @@ public class ObjectPickHandler : MonoBehaviour
 
         transform.localPosition = objectTransform;
 
+       
         isPicked = false;
         isCollected = false;
 

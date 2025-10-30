@@ -19,6 +19,7 @@ public class PlayerInteract : MonoBehaviour
     private PlayerDialog playerDialog;
     public bool shouldTabletWork;
 
+    
     private void Awake() { Instance = this; }
 
     private void Start()

@@ -11,7 +11,7 @@ public class MainMenuUI : MonoBehaviour
     void Update()
     {
         Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.name != "New Mainmenu")
+        if (currentScene.name == "Mainmenu")
         {
             TriggerVolume();
         }

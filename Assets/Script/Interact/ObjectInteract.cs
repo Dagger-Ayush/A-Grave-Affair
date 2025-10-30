@@ -37,6 +37,7 @@ public class ObjectInteract : MonoBehaviour
     [HideInInspector] public bool isAutoComplete = false;
     [HideInInspector] public bool isAutoCompleteNearObject = false;
     [HideInInspector] public bool isInteractionComplete = false;
+    [HideInInspector] public bool isInteractionStarted = false;
 
     [Header("Clues")]
     public GettingClueCount gettingClueCount;
@@ -176,7 +177,7 @@ public class ObjectInteract : MonoBehaviour
         activeInteraction = this; // mark this as the current active one
 
         if (ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck()) return;
-
+        isInteractionStarted = true;
         isInteracting = true;
         isInteracted = true;
 

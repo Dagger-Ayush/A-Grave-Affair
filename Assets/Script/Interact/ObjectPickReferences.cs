@@ -35,6 +35,8 @@ public class ObjectPickReferences : MonoBehaviour
   
     public GameObject eToExitimage;
 
+    public GameObject lights;
+
     public AudioSource nextPageSound;
 
     private void Awake()

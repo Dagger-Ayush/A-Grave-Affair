@@ -2,28 +2,44 @@
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager instance;
+    public static AudioManager Instance;
 
     private AudioSource audioSource;
-    private const string mixerPath = "Audio/MainAudioMixer"; // Path inside Resources (no .mixer extension)
+    private const string mixerPath = "Audio/MainAudioMixer";
 
     [Header("Audio References")]
     public AudioSource backgroundAudio;
     public AudioMixer audioMixer;
     public AudioMixer BackgroundaudioMixer;
 
+    [Header("Audio clips")]
+    public AudioClip MainMenu;
+    public AudioClip protoScene;
+    public AudioClip meetingWithGreg;
+    public AudioClip Phase_1;
+    public AudioClip Phase_2;
+    public AudioClip Phase_3;
+    public AudioClip Phase_4;
+    public AudioClip Phase_5;
+    public AudioClip Phase_6;
+
     [Header("UI")]
     public Slider masterSlider;
     public Slider backgroundSlider;
 
+    [Header("Fade Settings")]
+    public float fadeDuration = 1.5f;
+
+    private Coroutine fadeCoroutine;
+
     private void Awake()
     {
-            instance = this;
-          
-        // Load the AudioMixer from Resources folder if not assigned
+        Instance = this;
+       
         if (audioMixer == null)
             audioMixer = Resources.Load<AudioMixer>(mixerPath);
 
@@ -32,21 +48,17 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        // Load saved volumes
         float savedMaster = PlayerPrefs.GetFloat("MasterVolume", 0.75f);
         float savedBackground = PlayerPrefs.GetFloat("BackgroundMixer", 0.75f);
 
         SetMasterVolume(savedMaster);
         SetBackgroundVolume(savedBackground);
-
-        // Set up sliders
         SetupSliders(savedMaster, savedBackground);
-
-        // Play background music if assigned
-        if (backgroundAudio != null)
-            backgroundAudio.Play();
+        // Auto-set background based on initial scene
+        TrySetSceneBackgroundStart(SceneManager.GetActiveScene().name);
     }
-  
+   
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -59,9 +71,12 @@ public class AudioManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Update sliders in new scene
-        SetupSliders(PlayerPrefs.GetFloat("MasterVolume", 0.75f),
-                     PlayerPrefs.GetFloat("BackgroundMixer", 0.75f));
+        SetupSliders(
+            PlayerPrefs.GetFloat("MasterVolume", 0.75f),
+            PlayerPrefs.GetFloat("BackgroundMixer", 0.75f)
+        );
+
+        TrySetSceneBackgroundStart(scene.name);
     }
 
     private void SetupSliders(float savedMaster, float savedBackground)
@@ -81,6 +96,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+   
     public void SetMasterVolume(float value)
     {
         if (audioMixer == null) return;
@@ -94,6 +110,10 @@ public class AudioManager : MonoBehaviour
         BackgroundaudioMixer.SetFloat("BackgroundMixer", Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1)) * 20);
         PlayerPrefs.SetFloat("BackgroundMixer", value);
     }
+
+    // ============================================
+    // 🎙 Dialog Audio
+    // ============================================
 
     public void PlayDialogLine(DialogManager dialog, int index)
     {
@@ -111,6 +131,8 @@ public class AudioManager : MonoBehaviour
 
     private void PlayAudioClip(DialogAudio dialog)
     {
+        if (dialog == null || dialog.clip == null) return;
+
         audioSource.clip = dialog.clip;
         audioSource.volume = dialog.volume;
         audioSource.pitch = dialog.pitch;
@@ -131,4 +153,97 @@ public class AudioManager : MonoBehaviour
     {
         audioSource.Stop();
     }
+
+    // ============================================
+    // 🎵 Background Crossfade System
+    // ============================================
+
+    public void SetBackgroundAudio(AudioClip newClip)
+    {
+        if (backgroundAudio == null || newClip == null) return;
+
+        if (backgroundAudio.clip == newClip && backgroundAudio.isPlaying)
+            return; // don't restart same clip
+
+        if (fadeCoroutine != null)
+            StopCoroutine(fadeCoroutine);
+
+        fadeCoroutine = StartCoroutine(FadeBackgroundMusic(newClip));
+    }
+
+    private IEnumerator FadeBackgroundMusic(AudioClip newClip)
+    {
+        float startVolume = backgroundAudio.volume;
+
+        // Fade out
+        for (float t = 0; t < fadeDuration; t += Time.unscaledDeltaTime)
+        {
+            backgroundAudio.volume = Mathf.Lerp(startVolume, 0f, t / fadeDuration);
+            yield return null;
+        }
+
+        backgroundAudio.volume = 0f;
+        backgroundAudio.Stop();
+
+        // Switch clip
+        backgroundAudio.clip = newClip;
+        backgroundAudio.loop = true;
+        backgroundAudio.Play();
+
+        // Fade in
+        for (float t = 0; t < fadeDuration; t += Time.unscaledDeltaTime)
+        {
+            backgroundAudio.volume = Mathf.Lerp(0f, startVolume, t / fadeDuration);
+            yield return null;
+        }
+
+        backgroundAudio.volume = startVolume;
+    }
+
+    
+    private void TrySetSceneBackgroundStart(string sceneName)
+    {
+        // only change background for specific scenes
+        if (sceneName == "Mainmenu")
+        {
+            SetBackgroundAudio(MainMenu);
+        }
+        else if (sceneName == "PrototypeScene" || sceneName == "Outside_Motel")
+        {
+            SetBackgroundAudio(protoScene);
+        }
+       
+    } 
+    public void SetSceneBackgroundByPhase(int phaseCount)
+    {
+        AudioClip clipToPlay = null;
+
+        switch (phaseCount)
+        {
+            case 1:
+                clipToPlay = Phase_1;
+                break;
+            case 2:
+                clipToPlay = Phase_2;
+                break;
+            case 3:
+                clipToPlay = Phase_3;
+                break;
+            case 4:
+                clipToPlay = Phase_4;
+                break;
+            case 5:
+                clipToPlay = Phase_5;
+                break;
+            case 6:
+                clipToPlay = Phase_6;
+                break;
+            default:
+                clipToPlay = MainMenu; // fallback
+                break;
+        }
+
+        SetBackgroundAudio(clipToPlay);
+    }
+
 }
