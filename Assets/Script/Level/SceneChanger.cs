@@ -46,6 +46,13 @@ public class SceneChanger : MonoBehaviour
                         door.SetActive(false);
                         Debug.Log("Phase 9+ reached Outside door disabled.");
                     }
+                    GameObject player = GameObject.FindWithTag("Player");
+                    if (player != null)
+                    {
+                        player.transform.position = new Vector3(1.5f, 0.17f, 0f); // your desired coordinates
+                        player.transform.rotation = Quaternion.identity; // optional
+                        Debug.Log("Player moved to new position for phase 9+.");
+                    }
                     return; // Stop running any other door logic
                 }
                 
