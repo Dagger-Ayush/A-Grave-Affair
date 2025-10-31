@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class PosandAnimationUpdate : MonoBehaviour
 {
@@ -86,19 +87,26 @@ public class PosandAnimationUpdate : MonoBehaviour
             if (clips == null || clips.Length == 0 || i >= clips.Length || clips[i] == null)
                 continue;
 
-            // ✅ Safe animation override logic
             Animator animator = animators[i];
-            AnimatorOverrideController overrideController = overrideControllers[i];
             AnimationClip newClip = clips[i];
 
-            // “Delete” extra states by overriding all clips with the new one
-            foreach (var oldClip in overrideController.animationClips)
-                overrideController[oldClip.name] = newClip;
+            // 🔁 Create a *fresh* override controller every time
+            AnimatorOverrideController newOverride = new AnimatorOverrideController(animator.runtimeAnimatorController);
 
-            animator.runtimeAnimatorController = overrideController;
-            animator.Play(overrideController.animationClips[0].name, 0, 0f);
+            // ✅ Replace all existing clips with the new one
+            var overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+            foreach (var oldClip in newOverride.animationClips)
+                overrides.Add(new KeyValuePair<AnimationClip, AnimationClip>(oldClip, newClip));
+            newOverride.ApplyOverrides(overrides);
 
-            Debug.Log($"▶ {chars[i].name} now only plays '{newClip.name}' (all other states disabled)");
+            // ✅ Assign and rebind
+            animator.runtimeAnimatorController = newOverride;
+            animator.Rebind();
+            animator.Update(0f);
+            animator.Play(newClip.name, 0, 0f);
+            animator.Update(0f);
+
+            Debug.Log($"▶ {chars[i].name} now plays '{newClip.name}' (new override created)");
         }
     }
 

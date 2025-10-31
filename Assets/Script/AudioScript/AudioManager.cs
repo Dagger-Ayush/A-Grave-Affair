@@ -20,12 +20,13 @@ public class AudioManager : MonoBehaviour
     public AudioClip MainMenu;
     public AudioClip protoScene;
     public AudioClip meetingWithGreg;
-    public AudioClip Phase_1;
+
     public AudioClip Phase_2;
     public AudioClip Phase_3;
     public AudioClip Phase_4;
     public AudioClip Phase_5;
     public AudioClip Phase_6;
+    public AudioClip Phase_7;
 
     [Header("UI")]
     public Slider masterSlider;
@@ -39,7 +40,7 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-       
+
         if (audioMixer == null)
             audioMixer = Resources.Load<AudioMixer>(mixerPath);
 
@@ -57,7 +58,7 @@ public class AudioManager : MonoBehaviour
         // Auto-set background based on initial scene
         TrySetSceneBackgroundStart(SceneManager.GetActiveScene().name);
     }
-   
+
 
     private void OnEnable()
     {
@@ -96,7 +97,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-   
+
     public void SetMasterVolume(float value)
     {
         if (audioMixer == null) return;
@@ -200,7 +201,7 @@ public class AudioManager : MonoBehaviour
         backgroundAudio.volume = startVolume;
     }
 
-    
+
     private void TrySetSceneBackgroundStart(string sceneName)
     {
         // only change background for specific scenes
@@ -208,12 +209,12 @@ public class AudioManager : MonoBehaviour
         {
             SetBackgroundAudio(MainMenu);
         }
-        else if (sceneName == "PrototypeScene" || sceneName == "Outside_Motel")
+        else if (sceneName == "PrototypeScene")
         {
             SetBackgroundAudio(protoScene);
         }
-       
-    } 
+
+    }
     public void SetSceneBackgroundByPhase(int phaseCount)
     {
         AudioClip clipToPlay = null;
@@ -221,22 +222,22 @@ public class AudioManager : MonoBehaviour
         switch (phaseCount)
         {
             case 1:
-                clipToPlay = Phase_1;
-                break;
-            case 2:
                 clipToPlay = Phase_2;
                 break;
-            case 3:
+            case 2:
                 clipToPlay = Phase_3;
                 break;
-            case 4:
+            case 3:
                 clipToPlay = Phase_4;
                 break;
-            case 5:
+            case 4:
                 clipToPlay = Phase_5;
                 break;
-            case 6:
+            case 5:
                 clipToPlay = Phase_6;
+                break;
+            case 6:
+                clipToPlay = Phase_7;
                 break;
             default:
                 clipToPlay = MainMenu; // fallback

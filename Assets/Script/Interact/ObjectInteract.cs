@@ -37,7 +37,7 @@ public class ObjectInteract : MonoBehaviour
     [HideInInspector] public bool isAutoComplete = false;
     [HideInInspector] public bool isAutoCompleteNearObject = false;
     [HideInInspector] public bool isInteractionComplete = false;
-    [HideInInspector] public bool isInteractionStarted = false;
+    public event System.Action OnInteractionStarted;
 
     [Header("Clues")]
     public GettingClueCount gettingClueCount;
@@ -81,11 +81,13 @@ public class ObjectInteract : MonoBehaviour
 
         if (type == InteractType.DogBed)
             enabled = false;
+
+
     }
 
     private void Update()
     {
-       
+
         if ((ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck())
            && outRange != null && inRange != null)
         {
@@ -124,7 +126,7 @@ public class ObjectInteract : MonoBehaviour
 
         if (playerInteract.GetObjectInteract() == this)
         {
-           
+
             if (outRange != null) outRange.alpha = 0;
             if (ObjectPickHandler.Instance != null && inRange != null)
                 inRange.alpha = (!isInteracted && !ObjectPickHandler.Instance.InteractionCheck()) ? 1 : 0;
@@ -177,13 +179,13 @@ public class ObjectInteract : MonoBehaviour
         activeInteraction = this; // mark this as the current active one
 
         if (ObjectPickHandler.Instance != null && ObjectPickHandler.Instance.InteractionCheck()) return;
-        isInteractionStarted = true;
+        OnInteractionStarted?.Invoke();
         isInteracting = true;
         isInteracted = true;
 
         if (type == InteractType.NonInteractiveAutomatic && !isAutoComplete)
-        { playerInteract.doPointAndMovementWork = true;}
-           
+        { playerInteract.doPointAndMovementWork = true; }
+
         if (currentImageIndex >= dialogManager.dialogLines.Length)
             currentImageIndex = 0;
 
@@ -194,12 +196,12 @@ public class ObjectInteract : MonoBehaviour
         gettingClueCount?.AddTick(clueCount, totalClues);
 
         TypeLine();
-       
-            if (ObjectPickReferences.instance != null)
-            {
-                ObjectPickReferences.instance.XrayOnImage.SetActive(false);
-                ObjectPickReferences.instance.XrayOfImage.SetActive(false);
-            }
+
+        if (ObjectPickReferences.instance != null)
+        {
+            ObjectPickReferences.instance.XrayOnImage.SetActive(false);
+            ObjectPickReferences.instance.XrayOfImage.SetActive(false);
+        }
     }
 
     public void NextDialogueImage()
@@ -243,14 +245,14 @@ public class ObjectInteract : MonoBehaviour
             {
                 playerInteract.doPointAndMovementWork = false;
             }
-             // Default end of interaction
-                isInteracting = false;
-                isInteracted = false;
-                activeInteraction = null;
+            // Default end of interaction
+            isInteracting = false;
+            isInteracted = false;
+            activeInteraction = null;
         }
 
     }
-  
+
     private void HandlePostDialogueActions()
     {
         isInteractionComplete = true;
