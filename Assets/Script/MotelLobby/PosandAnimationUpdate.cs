@@ -69,7 +69,7 @@ public class PosandAnimationUpdate : MonoBehaviour
     private void UpdatePhase(GameObject[] chars, GameObject[] targets, Animator[] animators, AnimationClip[] clips, int currentPhase)
     {
         // 🎵 Update background music for current phase
-        if (AudioManager.Instance != null)
+        if (AudioManager.Instance != null && currentPhase != 6)
         {
             AudioManager.Instance.SetSceneBackgroundByPhase(currentPhase);
         }
