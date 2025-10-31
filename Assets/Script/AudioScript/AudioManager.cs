@@ -20,7 +20,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip MainMenu;
     public AudioClip protoScene;
     public AudioClip meetingWithGreg;
-
+    public AudioClip Phase_1;
     public AudioClip Phase_2;
     public AudioClip Phase_3;
     public AudioClip Phase_4;
@@ -34,17 +34,37 @@ public class AudioManager : MonoBehaviour
 
     [Header("Fade Settings")]
     public float fadeDuration = 1.5f;
-
     private Coroutine fadeCoroutine;
+
+    // ============================================
+    // 🧠 NEW: Music continuity between MotelLobby & NancyRoom
+    // ============================================
+    private const string MUSIC_TIME_KEY = "SavedMotelNancyMusicTime";
+    private const string MUSIC_CLIP_KEY = "SavedMotelNancyMusicClip";
+    private const string SCENE_KEY = "SavedSceneName";
+    private float lastSavedTime = 0f;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         if (audioMixer == null)
             audioMixer = Resources.Load<AudioMixer>(mixerPath);
 
+        if (backgroundAudio == null)
+            backgroundAudio = gameObject.AddComponent<AudioSource>();
+
         audioSource = gameObject.AddComponent<AudioSource>();
+
+        backgroundAudio.loop = true;
+        backgroundAudio.playOnAwake = false;
     }
 
     private void Start()
@@ -55,10 +75,9 @@ public class AudioManager : MonoBehaviour
         SetMasterVolume(savedMaster);
         SetBackgroundVolume(savedBackground);
         SetupSliders(savedMaster, savedBackground);
-        // Auto-set background based on initial scene
-        TrySetSceneBackgroundStart(SceneManager.GetActiveScene().name);
-    }
 
+        TrySetSceneBackgroundStart(SceneManager.GetActiveScene().name, true);
+    }
 
     private void OnEnable()
     {
@@ -77,7 +96,24 @@ public class AudioManager : MonoBehaviour
             PlayerPrefs.GetFloat("BackgroundMixer", 0.75f)
         );
 
-        TrySetSceneBackgroundStart(scene.name);
+        string lastScene = PlayerPrefs.GetString(SCENE_KEY, "");
+        bool isBetweenMotelAndNancy =
+            (scene.name == "Motel_Lobby" || lastScene == "Nancy Room");
+
+        if (isBetweenMotelAndNancy)
+        {
+            float savedTime = PlayerPrefs.GetFloat(MUSIC_TIME_KEY, 0f);
+            string savedClipName = PlayerPrefs.GetString(MUSIC_CLIP_KEY, "");
+
+            StartCoroutine(RestoreBackgroundPosition(savedTime, savedClipName));
+            // Continue from previous timestamp
+            TrySetSceneBackgroundStart(scene.name, false);
+           
+        }
+        else
+        {
+            TrySetSceneBackgroundStart(scene.name, true);
+        }
     }
 
     private void SetupSliders(float savedMaster, float savedBackground)
@@ -97,7 +133,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-
     public void SetMasterVolume(float value)
     {
         if (audioMixer == null) return;
@@ -110,12 +145,14 @@ public class AudioManager : MonoBehaviour
         if (BackgroundaudioMixer == null) return;
         BackgroundaudioMixer.SetFloat("BackgroundMixer", Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1)) * 20);
         PlayerPrefs.SetFloat("BackgroundMixer", value);
+
+        // ✅ Keep volume consistent after scene load
+        backgroundAudio.volume = Mathf.Clamp(value, 0.0001f, 1);
     }
 
     // ============================================
     // 🎙 Dialog Audio
     // ============================================
-
     public void PlayDialogLine(DialogManager dialog, int index)
     {
         Stop();
@@ -158,13 +195,12 @@ public class AudioManager : MonoBehaviour
     // ============================================
     // 🎵 Background Crossfade System
     // ============================================
-
     public void SetBackgroundAudio(AudioClip newClip)
     {
         if (backgroundAudio == null || newClip == null) return;
 
         if (backgroundAudio.clip == newClip && backgroundAudio.isPlaying)
-            return; // don't restart same clip
+            return;
 
         if (fadeCoroutine != null)
             StopCoroutine(fadeCoroutine);
@@ -175,8 +211,8 @@ public class AudioManager : MonoBehaviour
     private IEnumerator FadeBackgroundMusic(AudioClip newClip)
     {
         float startVolume = backgroundAudio.volume;
+        float targetVolume = PlayerPrefs.GetFloat("BackgroundMixer", 0.75f);
 
-        // Fade out
         for (float t = 0; t < fadeDuration; t += Time.unscaledDeltaTime)
         {
             backgroundAudio.volume = Mathf.Lerp(startVolume, 0f, t / fadeDuration);
@@ -186,65 +222,93 @@ public class AudioManager : MonoBehaviour
         backgroundAudio.volume = 0f;
         backgroundAudio.Stop();
 
-        // Switch clip
         backgroundAudio.clip = newClip;
         backgroundAudio.loop = true;
         backgroundAudio.Play();
 
-        // Fade in
         for (float t = 0; t < fadeDuration; t += Time.unscaledDeltaTime)
         {
-            backgroundAudio.volume = Mathf.Lerp(0f, startVolume, t / fadeDuration);
+            backgroundAudio.volume = Mathf.Lerp(0f, targetVolume, t / fadeDuration);
             yield return null;
         }
 
-        backgroundAudio.volume = startVolume;
+        backgroundAudio.volume = targetVolume;
     }
 
-
-    private void TrySetSceneBackgroundStart(string sceneName)
-    {
-        // only change background for specific scenes
-        if (sceneName == "Mainmenu")
-        {
-            SetBackgroundAudio(MainMenu);
-        }
-        else if (sceneName == "PrototypeScene")
-        {
-            SetBackgroundAudio(protoScene);
-        }
-
-    }
-    public void SetSceneBackgroundByPhase(int phaseCount)
+    private void TrySetSceneBackgroundStart(string sceneName, bool restartIfNew)
     {
         AudioClip clipToPlay = null;
 
+        if (sceneName == "Mainmenu")
+            clipToPlay = MainMenu;
+        else if (sceneName == "Proto Scene")
+            clipToPlay = protoScene;
+        else if (sceneName == "Motel_Lobby")
+            clipToPlay = Phase_1;
+        else if (sceneName == "Nancy Room")
+            clipToPlay = Phase_4;
+        else if (sceneName == "Outside_Motel")
+            clipToPlay = meetingWithGreg;
+
+        if (clipToPlay == null) return;
+
+        if (restartIfNew || backgroundAudio.clip != clipToPlay)
+            SetBackgroundAudio(clipToPlay);
+    }
+
+    public void SetSceneBackgroundByPhase(int phaseCount)
+    {
+        AudioClip clipToPlay = null;
         switch (phaseCount)
         {
-            case 1:
-                clipToPlay = Phase_2;
-                break;
-            case 2:
-                clipToPlay = Phase_3;
-                break;
-            case 3:
-                clipToPlay = Phase_4;
-                break;
-            case 4:
-                clipToPlay = Phase_5;
-                break;
-            case 5:
-                clipToPlay = Phase_6;
-                break;
-            case 6:
-                clipToPlay = Phase_7;
-                break;
-            default:
-                clipToPlay = MainMenu; // fallback
-                break;
+            case 1: clipToPlay = Phase_2; break;
+            case 2: clipToPlay = Phase_3; break;
+            case 3: clipToPlay = Phase_4; break;
+            case 4: clipToPlay = Phase_5; break;
+            case 5: clipToPlay = Phase_6; break;
+            case 6: clipToPlay = Phase_7; break;
+            default: clipToPlay = MainMenu; break;
         }
-
         SetBackgroundAudio(clipToPlay);
     }
 
+    // ============================================
+    // 🧠 Save & restore position logic
+    // ============================================
+    private void OnApplicationQuit()
+    {
+        SaveBackgroundPositionIfNeeded(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+            SaveBackgroundPositionIfNeeded(SceneManager.GetActiveScene().name);
+    }
+
+    private void SaveBackgroundPositionIfNeeded(string sceneName)
+    {
+        if (sceneName == "Motel_Lobby" || sceneName == "Nancy Room")
+        {
+            if (backgroundAudio != null && backgroundAudio.isPlaying && backgroundAudio.clip != null)
+            {
+                PlayerPrefs.SetFloat(MUSIC_TIME_KEY, backgroundAudio.time);
+                PlayerPrefs.SetString(MUSIC_CLIP_KEY, backgroundAudio.clip.name);
+                PlayerPrefs.SetString(SCENE_KEY, sceneName);
+                PlayerPrefs.Save();
+            }
+        }
+    }
+
+    private IEnumerator RestoreBackgroundPosition(float time, string clipName)
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        if (backgroundAudio != null && backgroundAudio.clip != null &&
+            backgroundAudio.clip.name == clipName)
+        {
+            backgroundAudio.time = Mathf.Min(time, backgroundAudio.clip.length - 0.1f);
+            backgroundAudio.Play();
+        }
+    }
 }

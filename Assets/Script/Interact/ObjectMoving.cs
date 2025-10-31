@@ -16,7 +16,6 @@ public class ObjectMoving : MonoBehaviour
 
     [SerializeField] private GameObject foodBowlEmpty, foodBowlFilled;
     public DialogManager dialogManager;
-    public AudioManager audioManager;
     public TextMeshProUGUI dialogText;
     public GameObject dialogContainer;
 
@@ -71,7 +70,7 @@ public class ObjectMoving : MonoBehaviour
                         else
                         {
                             StartCoroutine(TextEnabler(infoText));
-                            audioManager.PlayDialogBigLine(dogBark);
+                            AudioManager.Instance.PlayDialogBigLine(dogBark);
                             infoText.text = "Can't Interact, if only I could get Fred to move";
                         }
                         break;
@@ -197,7 +196,7 @@ public class ObjectMoving : MonoBehaviour
                 && dialogManager.dialogAudio[currentImageIndex] != null
                 && dialogManager.dialogAudio[currentImageIndex].sorce != null)
         {
-            audioManager.PlayDialogLine(dialogManager, currentImageIndex);
+            AudioManager.Instance.PlayDialogLine(dialogManager, currentImageIndex);
         }
     }
 }

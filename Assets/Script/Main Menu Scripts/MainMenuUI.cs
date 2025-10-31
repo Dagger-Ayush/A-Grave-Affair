@@ -4,10 +4,14 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuUI : MonoBehaviour
 {
+    
     public GameObject mainMenu;
     public GameObject pauseMenu;
     public GameObject volumeMenu;
-
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     void Update()
     {
         Scene currentScene = SceneManager.GetActiveScene();
@@ -35,8 +39,26 @@ public class MainMenuUI : MonoBehaviour
 
     public void Play()
     {
-        SceneManager.LoadScene("Proto Scene");
+        StartCoroutine(LoadGameScene());
     }
+
+    private System.Collections.IEnumerator LoadGameScene()
+    {
+        // Optional: show loading screen here if you want
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Proto Scene");
+
+        // Wait until the new scene is fully loaded
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        // 🔹 Now hide menus AFTER scene transition is done
+        if (volumeMenu != null) volumeMenu.SetActive(false);
+        if (pauseMenu != null) pauseMenu.SetActive(false);
+        if (mainMenu != null) mainMenu.SetActive(false);
+    }
+
 
     public void Continue()
     {

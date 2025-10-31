@@ -12,7 +12,6 @@ public class ObjectInteract : MonoBehaviour
 
     [Header("Dialog System")]
     public DialogManager dialogManager;
-    public AudioManager audioManager;
     public TextMeshProUGUI dialogText;
     public GameObject dialogContainer;
 
@@ -218,7 +217,7 @@ public class ObjectInteract : MonoBehaviour
 
         if (dialogManager.dialogAudio.Length > currentImageIndex &&
             dialogManager.dialogAudio[currentImageIndex]?.sorce != null)
-            audioManager.Stop();
+            AudioManager.Instance.Stop();
 
         currentImageIndex++;
 
@@ -328,7 +327,7 @@ public class ObjectInteract : MonoBehaviour
         if (dialogManager.dialogAudio != null &&
             currentImageIndex < dialogManager.dialogAudio.Length &&
             dialogManager.dialogAudio[currentImageIndex]?.sorce != null)
-            audioManager.PlayDialogLine(dialogManager, currentImageIndex);
+            AudioManager.Instance.PlayDialogLine(dialogManager, currentImageIndex);
 
         if (gettingClueCount != null)
             gettingClueCount.AddTick(clueCount, totalClues);

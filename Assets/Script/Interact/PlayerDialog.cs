@@ -16,7 +16,6 @@ public class PlayerDialog : MonoBehaviour
 
     [Header("Dialog System")]
     public DialogManager dialogManager;
-    public AudioManager audioManager;
     public TextMeshProUGUI dialogText;
     public GameObject dialogContainer;
     public ObjectInteract LastDialog;
@@ -96,7 +95,7 @@ public class PlayerDialog : MonoBehaviour
             return;
         if (currentImageIndex < 2)
         {
-            audioManager.Stop();
+            AudioManager.Instance.Stop();
         }
         if (pickReferences.nextPageSound != null) { pickReferences.nextPageSound.Play(); }
         dialogContainer.SetActive(false);
@@ -128,7 +127,7 @@ public class PlayerDialog : MonoBehaviour
             isEndDialogRunning = true;
 
             LastDialog.enabled = true;
-            audioManager.PlayDialogBigLine(lastDialogAudio);
+            AudioManager.Instance.PlayDialogBigLine(lastDialogAudio);
         }
 
     }
@@ -144,7 +143,7 @@ public class PlayerDialog : MonoBehaviour
         {
             if (currentImageIndex < 2)
             {
-                audioManager.PlayDialogLine(dialogManager, audioIndex);
+                AudioManager.Instance.PlayDialogLine(dialogManager, audioIndex);
             }
 
         }

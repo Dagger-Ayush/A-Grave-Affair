@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Resetpuzzle : MonoBehaviour
@@ -25,9 +25,19 @@ public class Resetpuzzle : MonoBehaviour
             PlayerPrefs.DeleteKey("EnteredOutsideDoor");
         }
 
+        // ✅ NEW: Reset MotelLobby ↔ NancyRoom music save data
+        if (PlayerPrefs.HasKey("SavedMotelNancyMusicTime"))
+            PlayerPrefs.DeleteKey("SavedMotelNancyMusicTime");
+
+        if (PlayerPrefs.HasKey("SavedMotelNancyMusicClip"))
+            PlayerPrefs.DeleteKey("SavedMotelNancyMusicClip");
+
+        if (PlayerPrefs.HasKey("SavedSceneName"))
+            PlayerPrefs.DeleteKey("SavedSceneName");
+
         // Save changes immediately
         PlayerPrefs.Save();
 
-        Debug.Log("All puzzles, dress interaction, and outside door reset!");
+        Debug.Log("All puzzles, dress interaction, outside door, and Motel↔Nancy music data reset!");
     }
 }
