@@ -34,6 +34,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Fade Settings")]
     public float fadeDuration = 1.5f;
+    
     private Coroutine fadeCoroutine;
 
     // ============================================
@@ -44,6 +45,7 @@ public class AudioManager : MonoBehaviour
     private const string SCENE_KEY = "SavedSceneName";
     private float lastSavedTime = 0f;
 
+    public float volumeBackground = 0.25f;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -118,20 +120,22 @@ public class AudioManager : MonoBehaviour
 
     private void SetupSliders(float savedMaster, float savedBackground)
     {
+        if (backgroundSlider != null)
+        {
+            backgroundSlider.maxValue = volumeBackground; // use your variable
+            backgroundSlider.value = Mathf.Min(savedBackground, volumeBackground);
+            backgroundSlider.onValueChanged.RemoveAllListeners();
+            backgroundSlider.onValueChanged.AddListener(SetBackgroundVolume);
+        }
+
         if (masterSlider != null)
         {
             masterSlider.value = savedMaster;
             masterSlider.onValueChanged.RemoveAllListeners();
             masterSlider.onValueChanged.AddListener(SetMasterVolume);
         }
-
-        if (backgroundSlider != null)
-        {
-            backgroundSlider.value = savedBackground;
-            backgroundSlider.onValueChanged.RemoveAllListeners();
-            backgroundSlider.onValueChanged.AddListener(SetBackgroundVolume);
-        }
     }
+
 
     public void SetMasterVolume(float value)
     {
@@ -143,11 +147,15 @@ public class AudioManager : MonoBehaviour
     public void SetBackgroundVolume(float value)
     {
         if (BackgroundaudioMixer == null) return;
-        BackgroundaudioMixer.SetFloat("BackgroundMixer", Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1)) * 20);
-        PlayerPrefs.SetFloat("BackgroundMixer", value);
+
+        // 🔒 Clamp using volumeBackground as the max limit
+        float clampedValue = Mathf.Clamp(value, 0.0001f, volumeBackground);
+
+        BackgroundaudioMixer.SetFloat("BackgroundMixer", Mathf.Log10(clampedValue) * 20);
+        PlayerPrefs.SetFloat("BackgroundMixer", clampedValue);
 
         // ✅ Keep volume consistent after scene load
-        backgroundAudio.volume = Mathf.Clamp(value, 0.0001f, 1);
+        backgroundAudio.volume = clampedValue;
     }
 
     // ============================================
