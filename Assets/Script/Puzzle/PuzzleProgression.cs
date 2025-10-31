@@ -23,9 +23,8 @@ public class PuzzleProgression : MonoBehaviour
     private bool puzzle1Solved = false;
     private bool puzzle2Solved = false;
     private bool puzzle3Solved = false;
-
+    private bool puzzle4Solved = false;
     private bool puzzle5Solved = false;
-
     private bool puzzle6Solved = false;
     private bool puzzle7Solved = false;
 
@@ -147,6 +146,21 @@ public class PuzzleProgression : MonoBehaviour
                 Debug.Log("Puzzle 4 unlocked, replacing Puzzle 2 & 3.");
             }));
         }
+    }
+
+    public void OnPuzzle4Solved()
+    {
+        if (puzzle4Solved) return;
+        puzzle4Solved = true;
+        StartCoroutine(CloseTabletAfterDelay(() =>
+        {
+            puzzle4.SetActive(false);
+
+            TabletManager.Instance.puzzlePanel.SetActive(false);
+            TabletManager.Instance.clueBox.SetActive(false);
+            ClueBoxManager.Instance.RestoreClueBoxPosition();
+            feedbackText.text = " ";
+        }));
     }
 
     public void OnPuzzle5Solved()
