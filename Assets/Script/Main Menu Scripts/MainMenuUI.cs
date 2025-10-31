@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -8,10 +9,18 @@ public class MainMenuUI : MonoBehaviour
     public GameObject mainMenu;
     public GameObject pauseMenu;
     public GameObject volumeMenu;
+    public GameObject creditsVideoPlayer;
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
     }
+    void Start()
+    {
+        var vp = creditsVideoPlayer.GetComponent<VideoPlayer>();
+        if (vp != null)
+            vp.loopPointReached += HandleCreditsVideoEnd;
+    }
+
     void Update()
     {
         Scene currentScene = SceneManager.GetActiveScene();
@@ -25,6 +34,14 @@ public class MainMenuUI : MonoBehaviour
            
         }
 
+        // Allow Escape key to exit credits video early
+        if (creditsVideoPlayer != null && creditsVideoPlayer.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                ExitCreditsVideo();
+            }
+        }
 
     }
 
@@ -126,4 +143,41 @@ public class MainMenuUI : MonoBehaviour
         }
     }
 
+    public void ShowCreditsVideo()
+    {
+        if (creditsVideoPlayer != null)
+        {
+            creditsVideoPlayer.SetActive(true);
+            var vp = creditsVideoPlayer.GetComponent<VideoPlayer>();
+            if (vp != null)
+                vp.Play();
+        }
+    }
+
+    public void OnCreditsButtonClicked()
+    {
+        ShowCreditsVideo();
+        // Hide main menu if desired
+        if (mainMenu != null) mainMenu.SetActive(false);
+    }
+    void HandleCreditsVideoEnd(VideoPlayer vp)
+    {
+        creditsVideoPlayer.SetActive(false);
+        if (mainMenu != null) mainMenu.SetActive(true);
+    }
+
+    public void ExitCreditsVideo()
+    {
+        var vp = creditsVideoPlayer.GetComponent<VideoPlayer>();
+        if (vp != null && vp.isPlaying)
+        {
+            vp.Stop();
+        }
+        creditsVideoPlayer.SetActive(false);
+
+        if (mainMenu != null)
+            mainMenu.SetActive(true);
+
+        Debug.Log("Credits video exited early and main menu shown.");
+    }
 }
