@@ -15,7 +15,7 @@ MonoBehaviour:
   sorce:
   - {fileID: 0}
   clip: {fileID: 8300000, guid: e26410b3e1218f1408da24eca09fe29d, type: 3}
-  volume: 1
+  volume: 3
   pitch: 1
   loop: 0
   isMute: 0
