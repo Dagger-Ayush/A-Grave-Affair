@@ -20,6 +20,7 @@ public class ObjectInteract : MonoBehaviour
 
     [HideInInspector] public bool isInteracted;
     public bool DoAutoRun = false;
+    public bool shouldWorkOnce = false;
 
     [Header("Dialogue Interaction References")]
     [SerializeField] private CanvasGroup inRange;
@@ -152,7 +153,9 @@ public class ObjectInteract : MonoBehaviour
     }
 
     private void ObjectHandler()
-    {
+    { 
+        if(shouldWorkOnce)return;
+
         if (TabletManager.Instance != null && pickReferences?.interactionTutorial != null)
             if (TabletManager.isTabletOpen || pickReferences.interactionTutorial.isRunning) return;
 

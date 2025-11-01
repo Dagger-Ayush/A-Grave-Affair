@@ -75,6 +75,7 @@ public class SceneChanger : MonoBehaviour
         switch (doortype)
         {
             case DoorType.protoDoor:
+
                 bool puzzle1Complete = requiredPuzzle_1 == null || requiredPuzzle_1.isCompleted;
 
                 canChangeScene = puzzle1Complete;

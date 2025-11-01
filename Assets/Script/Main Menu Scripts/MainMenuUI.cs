@@ -13,6 +13,10 @@ public class MainMenuUI : MonoBehaviour
 
     public static bool IsPaused { get; private set; }
 
+    private bool escapePressedLastFrame = false;
+    private bool isSceneLoading = false;
+    private bool canPlay = false;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -20,28 +24,44 @@ public class MainMenuUI : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(EnablePlayAfterDelay(0.25f));
+
         var vp = creditsVideoPlayer != null ? creditsVideoPlayer.GetComponent<VideoPlayer>() : null;
         if (vp != null)
             vp.loopPointReached += HandleCreditsVideoEnd;
     }
 
+    private System.Collections.IEnumerator EnablePlayAfterDelay(float delay)
+    {
+        canPlay = false;
+        yield return new WaitForSeconds(delay);
+        canPlay = true;
+        Debug.Log("Main menu ready — Play button now enabled.");
+    }
+
     void Update()
     {
         Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.name == "Mainmenu")
+        bool escapePressed = Input.GetKey(KeyCode.Escape);
+
+        // Only trigger ESC logic once per press
+        if (escapePressed && !escapePressedLastFrame)
         {
-            TriggerVolume();
-        }
-        else
-        {
-            TriggerPauseMenu();
+            if (creditsVideoPlayer != null && creditsVideoPlayer.activeSelf)
+            {
+                ExitCreditsVideo();
+            }
+            else if (currentScene.name == "Mainmenu")
+            {
+                TriggerVolume();
+            }
+            else
+            {
+                TriggerPauseMenu();
+            }
         }
 
-        // Allow Escape key to exit credits video early
-        if (creditsVideoPlayer != null && creditsVideoPlayer.activeSelf && Input.GetKeyDown(KeyCode.Escape))
-        {
-            ExitCreditsVideo();
-        }
+        escapePressedLastFrame = escapePressed;
     }
 
     public void Exit()
@@ -53,14 +73,38 @@ public class MainMenuUI : MonoBehaviour
 #endif
     }
 
+    // 🔹 Play button — now waits 0.25 seconds before being usable
     public void Play()
     {
+        if (!canPlay)
+        {
+            Debug.LogWarning("Please wait a moment — main menu still initializing.");
+            return;
+        }
+
+        if (isSceneLoading)
+        {
+            Debug.Log("Already loading scene — please wait.");
+            return;
+        }
+
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name != "Mainmenu")
+        {
+            Debug.LogWarning("Play can only be used in Mainmenu scene.");
+            return;
+        }
+
         StartCoroutine(LoadGameScene());
     }
 
     private System.Collections.IEnumerator LoadGameScene()
     {
+        isSceneLoading = true;
+        Debug.Log("Starting game scene load...");
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Proto Scene");
+        asyncLoad.allowSceneActivation = true;
 
         while (!asyncLoad.isDone)
             yield return null;
@@ -70,18 +114,21 @@ public class MainMenuUI : MonoBehaviour
         if (pauseMenu != null) pauseMenu.SetActive(false);
         if (mainMenu != null) mainMenu.SetActive(false);
 
-        // Reset pause state fully
+        // Reset pause state
         Time.timeScale = 1f;
         IsPaused = false;
 
         if (PlayerInteract.Instance != null)
             PlayerInteract.Instance.OnPauseStateChanged(false);
+
+        isSceneLoading = false;
+        Debug.Log("Game scene loaded successfully.");
     }
 
-    // 🔹 NEW — fully integrated pause handling
+    // 🔹 Continue Game
     public void Continue()
     {
-        pauseMenu.SetActive(false);
+        if (pauseMenu != null) pauseMenu.SetActive(false);
         Time.timeScale = 1.0f;
         IsPaused = false;
 
@@ -91,9 +138,10 @@ public class MainMenuUI : MonoBehaviour
         Debug.Log("Game Continued");
     }
 
+    // 🔹 Pause Game
     public void Pause()
     {
-        pauseMenu.SetActive(true);
+        if (pauseMenu != null) pauseMenu.SetActive(true);
         Time.timeScale = 0.0f;
         IsPaused = true;
 
@@ -105,18 +153,19 @@ public class MainMenuUI : MonoBehaviour
 
     public void VolumePanel()
     {
-        volumeMenu.SetActive(true);
+        if (volumeMenu != null) volumeMenu.SetActive(true);
         if (pauseMenu != null) pauseMenu.SetActive(false);
         if (mainMenu != null) mainMenu.SetActive(false);
     }
 
     public void VolumePanelExit()
     {
-        volumeMenu.SetActive(false);
+        if (volumeMenu != null) volumeMenu.SetActive(false);
         if (pauseMenu != null) pauseMenu.SetActive(true);
         if (mainMenu != null) mainMenu.SetActive(true);
     }
 
+    // ✅ Clean pause logic (no double press)
     private void TriggerPauseMenu()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -127,13 +176,14 @@ public class MainMenuUI : MonoBehaviour
                 volumeMenu.SetActive(false);
                 pauseMenu.SetActive(true);
                 Debug.Log("Closed Volume Panel → Returned to Pause Menu");
+                return;
             }
-            // Case 2: Pause menu active → resume game
-            else if (pauseMenu != null && pauseMenu.activeSelf)
+
+            // Case 2: Already paused → resume
+            if (IsPaused)
             {
                 Continue();
             }
-            // Case 3: No menu → open Pause Menu
             else
             {
                 Pause();
