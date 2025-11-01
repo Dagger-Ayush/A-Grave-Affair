@@ -64,12 +64,15 @@ public class ObjectInteract : MonoBehaviour
 
     private void Start()
     {
+        if (gettingClueCount != null)
+            gettingClueCount.AddTick(dialogManager.currentClueCount[currentImageIndex], totalClues);
+
         if (dialogManager != null)
         {
             if (dialogManager.currentClueCount == null || dialogManager.currentClueCount.Length != dialogManager.dialogLines.Length)
                 dialogManager.currentClueCount = new int[dialogManager.dialogLines.Length];
 
-            dialogManager.ResetClues();
+          //  dialogManager.ResetClues();
         }
 
         if (type == InteractType.Tablet)

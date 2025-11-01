@@ -31,8 +31,10 @@ public class ClueManager : MonoBehaviour
         //if (collectedClues.Contains(clueText)) return;
         if (GlobalClueInventory.HasClue(clueText))
             return;
-
-        ObjectPickHandler.clueCount++;
+        if (ObjectPickHandler.activePickup != null)
+        {
+            ObjectPickHandler.activePickup.AddClue();
+        }
         ObjectInteract.clueCount++;
 
         GlobalClueInventory.AddClue(clueText);

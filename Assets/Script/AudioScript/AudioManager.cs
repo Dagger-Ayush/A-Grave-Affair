@@ -273,7 +273,7 @@ public class AudioManager : MonoBehaviour
             case 2: clipToPlay = Phase_3; break;
             case 3: clipToPlay = Phase_4; break;
             case 4: clipToPlay = Phase_5; break;
-            //case 5: clipToPlay = Phase_6; break;
+            case 5: break;
             case 6: clipToPlay = Phase_7; break;
             default: clipToPlay = MainMenu; break;
         }

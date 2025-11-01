@@ -572,14 +572,15 @@ public class MotelLobby : MonoBehaviour
         suspectDialogs[2].shouldWork = true;
         suspectColliders[2].enabled = true;
 
-        // Activate the doors
-        if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
-        if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+
     }
     void ObjectsEnablePhase_10()
     {
         currentPhase = 11;
-        foreach(ObjectInteract interact in suspectDialogs)
+        // Activate the doors
+        if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
+        if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
+        foreach (ObjectInteract interact in suspectDialogs)
         {
             interact.enabled = false;
             interact.shouldWork = false;

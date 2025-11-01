@@ -17,8 +17,10 @@ MonoBehaviour:
   - "<link=\"Detective\">Detective</color></link>\u2026 it sounds hollow now, like
     an echo from a past life I can\u2019t return to."
   dialogAudio: []
+  doBackgroundChange: 0
+  backgroundImages: []
   changeFontSize: 0
   frontSize: []
   typingSpeed: 0.02
-  currentClueCount: 00000000
+  currentClueCount: 03000000
   totalCount: 01000000

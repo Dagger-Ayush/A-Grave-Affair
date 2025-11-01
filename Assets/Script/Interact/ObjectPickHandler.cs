@@ -5,8 +5,10 @@ using UnityEngine.UI;
 public class ObjectPickHandler : MonoBehaviour
 {
     public static ObjectPickHandler Instance;
+    public static ObjectPickHandler activePickup;
 
-    public static ObjectPickHandler activePickup; // ✅ track the currently active pickup
+    [Header("Object Identification")]
+    [SerializeField] private string objectID = "1"; // ✅ Unique ID per object (e.g., 1, 2, 3...)
 
     public enum InspectType { Cigarette, Lighter, Letter_1, TutorialLetter, None }
     public InspectType type = InspectType.None;
@@ -46,12 +48,10 @@ public class ObjectPickHandler : MonoBehaviour
 
     private bool isVision = false;
     private bool isbusy = false;
-   [SerializeField] private bool doRotationInvert = false;
+    [SerializeField] private bool doRotationInvert = false;
 
-    public static int clueCount;
-    public int totalClues;
     private int clueCountStoring = 0;
-    public static int clueCountMain;
+    public int totalClues;
 
     private ObjectInteract objectInteractCigarette;
     private ObjectInteract objectInteract;
@@ -88,19 +88,37 @@ public class ObjectPickHandler : MonoBehaviour
 
         mainCam = pickReferences.inspectionCamara;
         XrayToggle = pickReferences.XrayToggle;
-        clueCount = 0;
+
+        // ✅ Ensure ClueProgressManager exists
+        if (ClueProgressManager.Instance == null)
+        {
+            new GameObject("ClueProgressManager").AddComponent<ClueProgressManager>();
+        }
+
+        if (!string.IsNullOrEmpty(objectID))
+        {
+            if (!ClueProgressManager.WasJustReset)
+            {
+                clueCountStoring = PlayerPrefs.GetInt(objectID + "_ClueCount", 0);
+                Debug.Log($"📦 Loaded {objectID} clue count: {clueCountStoring}");
+            }
+            else
+            {
+                clueCountStoring = 0;
+                Debug.Log($"🧹 Reset mode active — skipping load for {objectID}");
+            }
+        }
+
     }
 
     private void Update()
     {
-        // Prevent other objects from being active while one pickup is ongoing
         if (activePickup != null && activePickup != this)
         {
             Avoid();
             return;
         }
 
-        // Hide UI when interacting with ObjectInteract
         if (ObjectInteract.isInteracting && outRange != null && inRange != null)
         {
             XrayVisionDisable();
@@ -109,26 +127,28 @@ public class ObjectPickHandler : MonoBehaviour
             return;
         }
 
-        // Always update out-of-range UI for inactive objects
         if (playerInteract.GetObjectPickHandler() != this && !isCollected)
         {
-            Avoid(); // ✅ always show outRange
+            Avoid();
             return;
         }
 
         imageDrag();
         ObjectHandler();
 
-        // Update clue count UI
+        // ✅ Display persistent clue count
+        var clueCount = ClueProgressManager.Instance.clueCount;
+        var clueCountMain = ClueProgressManager.Instance.clueCountMain;
+
         if (clueCount < clueCountMain)
         {
             pickReferences.currentClueCount.text =
-                "Clues Found (" + clueCount.ToString() + "/" + clueCountMain.ToString() + ")";
+                "Clues Found (" + clueCount + "/" + clueCountMain + ")";
         }
         else
         {
             pickReferences.currentClueCount.text =
-                "Clue's Picked(" + clueCountMain.ToString() + "/" + clueCountMain.ToString() + ")";
+                "Clue's Picked (" + clueCountMain + "/" + clueCountMain + ")";
         }
     }
 
@@ -145,6 +165,7 @@ public class ObjectPickHandler : MonoBehaviour
                 inRange.alpha = 0;
             }
         }
+
         if (isCollected && xrayType == XrayType.Xray &&
             (XrayTutorial.Instance == null || XrayTutorial.Instance.shouldShowIcon))
         {
@@ -154,15 +175,14 @@ public class ObjectPickHandler : MonoBehaviour
                 else XrayVisionDisable();
             }
 
-            // Update UI
             pickReferences.XrayOnImage.SetActive(isVision);
             pickReferences.XrayOfImage.SetActive(!isVision);
         }
         else if (!isCollected)
         {
-            // Ensure everything is off if Xray shouldn't show
             XrayVisionDisable();
         }
+
         if (isPicked && Input.GetKeyDown(KeyCode.E))
         {
             if (isbusy) return;
@@ -204,27 +224,28 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectPickUp()
     {
-        if (activePickup != null && activePickup != this) yield break; // ✅ prevent multiple pickups
-        if (ObjectInteract.activeInteraction!= null) yield break;
+        if (activePickup != null && activePickup != this) yield break;
+        if (ObjectInteract.activeInteraction != null) yield break;
 
-        activePickup = this; // mark this as active pickup
+        activePickup = this;
 
-        clueCount = clueCountStoring;
-        clueCountMain = totalClues;
+        // ✅ Use persistent counters
+        ClueProgressManager.Instance.clueCountMain = totalClues;
+        ClueProgressManager.Instance.clueCount = clueCountStoring;
 
         isCollected = true;
         pickReferences.currentClue.SetActive(true);
 
         Vector3 target = transform.position;
-        target.y = playerInteract.player.transform.position.y; // lock Y so no tilt
+        target.y = playerInteract.player.transform.position.y;
         playerInteract.player.transform.LookAt(target);
 
         isbusy = true;
         time = 0;
         isPicked = true;
 
-        if(pickReferences.lights!=null)
-        pickReferences.lights.SetActive(false);
+        if (pickReferences.lights != null)
+            pickReferences.lights.SetActive(false);
 
         if (XrayLetterMain != null) XrayLetterMain.SetActive(false);
         if (XrayObject != null) XrayObject.SetActive(true);
@@ -261,7 +282,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectDrop()
     {
-        activePickup = null; // ✅ release active pickup so others can be picked
+        activePickup = null;
 
         XrayVisionDisable();
 
@@ -271,7 +292,20 @@ public class ObjectPickHandler : MonoBehaviour
         pickReferences.eToExitimage.SetActive(false);
         if (XrayLetterMain != null) XrayLetterMain.SetActive(true);
         if (XrayObject != null) XrayObject.SetActive(false);
-        clueCountStoring = clueCount;
+
+        // ✅ Save progress for this object
+        clueCountStoring = ClueProgressManager.Instance.clueCount;
+
+        if (!string.IsNullOrEmpty(objectID))
+        {
+            PlayerPrefs.SetInt(objectID + "_ClueCount", clueCountStoring);
+            PlayerPrefs.Save();
+            Debug.Log($"💾 Saved {objectID} clue count: {clueCountStoring}");
+        }
+
+        // ✅ Save global progress
+        ClueProgressManager.Instance.SaveAllClueProgress();
+
         pickReferences.currentClue.SetActive(false);
 
         transform.rotation = objectRotation;
@@ -298,7 +332,6 @@ public class ObjectPickHandler : MonoBehaviour
 
         transform.localPosition = objectTransform;
 
-       
         isPicked = false;
         isCollected = false;
 
@@ -343,25 +376,10 @@ public class ObjectPickHandler : MonoBehaviour
     private void XrayVisionDisable()
     {
         isVision = false;
-
         pickReferences.XrayCamara.SetActive(false);
         pickReferences.XrayOfImage.SetActive(false);
         pickReferences.XrayOnImage.SetActive(false);
-
         isXrayEnabled = false;
-    }
-
-    private void OnMouseDown()
-    {
-        if (!isPicked || isVision) return;
-
-        dragPlane = new Plane(-mainCam.transform.forward, transform.position);
-
-        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-        if (dragPlane.Raycast(ray, out float enter))
-        {
-            offset = transform.position - ray.GetPoint(enter);
-        }
     }
 
     private bool isDragging = false;
@@ -405,7 +423,7 @@ public class ObjectPickHandler : MonoBehaviour
                 if (!doRotationInvert)
                     transform.rotation = Quaternion.AngleAxis(turn.y, right) * transform.rotation;
                 else
-                transform.rotation = Quaternion.AngleAxis(-turn.y, right) * transform.rotation;
+                    transform.rotation = Quaternion.AngleAxis(-turn.y, right) * transform.rotation;
             }
         }
 
@@ -431,4 +449,25 @@ public class ObjectPickHandler : MonoBehaviour
     {
         return isCollected;
     }
+    public void AddClue()
+    {
+        clueCountStoring++;
+
+        // ✅ Save to manager (persistent)
+        ClueProgressManager.Instance.SaveClueCount(objectID, clueCountStoring);
+
+        // ✅ Update global live counter for UI refresh
+        ClueProgressManager.Instance.clueCount = clueCountStoring;
+
+        // ✅ Update UI instantly
+        if (pickReferences != null && pickReferences.currentClueCount != null)
+        {
+            pickReferences.currentClueCount.text =
+                "Clues Found (" + clueCountStoring + "/" + totalClues + ")";
+        }
+
+        Debug.Log($"🧩 Clue added for {objectID}. Current count: {clueCountStoring}/{totalClues}");
+    }
+
+
 }

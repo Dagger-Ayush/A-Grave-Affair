@@ -39,7 +39,7 @@ public class SceneChanger : MonoBehaviour
                         Destroy(gregObject);
                     }
 
-                if (GamePhaseManager.MotelLobbyPhase >= 9)
+                if (GamePhaseManager.MotelLobbyPhase >= 11)
                 {
                     if (door != null)
                     {
