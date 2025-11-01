@@ -17,7 +17,7 @@ MonoBehaviour:
   - "There\u2019s only one person who manages the milkshake bar, it\u2019s Alex Tibia.
     Things aren\u2019t looking good for her."
   dialogAudio:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 2c8588485d50d174a95000ac9dbacdfd, type: 2}
   doBackgroundChange: 0
   backgroundImages: []
   changeFontSize: 1

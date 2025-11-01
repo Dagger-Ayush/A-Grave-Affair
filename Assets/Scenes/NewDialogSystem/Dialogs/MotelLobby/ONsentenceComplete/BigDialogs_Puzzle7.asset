@@ -17,7 +17,7 @@ MonoBehaviour:
   - "So Nancy actually died by poisoning, but it\u2019s highly unlikely that she
     poisoned herself since her death was staged in the lobby."
   dialogAudio:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 395a88425c739ab48a929ba259ed1215, type: 2}
   doBackgroundChange: 0
   backgroundImages: []
   changeFontSize: 1
