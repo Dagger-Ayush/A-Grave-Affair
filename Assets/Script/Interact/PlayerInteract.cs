@@ -14,13 +14,19 @@ public class PlayerInteract : MonoBehaviour
     public Image tabletImage;
 
     [HideInInspector] public bool isPointAndMovementEnabled;
-     public bool doPointAndMovementWork = false;
+    public bool doPointAndMovementWork = false;
     private PointAndMovement pointAndMovement;
     private PlayerDialog playerDialog;
     public bool shouldTabletWork;
 
-    
-    private void Awake() { Instance = this; }
+    // 🔹 Pause control
+    private bool wasInteractingBeforePause = false;
+    private bool isPaused = false;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -31,6 +37,10 @@ public class PlayerInteract : MonoBehaviour
 
     private void Update()
     {
+        // If paused, don't process interactions
+        if (isPaused)
+            return;
+
         GetObjectInteract();
         GetObjectPickHandler();
 
@@ -45,7 +55,8 @@ public class PlayerInteract : MonoBehaviour
         if (canInteract || doPointAndMovementWork)
         {
             isPointAndMovementEnabled = true;
-            if (pointAndMovement != null && player != null)
+
+            if (player != null)
                 player.GetComponent<Rigidbody>().isKinematic = true;
 
             if (tabletImage != null)
@@ -70,12 +81,53 @@ public class PlayerInteract : MonoBehaviour
             if (pointAndMovement != null)
                 pointAndMovement.enabled = true;
         }
-      
+    }
+
+    // 🔹 Called by MainMenuUI when paused/unpaused
+    public void OnPauseStateChanged(bool paused)
+    {
+        isPaused = paused;
+
+        if (paused)
+        {
+            // Remember if player was in an interaction when paused
+            wasInteractingBeforePause = ObjectPickHandler.isCollected ||
+                                        ObjectMoving.canInteract ||
+                                        ObjectInteract.isInteracting ||
+                                        (playerDialog != null && playerDialog.isInteraction);
+
+            // Stop player movement safely
+            if (pointAndMovement != null)
+                pointAndMovement.enabled = false;
+
+            if (player != null)
+                player.GetComponent<Rigidbody>().isKinematic = true;
+
+            if (tabletImage != null)
+                tabletImage.enabled = false;
+        }
+        else
+        {
+            // Resume based on previous state
+            if (!wasInteractingBeforePause)
+            {
+                if (player != null)
+                    player.GetComponent<Rigidbody>().isKinematic = false;
+
+                if (pointAndMovement != null)
+                    pointAndMovement.enabled = true;
+
+                if (shouldTabletWork && tabletImage != null)
+                    tabletImage.enabled = true;
+            }
+
+            wasInteractingBeforePause = false;
+        }
     }
 
     public ObjectPickHandler GetObjectPickHandler()
     {
-        if(TabletManager.isTabletOpen)return null;
+        if (TabletManager.isTabletOpen) return null;
 
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in colliders)
@@ -89,10 +141,7 @@ public class PlayerInteract : MonoBehaviour
     public ObjectMoving ObjectMovingHandler()
     {
         if (TabletManager.isTabletOpen) return null;
-        /*
-        if (GetObjectPickHandler() != null) // check PickHandler first
-            return null;
-        */
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in colliders)
         {
@@ -105,10 +154,7 @@ public class PlayerInteract : MonoBehaviour
     public ObjectInteract GetObjectInteract()
     {
         if (TabletManager.isTabletOpen) return null;
-        /*
-        if (GetObjectPickHandler() != null || ObjectMovingHandler() != null) // check higher priority first
-            return null;
-        */
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in colliders)
         {
@@ -122,7 +168,6 @@ public class PlayerInteract : MonoBehaviour
         }
         return null;
     }
-
 
     public SceneChanger SceneChangerHandler()
     {

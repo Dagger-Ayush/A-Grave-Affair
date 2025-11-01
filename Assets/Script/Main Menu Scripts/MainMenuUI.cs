@@ -5,18 +5,22 @@ using UnityEngine.Video;
 
 public class MainMenuUI : MonoBehaviour
 {
-    
+    [Header("Menu References")]
     public GameObject mainMenu;
     public GameObject pauseMenu;
     public GameObject volumeMenu;
     public GameObject creditsVideoPlayer;
+
+    public static bool IsPaused { get; private set; }
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
     }
+
     void Start()
     {
-        var vp = creditsVideoPlayer.GetComponent<VideoPlayer>();
+        var vp = creditsVideoPlayer != null ? creditsVideoPlayer.GetComponent<VideoPlayer>() : null;
         if (vp != null)
             vp.loopPointReached += HandleCreditsVideoEnd;
     }
@@ -31,18 +35,13 @@ public class MainMenuUI : MonoBehaviour
         else
         {
             TriggerPauseMenu();
-           
         }
 
         // Allow Escape key to exit credits video early
-        if (creditsVideoPlayer != null && creditsVideoPlayer.activeSelf)
+        if (creditsVideoPlayer != null && creditsVideoPlayer.activeSelf && Input.GetKeyDown(KeyCode.Escape))
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                ExitCreditsVideo();
-            }
+            ExitCreditsVideo();
         }
-
     }
 
     public void Exit()
@@ -61,38 +60,53 @@ public class MainMenuUI : MonoBehaviour
 
     private System.Collections.IEnumerator LoadGameScene()
     {
-        // Optional: show loading screen here if you want
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Proto Scene");
 
-        // Wait until the new scene is fully loaded
         while (!asyncLoad.isDone)
-        {
             yield return null;
-        }
 
-        // 🔹 Now hide menus AFTER scene transition is done
+        // Hide all menus after load
         if (volumeMenu != null) volumeMenu.SetActive(false);
         if (pauseMenu != null) pauseMenu.SetActive(false);
         if (mainMenu != null) mainMenu.SetActive(false);
+
+        // Reset pause state fully
+        Time.timeScale = 1f;
+        IsPaused = false;
+
+        if (PlayerInteract.Instance != null)
+            PlayerInteract.Instance.OnPauseStateChanged(false);
     }
 
-
+    // 🔹 NEW — fully integrated pause handling
     public void Continue()
     {
         pauseMenu.SetActive(false);
         Time.timeScale = 1.0f;
+        IsPaused = false;
+
+        if (PlayerInteract.Instance != null)
+            PlayerInteract.Instance.OnPauseStateChanged(false);
+
+        Debug.Log("Game Continued");
     }
 
     public void Pause()
     {
         pauseMenu.SetActive(true);
         Time.timeScale = 0.0f;
+        IsPaused = true;
+
+        if (PlayerInteract.Instance != null)
+            PlayerInteract.Instance.OnPauseStateChanged(true);
+
+        Debug.Log("Game Paused");
     }
 
     public void VolumePanel()
     {
         volumeMenu.SetActive(true);
-        if(pauseMenu!=null) pauseMenu.SetActive(false);
+        if (pauseMenu != null) pauseMenu.SetActive(false);
         if (mainMenu != null) mainMenu.SetActive(false);
     }
 
@@ -107,32 +121,28 @@ public class MainMenuUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // Case 1: Volume panel is active → go back to Pause Menu
+            // Case 1: Volume panel active → go back to Pause Menu
             if (volumeMenu != null && volumeMenu.activeSelf)
             {
                 volumeMenu.SetActive(false);
                 pauseMenu.SetActive(true);
                 Debug.Log("Closed Volume Panel → Returned to Pause Menu");
             }
-            // Case 2: Pause menu is active → resume game
+            // Case 2: Pause menu active → resume game
             else if (pauseMenu != null && pauseMenu.activeSelf)
             {
-                pauseMenu.SetActive(false);
-                Time.timeScale = 1f;
-                Debug.Log("Closed Pause Menu → Game Resumed");
+                Continue();
             }
-            // Case 3: No menu is open → open Pause Menu
+            // Case 3: No menu → open Pause Menu
             else
             {
-                pauseMenu.SetActive(true);
-                Time.timeScale = 0f;
-                Debug.Log("Opened Pause Menu");
+                Pause();
             }
         }
     }
+
     private void TriggerVolume()
     {
-        // Only act if volume panel is active
         if (Input.GetKeyDown(KeyCode.Escape) && volumeMenu != null && volumeMenu.activeSelf)
         {
             volumeMenu.SetActive(false);
@@ -157,9 +167,9 @@ public class MainMenuUI : MonoBehaviour
     public void OnCreditsButtonClicked()
     {
         ShowCreditsVideo();
-        // Hide main menu if desired
         if (mainMenu != null) mainMenu.SetActive(false);
     }
+
     void HandleCreditsVideoEnd(VideoPlayer vp)
     {
         creditsVideoPlayer.SetActive(false);
@@ -170,11 +180,9 @@ public class MainMenuUI : MonoBehaviour
     {
         var vp = creditsVideoPlayer.GetComponent<VideoPlayer>();
         if (vp != null && vp.isPlaying)
-        {
             vp.Stop();
-        }
-        creditsVideoPlayer.SetActive(false);
 
+        creditsVideoPlayer.SetActive(false);
         if (mainMenu != null)
             mainMenu.SetActive(true);
 
