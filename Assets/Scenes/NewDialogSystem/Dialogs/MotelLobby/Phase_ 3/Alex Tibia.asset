@@ -16,8 +16,7 @@ MonoBehaviour:
   dialogLines:
   - "I tried to give her a milkshake, but when she didn\u2019t answer, I left the
     <link=\"Tray\">tray</color></link> outside."
-  - "Hmm, I didn\u2019t see any tray outside her room though (Her story isn\u2019t
-    adding up, something is missing)"
+  - Alright, I'll check it out ( Something feels off here)
   dialogAudio:
   - {fileID: 11400000, guid: 0067f6f4278b89e4cada27b162491f41, type: 2}
   - {fileID: 0}
