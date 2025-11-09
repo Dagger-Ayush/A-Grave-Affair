@@ -48,6 +48,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     private bool isVision = false;
     private bool isbusy = false;
+    private bool isRotationbusy = false;
     [SerializeField] private bool doRotationInvert = false;
 
     private int clueCountStoring = 0;
@@ -227,6 +228,7 @@ public class ObjectPickHandler : MonoBehaviour
         if (activePickup != null && activePickup != this) yield break;
         if (ObjectInteract.activeInteraction != null) yield break;
 
+        isRotationbusy = false;
         activePickup = this;
 
         // ✅ Use persistent counters
@@ -282,6 +284,7 @@ public class ObjectPickHandler : MonoBehaviour
 
     public IEnumerator ObjectDrop()
     {
+        isRotationbusy = true;
         activePickup = null;
 
         XrayVisionDisable();
@@ -385,7 +388,7 @@ public class ObjectPickHandler : MonoBehaviour
     private bool isDragging = false;
     private void imageDrag()
     {
-        if (!isPicked || isMouseLocked || isVision) return;
+        if (!isPicked || isMouseLocked || isVision || isRotationbusy) return;
         if (InspectionClueFeedBack.Instance != null && InspectionClueFeedBack.Instance.isClueBusy) return;
 
         if (Input.GetMouseButtonDown(0) && isPicked && !isVision)
