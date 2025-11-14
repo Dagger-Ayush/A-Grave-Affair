@@ -47,4 +47,12 @@ public class ClueBoxManager : MonoBehaviour
         clueBox.transform.SetSiblingIndex(clueBoxOriginalIndex);
     }
 
+    public void HideClueBox()
+    {
+        if (clueBox != null && clueBox.activeSelf)
+        {
+            clueBox.SetActive(false);
+            currentButton = null;
+        }
+    }
 }

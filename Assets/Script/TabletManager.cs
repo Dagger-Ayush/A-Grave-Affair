@@ -118,7 +118,12 @@ public class TabletManager : MonoBehaviour
         }
         SetY(endY);
 
-        if(show)
+        if (!show && ClueBoxManager.Instance != null)
+            ClueBoxManager.Instance.HideClueBox();
+        if(!show && puzzlePanel != null)
+            puzzlePanel.SetActive(false);
+
+        if (show)
         {
             CursorManager.Instance.SetCursor(CursorState.Tablet);
         }
