@@ -241,6 +241,10 @@ public class MotelLobby : MonoBehaviour
         {
             if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
         }
+        if (currentPhase >= 7)
+        {
+            if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
+        }
         if (currentPhase >= 9)
         {
             if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
@@ -535,6 +539,8 @@ public class MotelLobby : MonoBehaviour
         ONsentenceCompleteInteract_2.shouldWork = true;
         PosandAnimationUpdate.Instance.UpdatePhase_6();
         DisableCompletedPuzzle();
+
+        if (doorToNancyRoom) doorToNancyRoom.SetActive(false);
     }
     IEnumerator ObjectsEnablePhase_7_R_1()
     {
@@ -578,7 +584,7 @@ public class MotelLobby : MonoBehaviour
     {
         currentPhase = 11;
         // Activate the doors
-        if (doorToNancyRoom) doorToNancyRoom.SetActive(true);
+       
         if (doorToOutsideMotel) doorToOutsideMotel.SetActive(true);
         foreach (ObjectInteract interact in suspectDialogs)
         {
