@@ -11,6 +11,34 @@ public class ClueProgressManager : MonoBehaviour
     private Dictionary<string, int> clueProgress = new Dictionary<string, int>();
     private const string REGISTRY_KEY = "ClueKeysRegistry";
     public static bool WasJustReset = false;
+    // existing code...
+    public static bool SuppressSave = false;
+
+    public void SaveToPlayerPrefs()
+    {
+        if (SuppressSave)
+        {
+            Debug.Log("ClueProgressManager: Save suppressed.");
+            return;
+        }
+        // ...actual saving logic
+    }
+
+    private void OnDisable()
+    {
+        if (!SuppressSave)
+            SaveToPlayerPrefs();
+        else
+            Debug.Log("ClueProgressManager: OnDisable save suppressed.");
+    }
+
+    private void OnDestroy()
+    {
+        if (!SuppressSave)
+            SaveToPlayerPrefs();
+        else
+            Debug.Log("ClueProgressManager: OnDestroy save suppressed.");
+    }
 
     private void Awake()
     {

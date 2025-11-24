@@ -375,8 +375,8 @@ public class CursorHoverOverClue : MonoBehaviour, IPointerEnterHandler, IPointer
         float thinOutline = Mathf.Max(1f, outlineThickness * 0.1f);
 
         image.texture = CreateOvalOutlineTexture(
-            (int)(size.x * 2),
-            (int)(size.y * 2),
+            (int)(size.x * 1),
+            (int)(size.y * 1),
              Mathf.RoundToInt(thinOutline),
             outlineColor
         );
